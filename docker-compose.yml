@@ -1,0 +1,53 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: leticia-conde-postgres
+    environment:
+      POSTGRES_DB: lcn-database
+      POSTGRES_USER: leticia_user
+      POSTGRES_PASSWORD: leticia123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - leticia-network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: LeticiaConde.Api/Dockerfile
+    container_name: leticia-conde-backend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=lcn-database;Username=leticia_user;Password=leticia123
+    ports:
+      - "7000:7000"
+    depends_on:
+      - postgres
+    networks:
+      - leticia-network
+    volumes:
+      - ./backend/LeticiaConde.Api:/app
+      - /app/bin
+      - /app/obj
+
+  # Frontend (futuro)
+  # frontend:
+  #   build:
+  #     context: ./frontend/nutri-frontend
+  #     dockerfile: Dockerfile
+  #   container_name: leticia-conde-frontend
+  #   ports:
+  #     - "3000:3000"
+  #   networks:
+  #     - leticia-network
+
+volumes:
+  postgres_data:
+
+networks:
+  leticia-network:
+    driver: bridge

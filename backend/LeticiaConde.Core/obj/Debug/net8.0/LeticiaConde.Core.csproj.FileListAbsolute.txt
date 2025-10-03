@@ -1,0 +1,11 @@
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Core\bin\Debug\net8.0\LeticiaConde.Core.deps.json
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Core\bin\Debug\net8.0\LeticiaConde.Core.dll
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Core\bin\Debug\net8.0\LeticiaConde.Core.pdb
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Core\obj\Debug\net8.0\LeticiaConde.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Core\obj\Debug\net8.0\LeticiaConde.Core.AssemblyInfoInputs.cache
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Core\obj\Debug\net8.0\LeticiaConde.Core.AssemblyInfo.cs
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Core\obj\Debug\net8.0\LeticiaConde.Core.csproj.CoreCompileInputs.cache
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Core\obj\Debug\net8.0\LeticiaConde.Core.dll
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Core\obj\Debug\net8.0\refint\LeticiaConde.Core.dll
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Core\obj\Debug\net8.0\LeticiaConde.Core.pdb
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Core\obj\Debug\net8.0\ref\LeticiaConde.Core.dll

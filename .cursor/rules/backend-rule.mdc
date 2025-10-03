@@ -1,0 +1,194 @@
+---
+alwaysApply: true
+---
+
+# Regras do Backend - Letícia Conde Nutrição
+
+## 🎯 **Visão Geral**
+
+Sistema de agendamento para nutricionista com captação de leads via calculadora de IMC.
+
+## 🏗️ **Arquitetura**
+
+- **Framework**: ASP.NET Core 8.0
+- **Banco de Dados**: PostgreSQL
+- **ORM**: Entity Framework Core
+- **Padrão**: Clean Architecture (API, Core, Application, Infrastructure)
+
+## 📁 **Estrutura de Projetos**
+
+```
+backend/
+├── LeticiaConde.Api/           # Camada de apresentação (Controllers, Program.cs)
+├── LeticiaConde.Core/          # Entidades de domínio e interfaces
+├── LeticiaConde.Application/   # Casos de uso e DTOs
+└── LeticiaConde.Infrastructure/ # Acesso a dados e configurações externas
+```
+
+## 🗄️ **Entidades Principais**
+
+### **Lead**
+
+- Captura de leads através da calculadora de IMC
+- Campos: Id, Name, Email, WhatsApp, Weight, Height, Bmi, BmiClassification, CaptureDate, Converted
+
+### **Appointment**
+
+- Agendamentos de consultas nutricionais
+- Campos: Id, LeadId, DateTime, Status, ReservationDate, ConfirmationDate, VirtualRoomLink, Observations, TransactionId
+- Status: Reserved, Confirmed, Cancelled, Completed
+
+### **ScheduleConfiguration**
+
+- Configuração de horários de funcionamento
+- Campos: Id, DayOfWeek, DayName, Active, StartTime, EndTime, Sabbath, Observations
+
+## 🔧 **Regras de Negócio**
+
+### **Horários de Funcionamento**
+
+- **Monday to Thursday**: 17:00 to 22:00
+- **Sunday**: Open (flexible hours)
+- **Friday and Saturday**: Blocked (Sabbath)
+
+### **Sabbath Rule**
+
+- Dynamic blocking based on sunset time
+- External API integration to get sunset time
+- Automatic blocking between Friday sunset and Saturday sunset
+
+### **Reservation System**
+
+- 15-minute provisional reservation
+- Confirmation via payment webhook
+- Automatic virtual room link generation
+
+## 🌐 **API Endpoints**
+
+### **Leads** (`/api/leads`)
+
+- `POST /validate-bmi` - Validate BMI calculation (for consistency)
+- `POST /capture-lead` - Capture lead with BMI from frontend
+- `GET /{id}` - Get lead by ID
+- `GET /` - List all leads
+- `PUT /{id}/mark-converted` - Mark as converted
+
+### **Appointments** (`/api/appointments`)
+
+- `GET /available-slots` - Get available time slots
+- `POST /reserve` - Reserve time slot
+- `GET /{id}` - Get appointment by ID
+- `GET /` - List all appointments
+- `PUT /{id}/cancel` - Cancel appointment
+- `GET /check-availability` - Check availability
+
+### **Payments** (`/api/payments`)
+
+- `POST /webhook` - Payment confirmation webhook
+- `POST /confirm-appointment` - Confirm appointment
+
+## 🔒 **Validações e Segurança**
+
+### **Data Validation**
+
+- Input validation with Data Annotations
+- Business rule validation in services
+- Centralized exception handling
+
+### **Security**
+
+- CORS configured for frontend
+- Input validation against attacks
+- Audit logs for critical operations
+
+## 📊 **Database Configuration**
+
+### **PostgreSQL**
+
+- Host: localhost
+- Database: lcn-database
+- Username: leticia_user
+- Password: leticia123
+
+### **Migrations**
+
+- Automatic application in development
+- Schema versioning with Entity Framework
+- Automatic backup before migrations
+
+## 🚀 **Deploy and Production**
+
+### **Docker**
+
+- Containerization with Docker Compose
+- PostgreSQL and API in separate containers
+- Persistent volumes for data
+
+### **Configurations**
+
+- Environment variables for sensitive settings
+- Structured logs for monitoring
+- Health checks for health verification
+
+## 🔄 **BMI Calculator Strategy**
+
+### **Hybrid Approach: Frontend + Backend**
+
+- **Frontend**: Instant calculation for better UX
+- **Backend**: Validation and consistency check
+- **Security**: Prevents data manipulation
+- **Performance**: No network latency for calculation
+
+### **Data Flow**
+
+1. User inputs weight/height on frontend
+2. Frontend calculates BMI instantly
+3. Frontend displays result immediately
+4. Frontend sends data to backend
+5. Backend validates calculation consistency
+6. Backend stores lead in database
+
+## 📝 **Naming Conventions**
+
+### **API Routes**
+
+- Use kebab-case for all endpoints
+- Format: `/api/resource-principal/specific-action`
+- Examples: `/api/leads/capture-lead`, `/api/appointments/available-slots`
+
+### **Code Elements**
+
+- **Classes**: PascalCase (e.g., `LeadService`, `AppointmentController`)
+- **Methods**: PascalCase (e.g., `CalculateBmiAsync`, `GetAvailableSlotsAsync`)
+- **Properties**: PascalCase (e.g., `Name`, `Email`, `DateTime`)
+- **Variables**: camelCase (e.g., `leadId`, `appointmentDate`)
+- **Constants**: UPPER_SNAKE_CASE (e.g., `MAX_WEIGHT`, `DEFAULT_TIMEOUT`)
+
+### **Database**
+
+- **Tables**: PascalCase (e.g., `Leads`, `Appointments`, `ScheduleConfigurations`)
+- **Columns**: PascalCase (e.g., `Id`, `Name`, `Email`, `DateTime`)
+- **Foreign Keys**: `EntityNameId` (e.g., `LeadId`, `AppointmentId`)
+
+## 🔧 **Development Guidelines**
+
+### **Error Handling**
+
+- Use specific exception types
+- Provide meaningful error messages
+- Log errors with context
+- Return appropriate HTTP status codes
+
+### **Logging**
+
+- Use structured logging
+- Include correlation IDs
+- Log at appropriate levels (Debug, Info, Warning, Error)
+- Include relevant context in log messages
+
+### **Testing**
+
+- Write unit tests for business logic
+- Write integration tests for API endpoints
+- Mock external dependencies
+- Test error scenarios and edge cases

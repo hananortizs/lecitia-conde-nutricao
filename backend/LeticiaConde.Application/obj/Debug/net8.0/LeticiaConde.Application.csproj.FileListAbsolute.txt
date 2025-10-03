@@ -1,0 +1,17 @@
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Application\obj\Debug\net8.0\LeticiaConde.Application.csproj.AssemblyReference.cache
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Application\obj\Debug\net8.0\LeticiaConde.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Application\obj\Debug\net8.0\LeticiaConde.Application.AssemblyInfoInputs.cache
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Application\obj\Debug\net8.0\LeticiaConde.Application.AssemblyInfo.cs
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Application\obj\Debug\net8.0\LeticiaConde.Application.csproj.CoreCompileInputs.cache
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Application\bin\Debug\net8.0\LeticiaConde.Application.deps.json
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Application\bin\Debug\net8.0\LeticiaConde.Application.dll
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Application\bin\Debug\net8.0\LeticiaConde.Application.pdb
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Application\bin\Debug\net8.0\LeticiaConde.Core.dll
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Application\bin\Debug\net8.0\LeticiaConde.Infrastructure.dll
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Application\bin\Debug\net8.0\LeticiaConde.Core.pdb
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Application\bin\Debug\net8.0\LeticiaConde.Infrastructure.pdb
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Application\obj\Debug\net8.0\LeticiaC.1A0AB55D.Up2Date
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Application\obj\Debug\net8.0\LeticiaConde.Application.dll
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Application\obj\Debug\net8.0\refint\LeticiaConde.Application.dll
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Application\obj\Debug\net8.0\LeticiaConde.Application.pdb
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Application\obj\Debug\net8.0\ref\LeticiaConde.Application.dll

@@ -1,0 +1,235 @@
+---
+alwaysApply: true
+---
+
+# Regras do Frontend - Letícia Conde Nutrição
+
+## 🎯 **Visão Geral**
+
+Single Page Application (SPA) para captação de leads e agendamento de consultas nutricionais.
+
+## 🏗️ **Arquitetura**
+
+- **Framework**: React 18+ com Vite
+- **Linguagem**: JavaScript/TypeScript
+- **Bundler**: Vite
+- **Styling**: CSS Modules ou Styled Components
+- **State Management**: React Hooks (useState, useEffect, useContext)
+
+## 📁 **Estrutura de Pastas**
+
+```
+frontend/
+├── public/                     # Arquivos estáticos
+├── src/
+│   ├── components/            # Componentes reutilizáveis
+│   │   ├── common/           # Componentes comuns (Button, Input, Modal)
+│   │   ├── forms/            # Formulários específicos
+│   │   └── layout/           # Componentes de layout (Header, Footer, Sidebar)
+│   ├── pages/                # Páginas da aplicação
+│   │   ├── HomePage.jsx      # Página inicial com calculadora IMC
+│   │   ├── AppointmentPage.jsx # Página de agendamento
+│   │   └── ThankYouPage.jsx  # Página de confirmação
+│   ├── hooks/                # Custom hooks
+│   │   ├── useBmiCalculator.js # Hook para cálculo de IMC
+│   │   ├── useAppointment.js  # Hook para agendamentos
+│   │   └── useTheme.js        # Hook para temas
+│   ├── utils/                # Utilitários e helpers
+│   │   ├── bmiCalculator.js  # Cálculo de IMC
+│   │   ├── api.js           # Cliente da API
+│   │   └── validators.js    # Validações
+│   ├── services/             # Serviços e integrações
+│   │   ├── apiService.js    # Serviço da API
+│   │   └── themeService.js  # Serviço de temas
+│   ├── styles/              # Estilos globais e temas
+│   │   ├── globals.css      # Estilos globais
+│   │   ├── light-theme.css  # Tema claro
+│   │   └── dark-theme.css   # Tema escuro
+│   ├── contexts/            # Contextos React
+│   │   └── ThemeContext.js  # Contexto de tema
+│   └── App.jsx              # Componente principal
+├── package.json
+└── vite.config.js
+```
+
+## 🎨 **Sistema de Temas**
+
+### **Paleta de Cores - Tema Claro**
+
+- **Primary**: #2E7D32 (Verde escuro)
+- **Secondary**: #4CAF50 (Verde médio)
+- **Accent**: #FFC107 (Âmbar)
+- **Background**: #FFFFFF (Branco)
+- **Surface**: #F5F5F5 (Cinza claro)
+- **Text**: #212121 (Preto)
+- **Text Secondary**: #757575 (Cinza médio)
+
+### **Paleta de Cores - Tema Escuro**
+
+- **Primary**: #4CAF50 (Verde médio)
+- **Secondary**: #66BB6A (Verde claro)
+- **Accent**: #FFD54F (Âmbar claro)
+- **Background**: #121212 (Preto)
+- **Surface**: #1E1E1E (Cinza escuro)
+- **Text**: #FFFFFF (Branco)
+- **Text Secondary**: #B0B0B0 (Cinza claro)
+
+### **Detecção de Tema**
+
+- Detectar preferência do sistema automaticamente
+- Permitir alternância manual
+- Salvar preferência no localStorage
+- Aplicar tema instantaneamente
+
+## 🔧 **Funcionalidades Principais**
+
+### **Calculadora de IMC**
+
+- Cálculo instantâneo no frontend
+- Validação em tempo real
+- Classificação automática (Abaixo do peso, Normal, Sobrepeso, etc.)
+- Feedback visual imediato
+
+### **Captação de Leads**
+
+- Formulário de captura após cálculo do IMC
+- Validação de dados
+- Envio para API
+- Feedback de sucesso/erro
+
+### **Sistema de Agendamento**
+
+- Visualização de horários disponíveis
+- Seleção de data e hora
+- Validação de disponibilidade
+- Confirmação de agendamento
+
+## 🌐 **Integração com API**
+
+### **Endpoints Utilizados**
+
+- `POST /api/leads/capture-lead` - Capturar lead
+- `GET /api/appointments/available-slots` - Horários disponíveis
+- `POST /api/appointments/reserve` - Reservar horário
+- `GET /api/appointments/check-availability` - Verificar disponibilidade
+
+### **Cliente HTTP**
+
+- Usar fetch API ou axios
+- Interceptadores para tratamento de erros
+- Loading states para melhor UX
+- Retry automático em caso de falha
+
+## 📱 **Responsividade**
+
+### **Breakpoints**
+
+- **Mobile**: < 768px
+- **Tablet**: 768px - 1024px
+- **Desktop**: > 1024px
+
+### **Design Mobile-First**
+
+- Começar com design mobile
+- Expandir para telas maiores
+- Touch-friendly em dispositivos móveis
+- Performance otimizada
+
+## 🎯 **UX/UI Guidelines**
+
+### **Princípios de Design**
+
+- Interface limpa e intuitiva
+- Feedback visual claro
+- Animações suaves e funcionais
+- Acessibilidade (WCAG 2.1)
+
+### **Componentes**
+
+- Botões com estados (normal, hover, active, disabled)
+- Inputs com validação visual
+- Modais para confirmações
+- Loading spinners
+- Toast notifications
+
+## 🔄 **BMI Calculator Strategy**
+
+### **Frontend Implementation**
+
+- Cálculo instantâneo para melhor UX
+- Validação em tempo real
+- Feedback imediato ao usuário
+- Funciona offline
+
+### **Data Flow**
+
+1. Usuário insere peso/altura
+2. Frontend calcula IMC instantaneamente
+3. Frontend exibe resultado imediatamente
+4. Frontend envia dados para backend
+5. Backend valida consistência do cálculo
+6. Backend armazena lead no banco
+
+## 📝 **Naming Conventions**
+
+### **Arquivos e Pastas**
+
+- **Components**: PascalCase (e.g., `BmiCalculator.jsx`, `AppointmentForm.jsx`)
+- **Pages**: PascalCase (e.g., `HomePage.jsx`, `AppointmentPage.jsx`)
+- **Hooks**: camelCase com prefixo "use" (e.g., `useBmiCalculator.js`, `useTheme.js`)
+- **Utils**: camelCase (e.g., `bmiCalculator.js`, `apiService.js`)
+- **Styles**: kebab-case (e.g., `bmi-calculator.css`, `appointment-form.css`)
+
+### **Variáveis e Funções**
+
+- **Variables**: camelCase (e.g., `userName`, `isLoading`, `bmiResult`)
+- **Functions**: camelCase (e.g., `calculateBmi`, `validateInput`, `handleSubmit`)
+- **Constants**: UPPER_SNAKE_CASE (e.g., `API_BASE_URL`, `MAX_WEIGHT`)
+- **CSS Classes**: kebab-case (e.g., `bmi-calculator`, `appointment-form`)
+
+### **React Components**
+
+- **Component Names**: PascalCase (e.g., `BmiCalculator`, `AppointmentForm`)
+- **Props**: camelCase (e.g., `onSubmit`, `isVisible`, `userData`)
+- **State Variables**: camelCase (e.g., `isLoading`, `formData`, `errorMessage`)
+
+## 🚀 **Performance**
+
+### **Otimizações**
+
+- Lazy loading de componentes
+- Code splitting por rota
+- Memoização com React.memo
+- Otimização de re-renders
+- Compressão de imagens
+
+### **Bundle Size**
+
+- Tree shaking para remover código não utilizado
+- Minificação de CSS e JS
+- Otimização de assets
+- Análise de bundle size
+
+## 🔧 **Development Guidelines**
+
+### **Code Quality**
+
+- ESLint para linting
+- Prettier para formatação
+- Husky para pre-commit hooks
+- Testes unitários com Jest
+- Testes de integração com React Testing Library
+
+### **State Management**
+
+- Use React hooks para estado local
+- Context API para estado global
+- Evite prop drilling
+- Mantenha estado próximo ao componente que o usa
+
+### **Error Handling**
+
+- Error boundaries para capturar erros
+- Tratamento de erros de API
+- Fallbacks para componentes que falham
+- Logging de erros para debugging

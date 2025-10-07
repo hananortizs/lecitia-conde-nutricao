@@ -72,6 +72,57 @@ const ChevronIcon = styled.div`
   pointer-events: none;
 `;
 
+const YesNoContainer = styled.div`
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+`;
+
+const YesNoOption = styled.button<{ $isSelected: boolean }>`
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 2px solid
+    ${(props) =>
+      props.$isSelected
+        ? props.theme.colors.primary
+        : props.theme.colors.border};
+  border-radius: ${(props) => props.theme.borderRadius.md};
+  background: ${(props) =>
+    props.$isSelected
+      ? `${props.theme.colors.primary}15`
+      : props.theme.colors.background};
+  color: ${(props) =>
+    props.$isSelected ? props.theme.colors.primary : props.theme.colors.text};
+  font-size: 1rem;
+  font-weight: ${(props) => (props.$isSelected ? 600 : 500)};
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  &:hover {
+    border-color: ${(props) => props.theme.colors.primary};
+    background: ${(props) =>
+      props.$isSelected
+        ? `${props.theme.colors.primary}20`
+        : `${props.theme.colors.primary}10`};
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+`;
+
+const ConditionalField = styled.div<{ $isVisible: boolean }>`
+  opacity: ${(props) => (props.$isVisible ? 1 : 0)};
+  max-height: ${(props) => (props.$isVisible ? "200px" : "0")};
+  overflow: hidden;
+  transition: all 0.3s ease;
+  margin-top: ${(props) => (props.$isVisible ? "1rem" : "0")};
+`;
+
 const SectionTitle = styled.h3`
   color: ${(props) => props.theme.colors.text};
   font-size: 1.25rem;
@@ -164,11 +215,38 @@ const ExperienceStep: React.FC<ExperienceStepProps> = ({
   );
   const [supplements, setSupplements] = useState(data.supplements || "");
 
+  // Estados para as opções Sim/Não
+  const [hasFoodRestrictions, setHasFoodRestrictions] = useState<
+    boolean | null
+  >(data.foodRestrictions ? true : null);
+  const [hasSupplements, setHasSupplements] = useState<boolean | null>(
+    data.supplements ? true : null
+  );
+
   const handleFieldChange = (
     field: keyof PreConsultationData,
     value: string
   ) => {
     onChange({ [field]: value });
+  };
+
+  const handleYesNoChange = (
+    field: "hasFoodRestrictions" | "hasSupplements",
+    value: boolean
+  ) => {
+    if (field === "hasFoodRestrictions") {
+      setHasFoodRestrictions(value);
+      if (!value) {
+        setFoodRestrictions("");
+        onChange({ foodRestrictions: "" });
+      }
+    } else {
+      setHasSupplements(value);
+      if (!value) {
+        setSupplements("");
+        onChange({ supplements: "" });
+      }
+    }
   };
 
   return (
@@ -288,37 +366,67 @@ const ExperienceStep: React.FC<ExperienceStepProps> = ({
 
         <FullWidthField>
           <InputGroup>
-            <Label htmlFor="foodRestrictions">
-              Restrições alimentares ou alergias
-            </Label>
-            <StyledTextarea
-              id="foodRestrictions"
-              placeholder="Descreva qualquer restrição alimentar, alergia ou intolerância que você tenha..."
-              value={foodRestrictions}
-              onChange={(e) => {
-                setFoodRestrictions(e.target.value);
-                handleFieldChange("foodRestrictions", e.target.value);
-              }}
-              rows={3}
-            />
+            <Label>Possui restrições alimentares ou alergias? *</Label>
+            <YesNoContainer>
+              <YesNoOption
+                $isSelected={hasFoodRestrictions === true}
+                onClick={() => handleYesNoChange("hasFoodRestrictions", true)}
+              >
+                ✓ Sim
+              </YesNoOption>
+              <YesNoOption
+                $isSelected={hasFoodRestrictions === false}
+                onClick={() => handleYesNoChange("hasFoodRestrictions", false)}
+              >
+                ✗ Não
+              </YesNoOption>
+            </YesNoContainer>
+
+            <ConditionalField $isVisible={hasFoodRestrictions === true}>
+              <StyledTextarea
+                id="foodRestrictions"
+                placeholder="Descreva qualquer restrição alimentar, alergia ou intolerância que você tenha..."
+                value={foodRestrictions}
+                onChange={(e) => {
+                  setFoodRestrictions(e.target.value);
+                  handleFieldChange("foodRestrictions", e.target.value);
+                }}
+                rows={3}
+              />
+            </ConditionalField>
           </InputGroup>
         </FullWidthField>
 
         <FullWidthField>
           <InputGroup>
-            <Label htmlFor="supplements">
-              Suplementos que você usa atualmente
-            </Label>
-            <StyledTextarea
-              id="supplements"
-              placeholder="Liste os suplementos que você toma, incluindo vitaminas, proteínas, etc..."
-              value={supplements}
-              onChange={(e) => {
-                setSupplements(e.target.value);
-                handleFieldChange("supplements", e.target.value);
-              }}
-              rows={3}
-            />
+            <Label>Utiliza suplementos atualmente? *</Label>
+            <YesNoContainer>
+              <YesNoOption
+                $isSelected={hasSupplements === true}
+                onClick={() => handleYesNoChange("hasSupplements", true)}
+              >
+                ✓ Sim
+              </YesNoOption>
+              <YesNoOption
+                $isSelected={hasSupplements === false}
+                onClick={() => handleYesNoChange("hasSupplements", false)}
+              >
+                ✗ Não
+              </YesNoOption>
+            </YesNoContainer>
+
+            <ConditionalField $isVisible={hasSupplements === true}>
+              <StyledTextarea
+                id="supplements"
+                placeholder="Liste os suplementos que você toma, incluindo vitaminas, proteínas, etc..."
+                value={supplements}
+                onChange={(e) => {
+                  setSupplements(e.target.value);
+                  handleFieldChange("supplements", e.target.value);
+                }}
+                rows={3}
+              />
+            </ConditionalField>
           </InputGroup>
         </FullWidthField>
       </FormGrid>

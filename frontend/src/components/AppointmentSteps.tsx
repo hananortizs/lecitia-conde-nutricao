@@ -251,20 +251,21 @@ const AppointmentSteps: React.FC<AppointmentStepsProps> = ({
   const handleNext = () => {
     if (!currentStepData) return;
 
-    const validation = currentStepData.validation(formData);
+    // Validação temporariamente desabilitada para navegação livre
+    // const validation = currentStepData.validation(formData);
 
-    if (validation.isValid) {
-      setValidationErrors([]);
-      setCompletedSteps((prev) => [...prev, currentStep]);
+    // if (validation.isValid) {
+    setValidationErrors([]);
+    setCompletedSteps((prev) => [...prev, currentStep]);
 
-      if (currentStep < steps.length) {
-        setCurrentStep((prev) => prev + 1);
-      } else {
-        onComplete(formData);
-      }
+    if (currentStep < steps.length) {
+      setCurrentStep((prev) => prev + 1);
     } else {
-      setValidationErrors(validation.errors);
+      onComplete(formData);
     }
+    // } else {
+    //   setValidationErrors(validation.errors);
+    // }
   };
 
   const handlePrevious = () => {
@@ -275,10 +276,9 @@ const AppointmentSteps: React.FC<AppointmentStepsProps> = ({
   };
 
   const handleStepClick = (stepId: number) => {
-    if (stepId <= currentStep || completedSteps.includes(stepId)) {
-      setCurrentStep(stepId);
-      setValidationErrors([]);
-    }
+    // Navegação livre entre todas as etapas (validação desabilitada)
+    setCurrentStep(stepId);
+    setValidationErrors([]);
   };
 
   const handleFormDataChange = (data: Partial<PreConsultationData>) => {

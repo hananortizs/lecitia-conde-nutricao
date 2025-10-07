@@ -1059,9 +1059,12 @@ const PreConsultationForm: React.FC<PreConsultationFormProps> = ({
     if (selectedYear && selectedMonth !== null) {
       // Atualizar o dia selecionado
       setSelectedDay(day);
-      // Criar a data corretamente - selectedMonth é o índice (0-11)
-      const date = new Date(selectedYear, selectedMonth, day);
-      const formattedDate = format(date, "yyyy-MM-dd");
+      // Criar a data de forma mais explícita para evitar problemas de fuso horário
+      const year = selectedYear;
+      const month = selectedMonth + 1; // Converter para mês 1-12
+      const dayStr = day.toString().padStart(2, "0");
+      const monthStr = month.toString().padStart(2, "0");
+      const formattedDate = `${year}-${monthStr}-${dayStr}`;
       setValue("birthDate", formattedDate);
       closeCalendar(); // Fechar o calendário após seleção
     }
@@ -1092,8 +1095,12 @@ const PreConsultationForm: React.FC<PreConsultationFormProps> = ({
 
   const setDefaultDate = () => {
     // Definir data padrão: ano atual, janeiro, dia 1
-    const defaultDate = new Date(getCurrentYear(), 0, 1);
-    const formattedDate = format(defaultDate, "yyyy-MM-dd");
+    const year = getCurrentYear();
+    const month = 1; // Janeiro
+    const day = 1;
+    const formattedDate = `${year}-${month.toString().padStart(2, "0")}-${day
+      .toString()
+      .padStart(2, "0")}`;
     setValue("birthDate", formattedDate);
   };
 
@@ -1310,7 +1317,7 @@ const PreConsultationForm: React.FC<PreConsultationFormProps> = ({
                     placeholder="Selecione sua data de nascimento"
                     value={
                       watch("birthDate")
-                        ? format(new Date(watch("birthDate")), "dd/MM/yyyy")
+                        ? watch("birthDate").split("-").reverse().join("/")
                         : ""
                     }
                     readOnly

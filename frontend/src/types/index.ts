@@ -191,3 +191,32 @@ export interface AppointmentFormData {
   dateTime: string;
   observations?: string;
 }
+
+// Pre-Consultation Form Types
+export interface PreConsultationData {
+  // Informações básicas
+  name: string;
+  email: string;
+  whatsApp: string;
+  birthDate: string;
+  gender: string;
+  genderOther?: string;
+  mainGoals: string[];
+
+  // Objetivos e motivação
+  mainGoal: string;
+  motivation: string;
+  previousExperience: string;
+
+  // Estilo de vida atual
+  currentDiet: string;
+  mealFrequency: string;
+  cookingTime: string;
+  foodRestrictions: string;
+  supplements: string;
+
+  // Agendamento
+  consultationType: string;
+  preferredTime: string;
+  additionalNotes: string;
+}

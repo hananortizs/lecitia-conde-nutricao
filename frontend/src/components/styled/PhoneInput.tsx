@@ -76,7 +76,8 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   placeholder = "11 99999-9999",
   disabled = false,
 }) => {
-  const [formattedValue, setFormattedValue] = useState(value);
+  const [internalValue, setInternalValue] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
 
   // Função para formatar o número de telefone
   const formatPhoneNumber = (input: string): string => {
@@ -116,18 +117,18 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
     return formatted.replace(/\D/g, "");
   };
 
-  // Atualiza o valor formatado quando o valor externo muda
+  // Inicializa o valor interno apenas uma vez
   useEffect(() => {
-    if (value !== formattedValue) {
+    if (value && !internalValue && !isFocused) {
       const formatted = formatPhoneNumber(value);
-      setFormattedValue(formatted);
+      setInternalValue(formatted);
     }
-  }, [value]);
+  }, [value, internalValue, isFocused]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
     const formatted = formatPhoneNumber(inputValue);
-    setFormattedValue(formatted);
+    setInternalValue(formatted);
 
     // Extrai apenas os números para o valor real
     const numbers = extractNumbers(formatted);
@@ -170,7 +171,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
     e.preventDefault();
     const pastedText = e.clipboardData.getData("text");
     const formatted = formatPhoneNumber(pastedText);
-    setFormattedValue(formatted);
+    setInternalValue(formatted);
 
     const numbers = extractNumbers(formatted);
     const fullNumber = numbers.startsWith("55") ? numbers : `55${numbers}`;
@@ -180,7 +181,12 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
     }
   };
 
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setIsFocused(false);
     if (onBlur) {
       onBlur(e);
     }
@@ -192,8 +198,9 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
       <StyledPhoneInput
         id={id}
         type="text"
-        value={formattedValue}
+        value={internalValue}
         onChange={handleChange}
+        onFocus={handleFocus}
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
         onPaste={handlePaste}

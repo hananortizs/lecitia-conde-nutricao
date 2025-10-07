@@ -3,7 +3,8 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Layout from "./components/Layout/Layout";
 import Home from "./pages/Home";
 import AppointmentPage from "./pages/AppointmentPage";
-import PreConsultationForm from "./components/PreConsultationForm";
+import AppointmentSteps from "./components/AppointmentSteps";
+import type { PreConsultationData } from "./types";
 
 type Page = "home" | "pre-consulta" | "agendamento" | "sobre" | "contato";
 
@@ -20,17 +21,26 @@ function App() {
     setCurrentPage(page || "home");
   };
 
-  const handlePreConsultationSubmit = async (data: unknown) => {
+  const handleAppointmentComplete = async (data: PreConsultationData) => {
     try {
-      // Aqui você pode salvar os dados da pré-consulta
-      console.log("Dados da pré-consulta:", data);
+      // Aqui você pode salvar os dados do agendamento
+      console.log("Dados do agendamento:", data);
 
-      // Navegar para agendamento
-      handleNavigate("/agendamento");
+      // Mostrar mensagem de sucesso
+      alert(
+        "Agendamento realizado com sucesso! Em breve entraremos em contato para confirmar os detalhes."
+      );
+
+      // Navegar para home
+      handleNavigate("/");
     } catch (error) {
-      console.error("Erro ao processar pré-consulta:", error);
-      alert("Erro ao processar seus dados. Tente novamente.");
+      console.error("Erro ao processar agendamento:", error);
+      alert("Erro ao processar seu agendamento. Tente novamente.");
     }
+  };
+
+  const handleAppointmentCancel = () => {
+    setCurrentPage("home");
   };
 
   const renderPage = () => {
@@ -39,9 +49,9 @@ function App() {
         return <Home onNavigate={handleNavigate} />;
       case "pre-consulta":
         return (
-          <PreConsultationForm
-            onSubmit={handlePreConsultationSubmit}
-            onCancel={() => setCurrentPage("home")}
+          <AppointmentSteps
+            onComplete={handleAppointmentComplete}
+            onCancel={handleAppointmentCancel}
           />
         );
       case "agendamento":

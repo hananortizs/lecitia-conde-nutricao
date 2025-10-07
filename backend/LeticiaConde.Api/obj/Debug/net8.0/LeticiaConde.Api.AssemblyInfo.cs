@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LeticiaConde.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4f960e5f4f0d0ddacdb655cdb4e2d1688bc08ab6")]
 [assembly: System.Reflection.AssemblyProductAttribute("LeticiaConde.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LeticiaConde.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

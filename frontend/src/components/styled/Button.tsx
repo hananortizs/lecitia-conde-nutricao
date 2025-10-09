@@ -15,7 +15,7 @@ interface ButtonProps {
   $rounded?: boolean;
   $shadow?: boolean;
   disabled?: boolean;
-  loading?: boolean;
+  $loading?: boolean;
 }
 
 const getVariantStyles = (variant: string, theme: Theme) => {
@@ -292,7 +292,7 @@ export const StyledButton = styled.button<ButtonProps>`
     `}
 
   ${(props) =>
-    props.loading &&
+    props.$loading &&
     css`
       cursor: wait;
       pointer-events: none;
@@ -339,7 +339,7 @@ export const StyledButton = styled.button<ButtonProps>`
   }
 
   ${(props) =>
-    props.loading &&
+    props.$loading &&
     css`
       &::after {
         opacity: 1;

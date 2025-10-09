@@ -2,10 +2,10 @@ import styled, { css } from "styled-components";
 import type { Theme } from "../../types";
 
 interface InputProps {
-  error?: boolean;
+  $error?: boolean;
   disabled?: boolean;
-  size?: "sm" | "md" | "lg";
-  fullWidth?: boolean;
+  $size?: "sm" | "md" | "lg";
+  $fullWidth?: boolean;
 }
 
 const getSizeStyles = (size: string, theme: Theme) => {
@@ -35,17 +35,17 @@ export const StyledInput = styled.input<InputProps>`
   width: 100%;
   border: 2px solid
     ${(props) =>
-      props.error ? props.theme.colors.error : props.theme.colors.border};
+      props.$error ? props.theme.colors.error : props.theme.colors.border};
   border-radius: ${(props) => props.theme.borderRadius.md};
   background-color: ${(props) => props.theme.colors.background};
   color: ${(props) => props.theme.colors.text};
   transition: all 0.2s ease;
   cursor: text;
 
-  ${(props) => getSizeStyles(props.size || "md", props.theme)}
+  ${(props) => getSizeStyles(props.$size || "md", props.theme)}
 
   ${(props) =>
-    props.fullWidth &&
+    props.$fullWidth &&
     css`
       width: 100%;
     `}
@@ -66,7 +66,7 @@ export const StyledInput = styled.input<InputProps>`
 
   &:hover:not(:disabled) {
     border-color: ${(props) =>
-      props.error ? props.theme.colors.error : props.theme.colors.primary};
+      props.$error ? props.theme.colors.error : props.theme.colors.primary};
   }
 
   &::placeholder {
@@ -78,7 +78,7 @@ export const StyledTextarea = styled.textarea<InputProps>`
   width: 100%;
   border: 2px solid
     ${(props) =>
-      props.error ? props.theme.colors.error : props.theme.colors.border};
+      props.$error ? props.theme.colors.error : props.theme.colors.border};
   border-radius: ${(props) => props.theme.borderRadius.md};
   background-color: ${(props) => props.theme.colors.background};
   color: ${(props) => props.theme.colors.text};
@@ -87,10 +87,10 @@ export const StyledTextarea = styled.textarea<InputProps>`
   resize: vertical;
   min-height: 80px;
 
-  ${(props) => getSizeStyles(props.size || "md", props.theme)}
+  ${(props) => getSizeStyles(props.$size || "md", props.theme)}
 
   ${(props) =>
-    props.fullWidth &&
+    props.$fullWidth &&
     css`
       width: 100%;
     `}
@@ -111,7 +111,7 @@ export const StyledTextarea = styled.textarea<InputProps>`
 
   &:hover:not(:disabled) {
     border-color: ${(props) =>
-      props.error ? props.theme.colors.error : props.theme.colors.primary};
+      props.$error ? props.theme.colors.error : props.theme.colors.primary};
   }
 
   &::placeholder {
@@ -123,17 +123,17 @@ export const StyledSelect = styled.select<InputProps>`
   width: 100%;
   border: 2px solid
     ${(props) =>
-      props.error ? props.theme.colors.error : props.theme.colors.border};
+      props.$error ? props.theme.colors.error : props.theme.colors.border};
   border-radius: ${(props) => props.theme.borderRadius.md};
   background-color: ${(props) => props.theme.colors.background};
   color: ${(props) => props.theme.colors.text};
   transition: all 0.2s ease;
   cursor: pointer;
 
-  ${(props) => getSizeStyles(props.size || "md", props.theme)}
+  ${(props) => getSizeStyles(props.$size || "md", props.theme)}
 
   ${(props) =>
-    props.fullWidth &&
+    props.$fullWidth &&
     css`
       width: 100%;
     `}
@@ -154,7 +154,7 @@ export const StyledSelect = styled.select<InputProps>`
 
   &:hover:not(:disabled) {
     border-color: ${(props) =>
-      props.error ? props.theme.colors.error : props.theme.colors.primary};
+      props.$error ? props.theme.colors.error : props.theme.colors.primary};
   }
 `;
 

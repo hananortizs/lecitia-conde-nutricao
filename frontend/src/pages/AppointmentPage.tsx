@@ -24,7 +24,7 @@ const StepIndicator = styled.div`
   margin-bottom: ${(props) => props.theme.spacing.xl};
 `;
 
-const Step = styled.div<{ active: boolean; completed: boolean }>`
+const Step = styled.div<{ $active: boolean; $completed: boolean }>`
   display: flex;
   align-items: center;
   gap: ${(props) => props.theme.spacing.sm};
@@ -32,13 +32,13 @@ const Step = styled.div<{ active: boolean; completed: boolean }>`
     ${(props) => props.theme.spacing.lg};
   border-radius: ${(props) => props.theme.borderRadius.lg};
   background-color: ${(props) =>
-    props.completed
+    props.$completed
       ? props.theme.colors.success
-      : props.active
+      : props.$active
       ? props.theme.colors.primary
       : props.theme.colors.border};
   color: ${(props) =>
-    props.completed || props.active
+    props.$completed || props.$active
       ? "white"
       : props.theme.colors.textSecondary};
   font-weight: 500;
@@ -49,13 +49,13 @@ const Step = styled.div<{ active: boolean; completed: boolean }>`
     height: 1.5rem; /* 24px */
     border-radius: 50%;
     background-color: ${(props) =>
-      props.completed || props.active
+      props.$completed || props.$active
         ? "white"
         : props.theme.colors.textSecondary};
     color: ${(props) =>
-      props.completed
+      props.$completed
         ? props.theme.colors.success
-        : props.active
+        : props.$active
         ? props.theme.colors.primary
         : props.theme.colors.textSecondary};
     display: flex;
@@ -213,22 +213,22 @@ const AppointmentPage: React.FC<AppointmentPageProps> = ({ onNavigate }) => {
   const renderStepIndicator = () => (
     <StepIndicator>
       <Step
-        active={currentStep === "bmi"}
-        completed={currentStep === "appointment" || currentStep === "success"}
+        $active={currentStep === "bmi"}
+        $completed={currentStep === "appointment" || currentStep === "success"}
       >
         <div className="step-number">1</div>
         <span>Calcular IMC</span>
       </Step>
       <StepConnector />
       <Step
-        active={currentStep === "appointment"}
-        completed={currentStep === "success"}
+        $active={currentStep === "appointment"}
+        $completed={currentStep === "success"}
       >
         <div className="step-number">2</div>
         <span>Agendar Consulta</span>
       </Step>
       <StepConnector />
-      <Step active={currentStep === "success"} completed={false}>
+      <Step $active={currentStep === "success"} $completed={false}>
         <div className="step-number">3</div>
         <span>Confirmação</span>
       </Step>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { AuthProvider } from "./contexts/AuthContext";
 import Layout from "./components/Layout/Layout";
 import Home from "./pages/Home";
 import AppointmentPage from "./pages/AppointmentPage";
@@ -67,9 +68,11 @@ function App() {
 
   return (
     <ThemeProvider>
-      <Layout onNavigate={handleNavigate} currentPage={currentPage}>
-        {renderPage()}
-      </Layout>
+      <AuthProvider>
+        <Layout onNavigate={handleNavigate} currentPage={currentPage}>
+          {renderPage()}
+        </Layout>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

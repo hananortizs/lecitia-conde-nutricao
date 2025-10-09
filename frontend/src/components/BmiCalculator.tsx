@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
-import { Calculator, Scale, Ruler, AlertCircle } from "lucide-react";
+import {
+  Calculator,
+  Scale,
+  Ruler,
+  AlertCircle,
+  Lock,
+  LogOut,
+} from "lucide-react";
 import { BmiFormData, BmiClassification } from "../types";
 import {
   StyledInput,
@@ -14,6 +21,8 @@ import PhoneInput from "./styled/PhoneInput";
 import { StyledButton } from "./styled/Button";
 import { StyledCard, CardHeader, CardBody } from "./styled/Card";
 import { bmiColors } from "../theme";
+import GoogleLoginButton from "./GoogleLoginButton";
+import { useAuth } from "../contexts/AuthContext";
 
 const CalculatorContainer = styled.div`
   max-width: 600px;
@@ -101,6 +110,185 @@ const Description = styled.p`
   }
 `;
 
+const BmiWarning = styled.div`
+  background: linear-gradient(
+    135deg,
+    ${(props) => props.theme.colors.warning}10,
+    ${(props) => props.theme.colors.warning}05
+  );
+  border: 1px solid ${(props) => props.theme.colors.warning}30;
+  border-radius: ${(props) => props.theme.borderRadius.md};
+  padding: ${(props) => props.theme.spacing.md};
+  margin-top: ${(props) => props.theme.spacing.lg};
+  text-align: center;
+
+  .warning-title {
+    font-weight: 600;
+    color: ${(props) => props.theme.colors.warning};
+    margin-bottom: ${(props) => props.theme.spacing.sm};
+    font-size: 0.875rem;
+  }
+
+  .warning-text {
+    color: ${(props) => props.theme.colors.textSecondary};
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+`;
+
+const ConsultationInvite = styled.div`
+  background: linear-gradient(135deg, #e8f5e8, #d4edda);
+  border: 2px solid #28a745;
+  border-radius: ${(props) => props.theme.borderRadius.lg};
+  padding: ${(props) => props.theme.spacing.xl};
+  margin-top: ${(props) => props.theme.spacing.lg};
+  text-align: center;
+
+  .invite-title {
+    font-weight: 700;
+    color: #155724;
+    margin-bottom: ${(props) => props.theme.spacing.md};
+    font-size: 1.2rem;
+  }
+
+  .invite-text {
+    color: #155724;
+    line-height: 1.6;
+    margin-bottom: ${(props) => props.theme.spacing.lg};
+    font-size: 1rem;
+  }
+
+  .invite-benefits {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: ${(props) => props.theme.spacing.sm};
+    margin-bottom: ${(props) => props.theme.spacing.lg};
+    text-align: left;
+  }
+
+  .benefit-item {
+    color: #155724;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  button {
+    margin-top: ${(props) => props.theme.spacing.md};
+  }
+`;
+
+const LockedSection = styled.div`
+  background: ${(props) => props.theme.colors.backgroundSecondary};
+  border: 2px dashed ${(props) => props.theme.colors.border};
+  border-radius: ${(props) => props.theme.borderRadius.lg};
+  padding: ${(props) => props.theme.spacing.xl};
+  text-align: center;
+  margin-top: ${(props) => props.theme.spacing.lg};
+
+  .lock-icon {
+    color: ${(props) => props.theme.colors.textSecondary};
+    margin-bottom: ${(props) => props.theme.spacing.md};
+  }
+
+  .lock-text {
+    color: ${(props) => props.theme.colors.textSecondary};
+    font-size: 0.875rem;
+    margin-bottom: ${(props) => props.theme.spacing.sm};
+  }
+
+  .lock-subtext {
+    color: ${(props) => props.theme.colors.textSecondary};
+    font-size: 0.75rem;
+    opacity: 0.8;
+  }
+`;
+
+const LoginSection = styled.div`
+  background: linear-gradient(
+    135deg,
+    ${(props) => props.theme.colors.primary}05,
+    ${(props) => props.theme.colors.secondary}05
+  );
+  border: 1px solid ${(props) => props.theme.colors.primary}20;
+  border-radius: ${(props) => props.theme.borderRadius.lg};
+  padding: ${(props) => props.theme.spacing.lg};
+  margin-top: ${(props) => props.theme.spacing.lg};
+  text-align: center;
+
+  .login-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: ${(props) => props.theme.colors.text};
+    margin-bottom: ${(props) => props.theme.spacing.sm};
+  }
+
+  .login-subtitle {
+    color: ${(props) => props.theme.colors.textSecondary};
+    font-size: 0.875rem;
+    margin-bottom: ${(props) => props.theme.spacing.md};
+  }
+
+  .google-button-container {
+    margin-bottom: ${(props) => props.theme.spacing.md};
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    margin: ${(props) => props.theme.spacing.md} 0;
+
+    &::before,
+    &::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: ${(props) => props.theme.colors.border};
+    }
+
+    span {
+      padding: 0 ${(props) => props.theme.spacing.sm};
+      color: ${(props) => props.theme.colors.textSecondary};
+      font-size: 0.75rem;
+    }
+  }
+`;
+
+const UserInfo = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: ${(props) => props.theme.colors.backgroundSecondary};
+  border-radius: ${(props) => props.theme.borderRadius.md};
+  padding: ${(props) => props.theme.spacing.md};
+  margin-bottom: ${(props) => props.theme.spacing.md};
+
+  .user-details {
+    display: flex;
+    align-items: center;
+    gap: ${(props) => props.theme.spacing.sm};
+  }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .user-text {
+    .user-name {
+      font-weight: 600;
+      color: ${(props) => props.theme.colors.text};
+      font-size: 0.875rem;
+    }
+
+    .user-email {
+      color: ${(props) => props.theme.colors.textSecondary};
+      font-size: 0.75rem;
+    }
+  }
+`;
+
 const IconWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -138,10 +326,13 @@ const BmiCalculator: React.FC<BmiCalculatorProps> = ({
   onCalculate,
   initialData,
 }) => {
+  const { user, isAuthenticated, login, logout } = useAuth();
   const [bmi, setBmi] = useState<number | null>(null);
   const [classification, setClassification] =
     useState<BmiClassification | null>(null);
   const [description, setDescription] = useState<string>("");
+  const [isCalculatorUnlocked, setIsCalculatorUnlocked] = useState(false);
+  const [showResult, setShowResult] = useState(false);
 
   const {
     register,
@@ -149,6 +340,8 @@ const BmiCalculator: React.FC<BmiCalculatorProps> = ({
     watch,
     formState: { errors, isValid },
     reset,
+    trigger,
+    setValue,
   } = useForm<BmiFormData>({
     defaultValues: initialData || {
       name: "",
@@ -162,13 +355,50 @@ const BmiCalculator: React.FC<BmiCalculatorProps> = ({
 
   const watchedValues = watch();
 
-  // Calculate BMI whenever weight or height changes
+  // Verificar se os dados básicos estão preenchidos para liberar a calculadora
   useEffect(() => {
+    if (isAuthenticated && user) {
+      // Se logado com Google, verificar apenas WhatsApp
+      const hasWhatsApp =
+        watchedValues.whatsApp &&
+        watchedValues.whatsApp.replace(/\D/g, "").length >= 10;
+
+      setIsCalculatorUnlocked(hasWhatsApp);
+      // Pré-preencher dados do Google
+      setValue("name", user.name);
+      setValue("email", user.email);
+    } else {
+      // Se não logado, verificar se preencheu manualmente
+      const hasBasicData =
+        watchedValues.name &&
+        watchedValues.email &&
+        watchedValues.whatsApp &&
+        watchedValues.name.length >= 2 &&
+        watchedValues.email.includes("@") &&
+        watchedValues.whatsApp.replace(/\D/g, "").length >= 10;
+
+      setIsCalculatorUnlocked(hasBasicData);
+    }
+  }, [
+    isAuthenticated,
+    user,
+    watchedValues.name,
+    watchedValues.email,
+    watchedValues.whatsApp,
+    setValue,
+  ]);
+
+  // Calculate BMI whenever weight or height changes (only if calculator is unlocked)
+  useEffect(() => {
+    if (!isCalculatorUnlocked) return;
+
     const weight = parseFloat(watchedValues.weight);
     const height = parseFloat(watchedValues.height);
 
     if (weight > 0 && height > 0) {
-      const calculatedBmi = weight / (height * height);
+      // Converter altura de cm para metros
+      const heightInMeters = height / 100;
+      const calculatedBmi = weight / (heightInMeters * heightInMeters);
       setBmi(calculatedBmi);
 
       const { classification: newClassification, description: newDescription } =
@@ -180,7 +410,7 @@ const BmiCalculator: React.FC<BmiCalculatorProps> = ({
       setClassification(null);
       setDescription("");
     }
-  }, [watchedValues.weight, watchedValues.height]);
+  }, [watchedValues.weight, watchedValues.height, isCalculatorUnlocked]);
 
   const getBmiClassification = (
     bmiValue: number
@@ -226,6 +456,7 @@ const BmiCalculator: React.FC<BmiCalculatorProps> = ({
 
   const onSubmit = (data: BmiFormData) => {
     if (bmi && classification) {
+      setShowResult(true);
       onCalculate?.(data, bmi, classification);
     }
   };
@@ -235,11 +466,26 @@ const BmiCalculator: React.FC<BmiCalculatorProps> = ({
     setBmi(null);
     setClassification(null);
     setDescription("");
+    setIsCalculatorUnlocked(false);
+    setShowResult(false);
+  };
+
+  const handleGoogleSuccess = (userData: {
+    name: string;
+    email: string;
+    picture?: string;
+  }) => {
+    login(userData);
+  };
+
+  const handleGoogleError = (error: string) => {
+    console.error("Erro no Google Login:", error);
+    // Aqui você pode adicionar uma notificação de erro se quiser
   };
 
   return (
     <CalculatorContainer>
-      <StyledCard variant="elevated">
+      <StyledCard $variant="elevated">
         <CardHeader>
           <IconWrapper>
             <Calculator size={32} />
@@ -260,6 +506,7 @@ const BmiCalculator: React.FC<BmiCalculatorProps> = ({
                   id="name"
                   type="text"
                   placeholder="Seu nome completo"
+                  disabled={isAuthenticated}
                   {...register("name", {
                     required: "Nome é obrigatório",
                     minLength: {
@@ -267,10 +514,13 @@ const BmiCalculator: React.FC<BmiCalculatorProps> = ({
                       message: "Nome deve ter pelo menos 2 caracteres",
                     },
                   })}
-                  error={!!errors.name}
+                  $error={!!errors.name}
                 />
                 {errors.name && (
                   <ErrorMessage>{errors.name.message}</ErrorMessage>
+                )}
+                {isAuthenticated && (
+                  <HelperText>Preenchido automaticamente via Google</HelperText>
                 )}
               </InputGroup>
 
@@ -280,6 +530,7 @@ const BmiCalculator: React.FC<BmiCalculatorProps> = ({
                   id="email"
                   type="email"
                   placeholder="seu@email.com"
+                  disabled={isAuthenticated}
                   {...register("email", {
                     required: "E-mail é obrigatório",
                     pattern: {
@@ -287,10 +538,13 @@ const BmiCalculator: React.FC<BmiCalculatorProps> = ({
                       message: "E-mail inválido",
                     },
                   })}
-                  error={!!errors.email}
+                  $error={!!errors.email}
                 />
                 {errors.email && (
                   <ErrorMessage>{errors.email.message}</ErrorMessage>
+                )}
+                {isAuthenticated && (
+                  <HelperText>Preenchido automaticamente via Google</HelperText>
                 )}
               </InputGroup>
 
@@ -301,88 +555,154 @@ const BmiCalculator: React.FC<BmiCalculatorProps> = ({
                   placeholder="11 99999-9999"
                   value={watch("whatsApp") || ""}
                   onChange={(value) => {
-                    // Atualiza o valor no formulário
-                    const event = {
-                      target: { name: "whatsApp", value: value },
-                    } as any;
-                    register("whatsApp", {
-                      required: "WhatsApp é obrigatório",
-                      validate: (value) => {
-                        const numbers = value.replace(/\D/g, "");
-                        return (
-                          numbers.length >= 10 || "Número de telefone inválido"
-                        );
-                      },
-                    }).onChange(event);
+                    setValue("whatsApp", value, { shouldValidate: true });
                   }}
-                  onBlur={() =>
-                    register("whatsApp").onBlur({
-                      target: { name: "whatsApp" },
-                    } as any)
-                  }
-                  error={!!errors.whatsApp}
+                  onBlur={() => {
+                    trigger("whatsApp");
+                  }}
+                  $error={!!errors.whatsApp}
                 />
                 {errors.whatsApp && (
                   <ErrorMessage>{errors.whatsApp.message}</ErrorMessage>
                 )}
                 <HelperText>Digite apenas o DDD e número</HelperText>
-              </InputGroup>
-
-              <InputGroup>
-                <Label htmlFor="weight">Peso (kg) *</Label>
-                <StyledInput
-                  id="weight"
-                  type="number"
-                  step="0.1"
-                  min="1"
-                  max="500"
-                  placeholder="70.5"
-                  {...register("weight", {
-                    required: "Peso é obrigatório",
-                    min: { value: 1, message: "Peso deve ser maior que 0" },
-                    max: {
-                      value: 500,
-                      message: "Peso deve ser menor que 500kg",
+                {/* Campo oculto para registro no react-hook-form */}
+                <input
+                  type="hidden"
+                  {...register("whatsApp", {
+                    required: "WhatsApp é obrigatório",
+                    validate: (value) => {
+                      const numbers = value.replace(/\D/g, "");
+                      return (
+                        numbers.length >= 10 || "Número de telefone inválido"
+                      );
                     },
                   })}
-                  error={!!errors.weight}
                 />
-                {errors.weight && (
-                  <ErrorMessage>{errors.weight.message}</ErrorMessage>
-                )}
-                <HelperText>Exemplo: 70.5</HelperText>
-              </InputGroup>
-
-              <InputGroup>
-                <Label htmlFor="height">Altura (m) *</Label>
-                <StyledInput
-                  id="height"
-                  type="number"
-                  step="0.01"
-                  min="0.5"
-                  max="3.0"
-                  placeholder="1.75"
-                  {...register("height", {
-                    required: "Altura é obrigatória",
-                    min: {
-                      value: 0.5,
-                      message: "Altura deve ser maior que 0.5m",
-                    },
-                    max: {
-                      value: 3.0,
-                      message: "Altura deve ser menor que 3.0m",
-                    },
-                  })}
-                  error={!!errors.height}
-                />
-                {errors.height && (
-                  <ErrorMessage>{errors.height.message}</ErrorMessage>
-                )}
-                <HelperText>Exemplo: 1.75</HelperText>
               </InputGroup>
             </FormGrid>
 
-            {bmi && classification && (
+            {!isCalculatorUnlocked ? (
+              <>
+                {!isAuthenticated ? (
+                  <LoginSection>
+                    <div className="login-title">Acesse sua conta</div>
+                    <div className="login-subtitle">
+                      Faça login com Google para liberar a calculadora
+                      instantaneamente
+                    </div>
+                    <div className="google-button-container">
+                      <GoogleLoginButton
+                        onSuccess={handleGoogleSuccess}
+                        onError={handleGoogleError}
+                      />
+                    </div>
+                    <div className="divider">
+                      <span>ou</span>
+                    </div>
+                    <div className="lock-text">
+                      Preencha seus dados manualmente abaixo
+                    </div>
+                  </LoginSection>
+                ) : (
+                  <UserInfo>
+                    <div className="user-details">
+                      {user?.picture && (
+                        <img
+                          src={user.picture}
+                          alt="Avatar"
+                          className="user-avatar"
+                        />
+                      )}
+                      <div className="user-text">
+                        <div className="user-name">{user?.name}</div>
+                        <div className="user-email">{user?.email}</div>
+                      </div>
+                    </div>
+                    <StyledButton
+                      $variant="outline"
+                      $size="sm"
+                      onClick={logout}
+                    >
+                      <LogOut size={16} />
+                      Sair
+                    </StyledButton>
+                  </UserInfo>
+                )}
+                <LockedSection>
+                  <Lock size={48} className="lock-icon" />
+                  <div className="lock-text">
+                    {isAuthenticated
+                      ? "Preencha seu WhatsApp para liberar a calculadora"
+                      : "Preencha seus dados acima para liberar a calculadora"}
+                  </div>
+                  <div className="lock-subtext">
+                    {isAuthenticated
+                      ? "WhatsApp é obrigatório"
+                      : "Nome, e-mail e WhatsApp são obrigatórios"}
+                  </div>
+                </LockedSection>
+              </>
+            ) : (
+              <>
+                <FormGrid>
+                  <InputGroup>
+                    <Label htmlFor="weight">Peso (kg) *</Label>
+                    <StyledInput
+                      id="weight"
+                      type="number"
+                      step="0.1"
+                      min="1"
+                      max="500"
+                      placeholder="70.5"
+                      {...register("weight", {
+                        required: "Peso é obrigatório",
+                        min: { value: 1, message: "Peso deve ser maior que 0" },
+                        max: {
+                          value: 500,
+                          message: "Peso deve ser menor que 500kg",
+                        },
+                      })}
+                      $error={!!errors.weight}
+                    />
+                    {errors.weight && (
+                      <ErrorMessage>{errors.weight.message}</ErrorMessage>
+                    )}
+                    <HelperText>Exemplo: 70.5</HelperText>
+                  </InputGroup>
+
+                  <InputGroup>
+                    <Label htmlFor="height">Altura (cm) *</Label>
+                    <StyledInput
+                      id="height"
+                      type="number"
+                      step="1"
+                      min="50"
+                      max="300"
+                      placeholder="175"
+                      {...register("height", {
+                        required: "Altura é obrigatória",
+                        min: {
+                          value: 50,
+                          message: "Altura deve ser maior que 50cm",
+                        },
+                        max: {
+                          value: 300,
+                          message: "Altura deve ser menor que 300cm",
+                        },
+                      })}
+                      $error={!!errors.height}
+                    />
+                    {errors.height && (
+                      <ErrorMessage>{errors.height.message}</ErrorMessage>
+                    )}
+                    <HelperText>Exemplo: 175</HelperText>
+                  </InputGroup>
+                </FormGrid>
+              </>
+            )}
+
+            {showResult && bmi && classification && (
               <ResultSection>
                 <BmiValue classification={classification}>
                   {bmi.toFixed(1)}
@@ -391,33 +711,79 @@ const BmiCalculator: React.FC<BmiCalculatorProps> = ({
                   {classification}
                 </Classification>
                 <Description>{description}</Description>
+
+                <BmiWarning>
+                  <div className="warning-title">⚠️ Importante</div>
+                  <div className="warning-text">
+                    O IMC é apenas uma referência inicial e não deve ser a única
+                    base para avaliar sua saúde. Fatores como composição
+                    corporal, idade, sexo, atividade física e histórico médico
+                    são fundamentais para uma avaliação completa. Consulte
+                    sempre um profissional de saúde qualificado.
+                  </div>
+                </BmiWarning>
+
+                <ConsultationInvite>
+                  <div className="invite-title">
+                    💡 Quer saber mais sobre sua saúde?
+                  </div>
+                  <div className="invite-text">
+                    Agende uma consulta com a nutricionista Letícia Conde para
+                    uma avaliação completa e personalizada do seu estado
+                    nutricional.
+                  </div>
+                  <div className="invite-benefits">
+                    <div className="benefit-item">
+                      ✅ Avaliação nutricional completa
+                    </div>
+                    <div className="benefit-item">
+                      ✅ Plano alimentar personalizado
+                    </div>
+                    <div className="benefit-item">
+                      ✅ Acompanhamento contínuo
+                    </div>
+                    <div className="benefit-item">
+                      ✅ Consulta online no conforto da sua casa
+                    </div>
+                  </div>
+                  <StyledButton
+                    $variant="gradient"
+                    $size="lg"
+                    $rounded
+                    onClick={() => (window.location.href = "/pre-consulta")}
+                  >
+                    Agendar Consulta Agora
+                  </StyledButton>
+                </ConsultationInvite>
               </ResultSection>
             )}
 
-            <div
-              style={{
-                display: "flex",
-                gap: "1rem",
-                justifyContent: "center",
-                marginTop: "2rem",
-              }}
-            >
-              <StyledButton
-                type="button"
-                $variant="outline"
-                onClick={resetForm}
+            {isCalculatorUnlocked && (
+              <div
+                style={{
+                  display: "flex",
+                  gap: "1rem",
+                  justifyContent: "center",
+                  marginTop: "2rem",
+                }}
               >
-                Limpar
-              </StyledButton>
-              <StyledButton
-                type="submit"
-                $variant="primary"
-                disabled={!isValid || !bmi}
-                loading={false}
-              >
-                Calcular IMC
-              </StyledButton>
-            </div>
+                <StyledButton
+                  type="button"
+                  $variant="outline"
+                  onClick={resetForm}
+                >
+                  Limpar
+                </StyledButton>
+                <StyledButton
+                  type="submit"
+                  $variant="primary"
+                  disabled={!isValid || !bmi}
+                  $loading={false}
+                >
+                  Calcular IMC
+                </StyledButton>
+              </div>
+            )}
           </form>
         </CardBody>
       </StyledCard>

@@ -355,6 +355,7 @@ interface HomeProps {
 
 const Home: React.FC<HomeProps> = React.memo(({ onNavigate }) => {
   const [showBmiCalculator, setShowBmiCalculator] = useState(false);
+  const bmiSectionRef = React.useRef<HTMLElement>(null);
 
   // Garantir que a página sempre comece no topo
   useEffect(() => {
@@ -363,6 +364,17 @@ const Home: React.FC<HomeProps> = React.memo(({ onNavigate }) => {
 
   const handleGetStarted = () => {
     setShowBmiCalculator(true);
+
+    // Fazer scroll suave até a seção da calculadora após um pequeno delay
+    // para garantir que o componente foi renderizado
+    setTimeout(() => {
+      if (bmiSectionRef.current) {
+        bmiSectionRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    }, 100);
   };
 
   const handleScheduleAppointment = () => {
@@ -374,8 +386,11 @@ const Home: React.FC<HomeProps> = React.memo(({ onNavigate }) => {
     bmi: number,
     classification: any
   ) => {
-    // Após calcular o IMC, redirecionar para agendamento
-    onNavigate?.("/agendamento");
+    // Salvar dados do IMC (opcional)
+    console.log("Dados do IMC calculado:", { data, bmi, classification });
+
+    // O resultado já é mostrado na própria calculadora
+    // Não precisa de alert nem redirecionamento automático
   };
 
   return (
@@ -473,7 +488,7 @@ const Home: React.FC<HomeProps> = React.memo(({ onNavigate }) => {
       </FeaturesSection>
 
       {showBmiCalculator && (
-        <BmiSection>
+        <BmiSection ref={bmiSectionRef}>
           <Container>
             <SectionTitle>Calculadora de IMC</SectionTitle>
             <SectionSubtitle>

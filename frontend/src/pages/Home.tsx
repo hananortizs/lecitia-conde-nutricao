@@ -495,7 +495,7 @@ const Home: React.FC<HomeProps> = React.memo(({ onNavigate }) => {
               Descubra seu Índice de Massa Corporal e receba orientações
               personalizadas
             </SectionSubtitle>
-            <BmiCalculator onCalculate={handleBmiCalculate} />
+            <BmiCalculator onCalculate={handleBmiCalculate} onNavigate={onNavigate} />
           </Container>
         </BmiSection>
       )}

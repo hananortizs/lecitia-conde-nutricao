@@ -19,17 +19,16 @@ const SchedulerContainer = styled.div`
   max-width: 1000px;
   width: 100%;
   margin: 0 auto;
-  padding: ${(props) =>
-    props.theme.spacing.xs}; /* Mobile pequeno (320-479px) */
+  padding: ${(props) => props.theme.spacing.sm};
   box-sizing: border-box;
+  overflow-x: hidden; /* Previne overflow horizontal */
 
   @media (min-width: 480px) {
-    padding: ${(props) =>
-      props.theme.spacing.sm}; /* Mobile grande (480-767px) */
+    padding: ${(props) => props.theme.spacing.md};
   }
 
   @media (min-width: 768px) {
-    padding: ${(props) => props.theme.spacing.lg}; /* Desktop (768px+) */
+    padding: ${(props) => props.theme.spacing.lg};
   }
 `;
 
@@ -78,27 +77,50 @@ const CalendarSection = styled.div`
     background-color: ${(props) => props.theme.colors.border};
     border-radius: ${(props) => props.theme.borderRadius.md};
     overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .calendar-day-header {
     background-color: ${(props) => props.theme.colors.primary};
     color: white;
-    padding: ${(props) => props.theme.spacing.sm};
+    padding: ${(props) => props.theme.spacing.xs};
     text-align: center;
     font-weight: 600;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
+    min-height: 1.75rem; /* 28px para mobile */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+
+    @media (min-width: 480px) {
+      padding: ${(props) => props.theme.spacing.sm};
+      font-size: 0.875rem;
+      min-height: 2rem; /* 32px para telas maiores */
+    }
   }
 
   .calendar-day {
     background-color: ${(props) => props.theme.colors.background};
-    padding: ${(props) => props.theme.spacing.sm};
+    padding: ${(props) => props.theme.spacing.xs};
     text-align: center;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-height: 2.5rem; /* 40px */
+    min-height: 2rem; /* 32px para mobile */
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 0.875rem;
+    box-sizing: border-box;
+    overflow: hidden;
+
+    @media (min-width: 480px) {
+      padding: ${(props) => props.theme.spacing.sm};
+      min-height: 2.5rem; /* 40px para telas maiores */
+      font-size: 1rem;
+    }
 
     &:hover {
       background-color: ${(props) => props.theme.colors.primary}20;

@@ -4,22 +4,77 @@ import { AuthProvider } from "./contexts/AuthContext";
 import Layout from "./components/Layout/Layout";
 import Home from "./pages/Home";
 import AppointmentPage from "./pages/AppointmentPage";
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
 import AppointmentSteps from "./components/AppointmentSteps";
 import type { PreConsultationData } from "./types";
 
 type Page = "home" | "pre-consulta" | "agendamento" | "sobre" | "contato";
 
+// Mapear rotas válidas
+const validRoutes: Record<string, Page> = {
+  "/": "home",
+  "/home": "home",
+  "/pre-consulta": "pre-consulta",
+  "/agendamento": "agendamento",
+  "/sobre": "sobre",
+  "/contato": "contato",
+};
+
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>("home");
 
-  // Garantir que a página sempre comece no topo
+  // Sincronizar com URL atual e validar rotas
   useEffect(() => {
+    const path = window.location.pathname;
+    const validPage = validRoutes[path];
+
+    if (validPage) {
+      setCurrentPage(validPage);
+    } else if (path !== "/") {
+      // Redirecionar para home se rota inválida
+      window.history.replaceState({}, "", "/");
+      setCurrentPage("home");
+    }
+
+    // Garantir que a página sempre comece no topo
     window.scrollTo(0, 0);
-  }, [currentPage]);
+  }, []); // Rodar apenas no mount
+
+  // Detectar mudanças na navegação (back/forward)
+  useEffect(() => {
+    const handlePopState = () => {
+      const path = window.location.pathname;
+      const validPage = validRoutes[path];
+
+      if (validPage) {
+        setCurrentPage(validPage);
+      } else {
+        window.history.replaceState({}, "", "/");
+        setCurrentPage("home");
+      }
+
+      window.scrollTo(0, 0);
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
   const handleNavigate = (path: string) => {
-    const page = path.replace("/", "") as Page;
-    setCurrentPage(page || "home");
+    // Validar se a rota existe
+    const validPage = validRoutes[path];
+
+    if (validPage) {
+      window.history.pushState({}, "", path);
+      setCurrentPage(validPage);
+      window.scrollTo(0, 0);
+    } else {
+      // Redirecionar para home se rota inválida
+      window.history.pushState({}, "", "/");
+      setCurrentPage("home");
+      window.scrollTo(0, 0);
+    }
   };
 
   const handleAppointmentComplete = async (data: PreConsultationData) => {
@@ -58,9 +113,9 @@ function App() {
       case "agendamento":
         return <AppointmentPage onNavigate={handleNavigate} />;
       case "sobre":
-        return <div>Página Sobre (em desenvolvimento)</div>;
+        return <AboutPage onNavigate={handleNavigate} />;
       case "contato":
-        return <div>Página de Contato (em desenvolvimento)</div>;
+        return <ContactPage onNavigate={handleNavigate} />;
       default:
         return <Home onNavigate={handleNavigate} />;
     }

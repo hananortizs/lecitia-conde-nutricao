@@ -117,12 +117,20 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
       // Decodificar o JWT token
       const payload = JSON.parse(atob(response.credential.split(".")[1]));
 
+      console.log("Google Response Payload:", payload); // Debug
+
       const userData = {
         name: payload.name || "",
         email: payload.email || "",
         picture: payload.picture || "",
+        googleId: payload.sub || "",
+        firstName: payload.given_name || "",
+        lastName: payload.family_name || "",
+        locale: payload.locale || "",
+        emailVerified: payload.email_verified || false,
       };
 
+      console.log("User Data to Save:", userData); // Debug
       onSuccess(userData);
     } catch (error) {
       console.error("Erro ao processar resposta do Google:", error);

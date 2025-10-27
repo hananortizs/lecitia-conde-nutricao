@@ -11,6 +11,17 @@ interface User {
   email: string;
   picture?: string;
   googleId?: string;
+
+  // Dados adicionais do Google
+  firstName?: string;
+  lastName?: string;
+  locale?: string;
+  emailVerified?: boolean;
+
+  // Dados complementares salvos localmente
+  whatsapp?: string;
+  bmi?: number;
+  bmiClassification?: string;
 }
 
 interface AuthContextType {

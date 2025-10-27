@@ -15,22 +15,41 @@ import { leadService } from "../services/api";
 const PageContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  padding: ${(props) => props.theme.spacing.lg};
+  padding: ${(props) => props.theme.spacing.sm};
+  box-sizing: border-box;
+  overflow-x: hidden; /* Previne overflow horizontal */
+
+  @media (min-width: 480px) {
+    padding: ${(props) => props.theme.spacing.md};
+  }
+
+  @media (min-width: 768px) {
+    padding: ${(props) => props.theme.spacing.lg};
+  }
 `;
 
 const StepIndicator = styled.div`
   display: flex;
   justify-content: center;
-  margin-bottom: ${(props) => props.theme.spacing.xl};
+  margin-bottom: ${(props) => props.theme.spacing.lg};
+  flex-wrap: wrap;
+  gap: ${(props) => props.theme.spacing.sm};
+  overflow-x: auto;
+  padding: ${(props) => props.theme.spacing.sm} 0;
+
+  @media (min-width: 480px) {
+    margin-bottom: ${(props) => props.theme.spacing.xl};
+    flex-wrap: nowrap;
+  }
 `;
 
 const Step = styled.div<{ $active: boolean; $completed: boolean }>`
   display: flex;
   align-items: center;
-  gap: ${(props) => props.theme.spacing.sm};
-  padding: ${(props) => props.theme.spacing.sm}
-    ${(props) => props.theme.spacing.lg};
-  border-radius: ${(props) => props.theme.borderRadius.lg};
+  gap: ${(props) => props.theme.spacing.xs};
+  padding: ${(props) => props.theme.spacing.xs}
+    ${(props) => props.theme.spacing.sm};
+  border-radius: ${(props) => props.theme.borderRadius.md};
   background-color: ${(props) =>
     props.$completed
       ? props.theme.colors.success
@@ -42,6 +61,16 @@ const Step = styled.div<{ $active: boolean; $completed: boolean }>`
       ? "white"
       : props.theme.colors.textSecondary};
   font-weight: 500;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  min-width: fit-content;
+
+  @media (min-width: 480px) {
+    gap: ${(props) => props.theme.spacing.sm};
+    padding: ${(props) => props.theme.spacing.sm}
+      ${(props) => props.theme.spacing.lg};
+    font-size: 1rem;
+  }
   transition: all 0.3s ease;
 
   .step-number {
@@ -241,6 +270,7 @@ const AppointmentPage: React.FC<AppointmentPageProps> = ({ onNavigate }) => {
         return (
           <BmiCalculator
             onCalculate={handleBmiCalculate}
+            onNavigate={onNavigate}
             initialData={
               capturedLead
                 ? {

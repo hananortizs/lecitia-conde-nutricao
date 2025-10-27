@@ -37,14 +37,17 @@ const FooterSection = styled.div`
     font-size: 1.125rem;
   }
 
-  p,
-  a {
+  p {
     color: ${(props) => props.theme.colors.textSecondary};
     line-height: 1.6;
     margin-bottom: ${(props) => props.theme.spacing.sm};
   }
 
   a {
+    display: block;
+    color: ${(props) => props.theme.colors.textSecondary};
+    line-height: 1.6;
+    margin-bottom: ${(props) => props.theme.spacing.sm};
     text-decoration: none;
     transition: color 0.2s ease;
 

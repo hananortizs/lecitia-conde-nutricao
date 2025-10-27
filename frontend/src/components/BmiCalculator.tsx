@@ -206,26 +206,38 @@ const LockedSection = styled.div`
 const LoginSection = styled.div`
   background: linear-gradient(
     135deg,
-    ${(props) => props.theme.colors.primary}05,
-    ${(props) => props.theme.colors.secondary}05
+    ${(props) => props.theme.colors.primary}10,
+    ${(props) => props.theme.colors.secondary}10
   );
-  border: 1px solid ${(props) => props.theme.colors.primary}20;
+  border: 2px dashed ${(props) => props.theme.colors.primary}30;
   border-radius: ${(props) => props.theme.borderRadius.lg};
-  padding: ${(props) => props.theme.spacing.lg};
+  padding: ${(props) => props.theme.spacing.xl};
   margin-top: ${(props) => props.theme.spacing.lg};
+  margin-bottom: ${(props) => props.theme.spacing.xl};
   text-align: center;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: ${(props) => props.theme.colors.primary}50;
+    background: linear-gradient(
+      135deg,
+      ${(props) => props.theme.colors.primary}15,
+      ${(props) => props.theme.colors.secondary}15
+    );
+  }
 
   .login-title {
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 1.125rem;
+    font-weight: 700;
     color: ${(props) => props.theme.colors.text};
-    margin-bottom: ${(props) => props.theme.spacing.sm};
+    margin-bottom: ${(props) => props.theme.spacing.xs};
   }
 
   .login-subtitle {
     color: ${(props) => props.theme.colors.textSecondary};
     font-size: 0.875rem;
-    margin-bottom: ${(props) => props.theme.spacing.md};
+    margin-bottom: ${(props) => props.theme.spacing.lg};
+    line-height: 1.5;
   }
 
   .google-button-container {
@@ -235,22 +247,55 @@ const LoginSection = styled.div`
   .divider {
     display: flex;
     align-items: center;
-    margin: ${(props) => props.theme.spacing.md} 0;
+    margin: ${(props) => props.theme.spacing.lg} 0;
+    position: relative;
 
     &::before,
     &::after {
       content: "";
       flex: 1;
       height: 1px;
-      background: ${(props) => props.theme.colors.border};
+      background: linear-gradient(
+        to right,
+        transparent,
+        ${(props) => props.theme.colors.border},
+        transparent
+      );
     }
 
     span {
-      padding: 0 ${(props) => props.theme.spacing.sm};
+      padding: 0 ${(props) => props.theme.spacing.md};
       color: ${(props) => props.theme.colors.textSecondary};
       font-size: 0.75rem;
+      background: ${(props) => props.theme.colors.background};
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
   }
+
+  .or-manual-text {
+    font-size: 0.8125rem;
+    color: ${(props) => props.theme.colors.textSecondary};
+    font-weight: 500;
+  }
+`;
+
+const SuccessMessage = styled.div`
+  background: ${(props) => props.theme.colors.primary}10;
+  border: 1px solid ${(props) => props.theme.colors.primary}30;
+  border-radius: ${(props) => props.theme.borderRadius.md};
+  padding: 1rem;
+  margin-top: 1rem;
+  margin-bottom: ${(props) => props.theme.spacing.xl};
+  text-align: center;
+  font-size: 0.875rem;
+  color: ${(props) => props.theme.colors.textSecondary};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 500;
 `;
 
 const UserInfo = styled.div`
@@ -261,11 +306,14 @@ const UserInfo = styled.div`
   border-radius: ${(props) => props.theme.borderRadius.md};
   padding: ${(props) => props.theme.spacing.md};
   margin-bottom: ${(props) => props.theme.spacing.md};
+  gap: ${(props) => props.theme.spacing.sm};
 
   .user-details {
     display: flex;
     align-items: center;
     gap: ${(props) => props.theme.spacing.sm};
+    flex: 1;
+    min-width: 0; /* Permite que o texto seja truncado */
   }
 
   .user-avatar {
@@ -273,18 +321,59 @@ const UserInfo = styled.div`
     height: 32px;
     border-radius: 50%;
     object-fit: cover;
+    flex-shrink: 0;
   }
 
   .user-text {
+    flex: 1;
+    min-width: 0; /* Permite que o texto seja truncado */
+
     .user-name {
       font-weight: 600;
       color: ${(props) => props.theme.colors.text};
       font-size: 0.875rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 2px;
     }
 
     .user-email {
       color: ${(props) => props.theme.colors.textSecondary};
       font-size: 0.75rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  /* Botão de sair responsivo */
+  button {
+    flex-shrink: 0;
+    min-width: fit-content;
+  }
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: ${(props) => props.theme.spacing.sm};
+
+    .user-details {
+      justify-content: center;
+      text-align: center;
+    }
+
+    .user-text {
+      .user-name,
+      .user-email {
+        white-space: normal;
+        text-align: center;
+      }
+    }
+
+    button {
+      align-self: center;
+      width: fit-content;
     }
   }
 `;
@@ -320,11 +409,13 @@ interface BmiCalculatorProps {
     classification: BmiClassification
   ) => void;
   initialData?: Partial<BmiFormData>;
+  onNavigate?: (path: string) => void;
 }
 
 const BmiCalculator: React.FC<BmiCalculatorProps> = ({
   onCalculate,
   initialData,
+  onNavigate,
 }) => {
   const { user, isAuthenticated, login, logout } = useAuth();
   const [bmi, setBmi] = useState<number | null>(null);
@@ -355,6 +446,20 @@ const BmiCalculator: React.FC<BmiCalculatorProps> = ({
 
   const watchedValues = watch();
 
+  // Carregar dados do usuário do localStorage quando montar
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      // Pré-preencher dados do Google
+      setValue("name", user.name);
+      setValue("email", user.email);
+
+      // Pré-preencher WhatsApp se estiver salvo
+      if (user.whatsapp) {
+        setValue("whatsApp", user.whatsapp);
+      }
+    }
+  }, [isAuthenticated, user, setValue]);
+
   // Verificar se os dados básicos estão preenchidos para liberar a calculadora
   useEffect(() => {
     if (isAuthenticated && user) {
@@ -364,9 +469,6 @@ const BmiCalculator: React.FC<BmiCalculatorProps> = ({
         watchedValues.whatsApp.replace(/\D/g, "").length >= 10;
 
       setIsCalculatorUnlocked(hasWhatsApp);
-      // Pré-preencher dados do Google
-      setValue("name", user.name);
-      setValue("email", user.email);
     } else {
       // Se não logado, verificar se preencheu manualmente
       const hasBasicData =
@@ -483,6 +585,19 @@ const BmiCalculator: React.FC<BmiCalculatorProps> = ({
     // Aqui você pode adicionar uma notificação de erro se quiser
   };
 
+  const handleLogout = () => {
+    // Limpar o formulário antes de fazer logout
+    reset();
+    setBmi(null);
+    setClassification(null);
+    setDescription("");
+    setIsCalculatorUnlocked(false);
+    setShowResult(false);
+
+    // Fazer logout do AuthContext
+    logout();
+  };
+
   return (
     <CalculatorContainer>
       <StyledCard $variant="elevated">
@@ -498,6 +613,62 @@ const BmiCalculator: React.FC<BmiCalculatorProps> = ({
         </CardHeader>
 
         <CardBody>
+          {!isAuthenticated && !isCalculatorUnlocked && (
+            <LoginSection>
+              <div className="login-title">🚀 Preenchimento Rápido</div>
+              <div className="login-subtitle">
+                Faça login com Google e economize tempo! <br />
+                Seus dados serão preenchidos automaticamente.
+              </div>
+              <div className="google-button-container">
+                <GoogleLoginButton
+                  onSuccess={handleGoogleSuccess}
+                  onError={handleGoogleError}
+                />
+              </div>
+              <div className="divider">
+                <span>ou</span>
+              </div>
+              <div className="or-manual-text">
+                Preencha seus dados manualmente abaixo 👇
+              </div>
+            </LoginSection>
+          )}
+
+          {isAuthenticated && (
+            <>
+              <UserInfo>
+                <div className="user-details">
+                  {user?.picture && (
+                    <img
+                      src={user.picture}
+                      alt="Avatar"
+                      className="user-avatar"
+                    />
+                  )}
+                  <div className="user-text">
+                    <div className="user-name">{user?.name}</div>
+                    <div className="user-email">{user?.email}</div>
+                  </div>
+                </div>
+                <StyledButton
+                  $variant="outline"
+                  $size="sm"
+                  onClick={handleLogout}
+                >
+                  <LogOut size={16} />
+                  Sair
+                </StyledButton>
+              </UserInfo>
+              {!isCalculatorUnlocked && (
+                <SuccessMessage>
+                  ✅ Nome e e-mail preenchidos! Agora é só preencher o WhatsApp
+                  👇
+                </SuccessMessage>
+              )}
+            </>
+          )}
+
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormGrid>
               <InputGroup>
@@ -556,6 +727,12 @@ const BmiCalculator: React.FC<BmiCalculatorProps> = ({
                   value={watch("whatsApp") || ""}
                   onChange={(value) => {
                     setValue("whatsApp", value, { shouldValidate: true });
+
+                    // Salvar WhatsApp no AuthContext quando alterado
+                    if (isAuthenticated && user && value) {
+                      const updatedUser = { ...user, whatsapp: value };
+                      login(updatedUser);
+                    }
                   }}
                   onBlur={() => {
                     trigger("whatsApp");
@@ -582,68 +759,23 @@ const BmiCalculator: React.FC<BmiCalculatorProps> = ({
               </InputGroup>
             </FormGrid>
 
-            {!isCalculatorUnlocked ? (
-              <>
-                {!isAuthenticated ? (
-                  <LoginSection>
-                    <div className="login-title">Acesse sua conta</div>
-                    <div className="login-subtitle">
-                      Faça login com Google para liberar a calculadora
-                      instantaneamente
-                    </div>
-                    <div className="google-button-container">
-                      <GoogleLoginButton
-                        onSuccess={handleGoogleSuccess}
-                        onError={handleGoogleError}
-                      />
-                    </div>
-                    <div className="divider">
-                      <span>ou</span>
-                    </div>
-                    <div className="lock-text">
-                      Preencha seus dados manualmente abaixo
-                    </div>
-                  </LoginSection>
-                ) : (
-                  <UserInfo>
-                    <div className="user-details">
-                      {user?.picture && (
-                        <img
-                          src={user.picture}
-                          alt="Avatar"
-                          className="user-avatar"
-                        />
-                      )}
-                      <div className="user-text">
-                        <div className="user-name">{user?.name}</div>
-                        <div className="user-email">{user?.email}</div>
-                      </div>
-                    </div>
-                    <StyledButton
-                      $variant="outline"
-                      $size="sm"
-                      onClick={logout}
-                    >
-                      <LogOut size={16} />
-                      Sair
-                    </StyledButton>
-                  </UserInfo>
-                )}
-                <LockedSection>
-                  <Lock size={48} className="lock-icon" />
-                  <div className="lock-text">
-                    {isAuthenticated
-                      ? "Preencha seu WhatsApp para liberar a calculadora"
-                      : "Preencha seus dados acima para liberar a calculadora"}
-                  </div>
-                  <div className="lock-subtext">
-                    {isAuthenticated
-                      ? "WhatsApp é obrigatório"
-                      : "Nome, e-mail e WhatsApp são obrigatórios"}
-                  </div>
-                </LockedSection>
-              </>
-            ) : (
+            {!isCalculatorUnlocked && (
+              <LockedSection>
+                <Lock size={48} className="lock-icon" />
+                <div className="lock-text">
+                  {isAuthenticated
+                    ? "🔒 Preencha seu WhatsApp para liberar a calculadora"
+                    : "🔒 Preencha seus dados acima para liberar a calculadora"}
+                </div>
+                <div className="lock-subtext">
+                  {isAuthenticated
+                    ? "WhatsApp é obrigatório para calcular o IMC"
+                    : "Nome, e-mail e WhatsApp são obrigatórios"}
+                </div>
+              </LockedSection>
+            )}
+
+            {isCalculatorUnlocked && (
               <>
                 <FormGrid>
                   <InputGroup>
@@ -750,7 +882,7 @@ const BmiCalculator: React.FC<BmiCalculatorProps> = ({
                     $variant="gradient"
                     $size="lg"
                     $rounded
-                    onClick={() => (window.location.href = "/pre-consulta")}
+                    onClick={() => onNavigate?.("/pre-consulta")}
                   >
                     Agendar Consulta Agora
                   </StyledButton>

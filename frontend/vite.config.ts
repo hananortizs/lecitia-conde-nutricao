@@ -7,6 +7,22 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true,
+    // Fallback para index.html para SPAs
+    // Isso garante que todas as rotas sejam tratadas pelo React
+    strictPort: false,
+  },
+  preview: {
+    port: 5173,
+    // Em produção, todas as rotas devem apontar para index.html
+    strictPort: false,
+  },
+  build: {
+    // Configurações de build para SPA
+    rollupOptions: {
+      output: {
+        manualChunks: undefined, // Mantém tudo em um único chunk para SPA simples
+      },
+    },
   },
   define: {
     "import.meta.env.VITE_API_URL": JSON.stringify(

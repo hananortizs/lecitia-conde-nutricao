@@ -9,26 +9,52 @@ import BasicInfoStep from "./steps/BasicInfoStep";
 import GoalsStep from "./steps/GoalsStep";
 import ExperienceStep from "./steps/ExperienceStep";
 import AppointmentStep from "./steps/AppointmentStep";
+import AppointmentStart from "./AppointmentStart";
+import { useAuth } from "../contexts/AuthContext";
 import type { PreConsultationData } from "../types";
 
 const StepsContainer = styled.div`
   max-width: 800px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: ${(props) => props.theme.spacing.sm};
+  box-sizing: border-box;
+
+  @media (min-width: 480px) {
+    padding: ${(props) => props.theme.spacing.md};
+  }
+
+  @media (min-width: 768px) {
+    padding: 2rem 1rem;
+  }
 `;
 
 const StepsHeader = styled.div`
   display: flex;
   justify-content: center;
-  margin-bottom: 3rem;
+  margin-bottom: ${(props) => props.theme.spacing.lg};
+  overflow-x: auto;
+  padding: ${(props) => props.theme.spacing.sm} 0;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    margin-bottom: 3rem;
+    overflow-x: visible;
+  }
 `;
 
 const StepIndicator = styled.div<{ $isActive: boolean; $isCompleted: boolean }>`
   display: flex;
   align-items: center;
-  padding: 0.75rem 1.5rem;
-  margin: 0 0.5rem;
-  border-radius: 2rem;
+  padding: ${(props) => props.theme.spacing.xs}
+    ${(props) => props.theme.spacing.sm};
+  margin: 0 ${(props) => props.theme.spacing.xs};
+  border-radius: 1.5rem;
   background: ${(props) =>
     props.$isActive
       ? `linear-gradient(135deg, ${props.theme.colors.primary}, ${props.theme.colors.secondary})`
@@ -40,10 +66,27 @@ const StepIndicator = styled.div<{ $isActive: boolean; $isCompleted: boolean }>`
       ? "white"
       : props.theme.colors.textSecondary};
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   transition: all 0.3s ease;
   cursor: pointer;
   position: relative;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: fit-content;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+
+  @media (min-width: 480px) {
+    padding: 0.5rem 1rem;
+    margin: 0 0.25rem;
+    font-size: 0.8rem;
+  }
+
+  @media (min-width: 768px) {
+    padding: 0.75rem 1.5rem;
+    margin: 0 0.5rem;
+    font-size: 0.875rem;
+  }
 
   &:hover {
     transform: translateY(-2px);
@@ -72,8 +115,8 @@ const StepIndicator = styled.div<{ $isActive: boolean; $isCompleted: boolean }>`
 `;
 
 const StepNumber = styled.div<{ $isActive: boolean; $isCompleted: boolean }>`
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.25rem;
+  height: 1.25rem;
   border-radius: 50%;
   background: ${(props) =>
     props.$isActive || props.$isCompleted
@@ -86,57 +129,141 @@ const StepNumber = styled.div<{ $isActive: boolean; $isCompleted: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.75rem;
+  font-size: 0.625rem;
   font-weight: 700;
-  margin-right: 0.5rem;
+  margin-right: ${(props) => props.theme.spacing.xs};
+  flex-shrink: 0;
+
+  @media (min-width: 480px) {
+    width: 1.375rem;
+    height: 1.375rem;
+    font-size: 0.7rem;
+    margin-right: 0.375rem;
+  }
+
+  @media (min-width: 768px) {
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.75rem;
+    margin-right: 0.5rem;
+  }
 `;
 
 const StepContent = styled.div`
   background: ${(props) => props.theme.colors.background};
   border-radius: ${(props) => props.theme.borderRadius.lg};
-  padding: 2rem;
+  padding: ${(props) => props.theme.spacing.md};
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   border: 1px solid ${(props) => props.theme.colors.border};
+  box-sizing: border-box;
+
+  @media (min-width: 480px) {
+    padding: ${(props) => props.theme.spacing.lg};
+  }
+
+  @media (min-width: 768px) {
+    padding: 2rem;
+  }
 `;
 
 const StepTitle = styled.h2`
   color: ${(props) => props.theme.colors.text};
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  margin-bottom: 0.5rem;
+  margin-bottom: ${(props) => props.theme.spacing.sm};
   text-align: center;
+  line-height: 1.3;
+
+  @media (min-width: 480px) {
+    font-size: 1.375rem;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
 `;
 
 const StepDescription = styled.p`
   color: ${(props) => props.theme.colors.textSecondary};
-  font-size: 1rem;
+  font-size: 0.875rem;
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: ${(props) => props.theme.spacing.lg};
+  line-height: 1.5;
+
+  @media (min-width: 480px) {
+    font-size: 0.9375rem;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
 `;
 
 const NavigationContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 2rem;
-  padding-top: 2rem;
+  margin-top: ${(props) => props.theme.spacing.lg};
+  padding-top: ${(props) => props.theme.spacing.lg};
   border-top: 1px solid ${(props) => props.theme.colors.border};
+  gap: ${(props) => props.theme.spacing.sm};
+  flex-wrap: wrap;
+
+  @media (min-width: 480px) {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    gap: ${(props) => props.theme.spacing.md};
+  }
+
+  @media (min-width: 768px) {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    flex-wrap: nowrap;
+  }
 `;
 
 const StepProgress = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: ${(props) => props.theme.spacing.xs};
   color: ${(props) => props.theme.colors.textSecondary};
-  font-size: 0.875rem;
+  font-size: 0.75rem;
+  order: 3;
+  width: 100%;
+  justify-content: center;
+  margin-top: ${(props) => props.theme.spacing.sm};
+
+  @media (min-width: 480px) {
+    gap: 0.375rem;
+    font-size: 0.8rem;
+    order: 0;
+    width: auto;
+    margin-top: 0;
+  }
+
+  @media (min-width: 768px) {
+    gap: 0.5rem;
+    font-size: 0.875rem;
+  }
 `;
 
 const ProgressBar = styled.div`
-  width: 8rem;
-  height: 0.25rem;
+  width: 6rem;
+  height: 0.1875rem;
   background: ${(props) => props.theme.colors.border};
   border-radius: 0.125rem;
   overflow: hidden;
+
+  @media (min-width: 480px) {
+    width: 7rem;
+    height: 0.25rem;
+  }
+
+  @media (min-width: 768px) {
+    width: 8rem;
+  }
 `;
 
 const ProgressFill = styled.div<{ $progress: number }>`
@@ -154,10 +281,32 @@ const ErrorMessage = styled.div`
   background: ${(props) => props.theme.colors.error}10;
   border: 1px solid ${(props) => props.theme.colors.error};
   color: ${(props) => props.theme.colors.error};
-  padding: 1rem;
+  padding: ${(props) => props.theme.spacing.sm};
   border-radius: ${(props) => props.theme.borderRadius.md};
-  margin-bottom: 1.5rem;
+  margin-bottom: ${(props) => props.theme.spacing.md};
   font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.4;
+
+  @media (min-width: 480px) {
+    padding: 0.875rem;
+    font-size: 0.9rem;
+    margin-bottom: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    padding: 1rem;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+`;
+
+const BackButtonContainer = styled.div`
+  margin-bottom: ${(props) => props.theme.spacing.lg};
+
+  @media (min-width: 768px) {
+    margin-bottom: 2rem;
+  }
 `;
 
 interface Step {
@@ -238,12 +387,48 @@ const AppointmentSteps: React.FC<AppointmentStepsProps> = ({
   onComplete,
   onCancel,
 }) => {
+  const { user, isAuthenticated, login } = useAuth();
+  const [showStartScreen, setShowStartScreen] = useState(true);
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [formData, setFormData] = useState<PreConsultationData>(
     {} as PreConsultationData
   );
+
+  // TODO: Implementar verificação se cliente é recorrente
+  // const [isRecurringClient, setIsRecurringClient] = useState(false);
+  // const [clientName, setClientName] = useState<string | undefined>();
+
+  // Preencher automaticamente com dados do Google quando disponível
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      console.log("Preenchendo formulário com dados do Google:", user);
+      setFormData((prev) => ({
+        ...prev,
+        name: user.name || prev.name || "",
+        email: user.email || prev.email || "",
+        whatsApp: user.whatsapp || prev.whatsApp || "",
+      }));
+    }
+  }, [isAuthenticated, user]);
+
+  const handleStartForm = () => {
+    setShowStartScreen(false);
+  };
+
+  const handleWhatsApp = (phone: string) => {
+    // WhatsApp já abre no novo tab
+    // Não precisa de lógica adicional
+  };
+
+  const handleBackToMenu = () => {
+    setShowStartScreen(true);
+    setCurrentStep(1);
+    setCompletedSteps([]);
+    setValidationErrors([]);
+    setFormData({} as PreConsultationData);
+  };
 
   const currentStepData = steps.find((step) => step.id === currentStep);
   const progress = (currentStep / steps.length) * 100;
@@ -282,7 +467,14 @@ const AppointmentSteps: React.FC<AppointmentStepsProps> = ({
   };
 
   const handleFormDataChange = (data: Partial<PreConsultationData>) => {
-    setFormData((prev: PreConsultationData) => ({ ...prev, ...data }));
+    const newData = { ...formData, ...data };
+    setFormData(newData);
+
+    // Salvar WhatsApp no AuthContext se preenchido
+    if (data.whatsApp && isAuthenticated && user) {
+      const updatedUser = { ...user, whatsapp: data.whatsApp };
+      login(updatedUser); // Salva no localStorage
+    }
   };
 
   const isStepCompleted = (stepId: number) => completedSteps.includes(stepId);
@@ -290,9 +482,31 @@ const AppointmentSteps: React.FC<AppointmentStepsProps> = ({
   const canGoNext = currentStep < steps.length;
   const canGoPrevious = currentStep > 1;
 
+  // Mostrar tela inicial de escolha
+  if (showStartScreen) {
+    return (
+      <Container>
+        <AppointmentStart
+          onStartForm={handleStartForm}
+          onWhatsApp={handleWhatsApp}
+          // TODO: Implementar detecção de cliente recorrente
+          // clientName={clientName}
+          // isRecurring={isRecurringClient}
+        />
+      </Container>
+    );
+  }
+
   return (
     <Container>
       <StepsContainer>
+        <BackButtonContainer>
+          <StyledButton $variant="ghost" $size="sm" onClick={handleBackToMenu}>
+            <ChevronLeft size={20} />
+            Voltar ao Menu
+          </StyledButton>
+        </BackButtonContainer>
+
         <StepsHeader>
           {steps.map((step) => (
             <StepIndicator

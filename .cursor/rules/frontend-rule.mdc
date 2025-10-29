@@ -213,10 +213,13 @@ O arquivo `frontend/src/services/api.ts` usa base path `/lcn/`:
 
 **Guia de Progresso:**
 
-- Círculos numerados conectados por linha
+- Círculos numerados conectados por linha horizontal
 - Estados: Ativo, Completo, Inativo
 - Navegação por setas (topo) e botões (inferior)
 - Botões "Anterior/Próximo" condicionais
+- **Alinhamento**: Distribuição uniforme usando `flex: 1 1 0` em cada `StepIndicator`
+- **Line Connector**: Centralizado com `left: 50%` e `transform: translate(-50%, -50%)`
+- **Labels**: Largura 100% com padding interno para consistência responsiva
 
 ### **🔴 Captação de Leads**
 
@@ -262,13 +265,14 @@ O arquivo `frontend/src/services/api.ts` usa base path `/lcn/`:
 
 ### **Melhorias Mobile**
 
-有些- Overflow horizontal evitado (width: 100%, max-width: 100%, box-sizing: border-box)
-
+- Overflow horizontal evitado (width: 100%, max-width: 100%, box-sizing: border-box)
 - Padding e fontes responsivos
 - Botões com tamanhos adequados
 - Texto truncado com ellipsis quando necessário
 - Layout vertical para cards
 - Navegação tátil otimizada
+- Menu mobile com renderização condicional (não renderiza quando fechado para evitar problemas de acessibilidade)
+- Drawer mobile com `pointer-events: none` e `visibility: hidden` quando fechado
 
 ## 🎯 **UX/UI Guidelines**
 
@@ -278,9 +282,14 @@ O arquivo `frontend/src/services/api.ts` usa base path `/lcn/`:
 - Feedback visual claro
 - Animações suaves e funcionais
 - Acessibilidade (WCAG 2.1 AA)
+  - Menu mobile: Renderização condicional para evitar foco em elementos ocultos
+  - Use `tabIndex={-1}` quando necessário para controlar navegação por teclado
+  - Evite `aria-hidden` em elementos que podem receber foco
+  - Use renderização condicional (`{isOpen && <Component />}`) ao invés de esconder visualmente
 - Navegação consistente
 - Estados de carregamento visíveis
 - Mensagens de erro amigáveis
+(or) **Logging e Debug**
 
 ### **Componentes**
 
@@ -295,6 +304,9 @@ O arquivo `frontend/src/services/api.ts` usa base path `/lcn/`:
 ### **Padrões de Navegação**
 
 - **Guia de Progresso**: Círculos conectados com linha
+  - Distribuição uniforme usando `flex: 1 1 0` nos indicadores
+  - `StepConnector` centralizado com `left: 50%` e `transform: translate(-50%, -50%)`
+  - Labels com `width: 100%` e padding interno para consistência
 - **Navegação Entre Steps**: Setas no topo + botões no rodapé
 - **Condicional**: Botões só aparecem quando aplicável
 - **Feedback Visual**: Estados claros (ativo, completo, inativo)
@@ -372,8 +384,10 @@ O arquivo `frontend/src/services/api.ts` usa base path `/lcn/`:
 - Error boundaries para capturar erros (futuro)
 - Tratamento de erros de API no `api.ts`
 - Fallbacks para componentes que falham (futuro)
-- Logging de erros para debugging
 - Mensagens de erro amigáveis ao usuário
+- **⚠️ IMPORTANTE**: Não usar `console.log`, `console.error`, etc. em produção
+  - Remover todos os console.log antes de commit
+  - Usar apenas para debugging local (remover antes de push)
 
 ### **Form Handling**
 

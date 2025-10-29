@@ -18,6 +18,8 @@ const StepsContainer = styled.div`
   margin: 0 auto;
   padding: ${(props) => props.theme.spacing.sm};
   box-sizing: border-box;
+  overflow-x: hidden;
+  width: 100%;
 
   @media (min-width: 480px) {
     padding: ${(props) => props.theme.spacing.md};
@@ -30,123 +32,221 @@ const StepsContainer = styled.div`
 
 const StepsHeader = styled.div`
   display: flex;
-  justify-content: center;
-  margin-bottom: ${(props) => props.theme.spacing.lg};
-  overflow-x: auto;
-  padding: ${(props) => props.theme.spacing.sm} 0;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: ${(props) => props.theme.spacing.xl};
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  position: relative;
 
   @media (min-width: 768px) {
     margin-bottom: 3rem;
-    overflow-x: visible;
+  }
+`;
+
+const ProgressIndicator = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  position: relative;
+`;
+
+const StepConnector = styled.div<{ $isCompleted: boolean }>`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100% - ${(props) => props.theme.spacing.md} * 2);
+  height: 2px;
+  background: ${(props) =>
+    props.$isCompleted
+      ? props.theme.colors.success
+      : props.theme.colors.border};
+  z-index: 1;
+
+  @media (min-width: 480px) {
+    width: calc(100% - 4rem);
+  }
+
+  @media (min-width: 768px) {
+    width: calc(100% - 5rem);
+  }
+`;
+
+const StepWrapper = styled.div`
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+  padding: 0 ${(props) => props.theme.spacing.md};
+  gap: 0;
+
+  @media (min-width: 480px) {
+    padding: 0 2rem;
+  }
+
+  @media (min-width: 768px) {
+    padding: 0 2.5rem;
   }
 `;
 
 const StepIndicator = styled.div<{ $isActive: boolean; $isCompleted: boolean }>`
   display: flex;
+  flex-direction: column;
   align-items: center;
-  padding: ${(props) => props.theme.spacing.xs}
-    ${(props) => props.theme.spacing.sm};
-  margin: 0 ${(props) => props.theme.spacing.xs};
-  border-radius: 1.5rem;
-  background: ${(props) =>
-    props.$isActive
-      ? `linear-gradient(135deg, ${props.theme.colors.primary}, ${props.theme.colors.secondary})`
-      : props.$isCompleted
-      ? props.theme.colors.success
-      : props.theme.colors.border};
-  color: ${(props) =>
-    props.$isActive || props.$isCompleted
-      ? "white"
-      : props.theme.colors.textSecondary};
-  font-weight: 600;
-  font-size: 0.75rem;
-  transition: all 0.3s ease;
   cursor: pointer;
+  transition: all 0.3s ease;
   position: relative;
-  white-space: nowrap;
-  flex-shrink: 0;
-  min-width: fit-content;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-
-  @media (min-width: 480px) {
-    padding: 0.5rem 1rem;
-    margin: 0 0.25rem;
-    font-size: 0.8rem;
-  }
-
-  @media (min-width: 768px) {
-    padding: 0.75rem 1.5rem;
-    margin: 0 0.5rem;
-    font-size: 0.875rem;
-  }
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  }
-
-  &::after {
-    content: "";
-    position: absolute;
-    right: -1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0.5rem;
-    height: 0.5rem;
-    background: ${(props) =>
-      props.$isCompleted
-        ? props.theme.colors.success
-        : props.theme.colors.border};
-    border-radius: 50%;
-    display: ${(props) => (props.$isActive ? "none" : "block")};
-  }
-
-  &:last-child::after {
-    display: none;
-  }
+  z-index: 3;
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 100%;
 `;
 
-const StepNumber = styled.div<{ $isActive: boolean; $isCompleted: boolean }>`
-  width: 1.25rem;
-  height: 1.25rem;
+const StepCircle = styled.div<{ $isActive: boolean; $isCompleted: boolean }>`
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: ${(props) =>
-    props.$isActive || props.$isCompleted
-      ? "rgba(255, 255, 255, 0.3)"
-      : props.theme.colors.background};
-  color: ${(props) =>
-    props.$isActive || props.$isCompleted
-      ? "white"
-      : props.theme.colors.textSecondary};
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.625rem;
   font-weight: 700;
-  margin-right: ${(props) => props.theme.spacing.xs};
-  flex-shrink: 0;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+  border: 3px solid;
+  position: relative;
+
+  @media (min-width: 768px) {
+    width: 48px;
+    height: 48px;
+    font-size: 1rem;
+  }
+
+  ${(props) => {
+    if (props.$isActive) {
+      return `
+        background: ${props.theme.colors.primary};
+        border-color: ${props.theme.colors.primary};
+        color: white;
+        box-shadow: 0 0 0 4px ${props.theme.colors.primary}20;
+      `;
+    } else if (props.$isCompleted) {
+      return `
+        background: ${props.theme.colors.success};
+        border-color: ${props.theme.colors.success};
+        color: white;
+      `;
+    } else {
+      return `
+        background: ${props.theme.colors.background};
+        border-color: ${props.theme.colors.border};
+        color: ${props.theme.colors.textSecondary};
+      `;
+    }
+  }}
+
+  &:hover {
+    transform: scale(1.05);
+  }
+`;
+
+const StepLabel = styled.div<{ $isActive: boolean; $isCompleted: boolean }>`
+  margin-top: ${(props) => props.theme.spacing.sm};
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.2;
+  width: 100%;
+  padding: 0 ${(props) => props.theme.spacing.xs};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: ${(props) =>
+    props.$isActive || props.$isCompleted
+      ? props.theme.colors.text
+      : props.theme.colors.textSecondary};
+  box-sizing: border-box;
 
   @media (min-width: 480px) {
-    width: 1.375rem;
-    height: 1.375rem;
-    font-size: 0.7rem;
-    margin-right: 0.375rem;
+    font-size: 0.75rem;
+    padding: 0 ${(props) => props.theme.spacing.sm};
   }
 
   @media (min-width: 768px) {
-    width: 1.5rem;
-    height: 1.5rem;
-    font-size: 0.75rem;
-    margin-right: 0.5rem;
+    font-size: 0.875rem;
+    padding: 0 ${(props) => props.theme.spacing.xs};
+    white-space: normal;
+    line-height: 1.3;
   }
+`;
+
+const StepNavigation = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: ${(props) => props.theme.spacing.lg};
+  padding-bottom: ${(props) => props.theme.spacing.md};
+  border-bottom: 1px solid ${(props) => props.theme.colors.border};
+  min-height: 40px;
+
+  > div {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+
+    &:first-child {
+      justify-content: flex-start;
+    }
+
+    &:last-child {
+      justify-content: flex-end;
+    }
+  }
+`;
+
+const StepNavButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: ${(props) => props.theme.spacing.xs};
+  padding: ${(props) => props.theme.spacing.sm}
+    ${(props) => props.theme.spacing.md};
+  border: 1px solid ${(props) => props.theme.colors.border};
+  border-radius: ${(props) => props.theme.borderRadius.md};
+  background: ${(props) => props.theme.colors.background};
+  color: ${(props) => props.theme.colors.text};
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: ${(props) => props.theme.colors.primary};
+    background: ${(props) => props.theme.colors.primary}10;
+    color: ${(props) => props.theme.colors.primary};
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+`;
+
+const StepInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+`;
+
+const StepCounter = styled.div`
+  font-size: 0.75rem;
+  color: ${(props) => props.theme.colors.textSecondary};
+  font-weight: 500;
 `;
 
 const StepContent = styled.div`
@@ -403,7 +503,6 @@ const AppointmentSteps: React.FC<AppointmentStepsProps> = ({
   // Preencher automaticamente com dados do Google quando disponível
   useEffect(() => {
     if (isAuthenticated && user) {
-      console.log("Preenchendo formulário com dados do Google:", user);
       setFormData((prev) => ({
         ...prev,
         name: user.name || prev.name || "",
@@ -508,25 +607,67 @@ const AppointmentSteps: React.FC<AppointmentStepsProps> = ({
         </BackButtonContainer>
 
         <StepsHeader>
-          {steps.map((step) => (
-            <StepIndicator
-              key={step.id}
-              $isActive={isStepActive(step.id)}
-              $isCompleted={isStepCompleted(step.id)}
-              onClick={() => handleStepClick(step.id)}
-            >
-              <StepNumber
-                $isActive={isStepActive(step.id)}
-                $isCompleted={isStepCompleted(step.id)}
-              >
-                {isStepCompleted(step.id) ? <Check size={12} /> : step.id}
-              </StepNumber>
-              {step.title}
-            </StepIndicator>
-          ))}
+          <ProgressIndicator>
+            <StepConnector $isCompleted={completedSteps.length > 0} />
+            <StepWrapper>
+              {steps.map((step) => (
+                <StepIndicator
+                  key={step.id}
+                  $isActive={isStepActive(step.id)}
+                  $isCompleted={isStepCompleted(step.id)}
+                  onClick={() => handleStepClick(step.id)}
+                >
+                  <StepCircle
+                    $isActive={isStepActive(step.id)}
+                    $isCompleted={isStepCompleted(step.id)}
+                  >
+                    {isStepCompleted(step.id) ? <Check size={16} /> : step.id}
+                  </StepCircle>
+                  <StepLabel
+                    $isActive={isStepActive(step.id)}
+                    $isCompleted={isStepCompleted(step.id)}
+                  >
+                    {step.title}
+                  </StepLabel>
+                </StepIndicator>
+              ))}
+            </StepWrapper>
+          </ProgressIndicator>
         </StepsHeader>
 
         <StepContent>
+          <StepNavigation>
+            <div>
+              {canGoPrevious && (
+                <StepNavButton
+                  onClick={() => handleStepClick(Math.max(1, currentStep - 1))}
+                >
+                  <ChevronLeft size={16} />
+                  Anterior
+                </StepNavButton>
+              )}
+            </div>
+
+            <StepInfo>
+              <StepCounter>
+                Etapa {currentStep} de {steps.length}
+              </StepCounter>
+            </StepInfo>
+
+            <div>
+              {canGoNext && (
+                <StepNavButton
+                  onClick={() =>
+                    handleStepClick(Math.min(steps.length, currentStep + 1))
+                  }
+                >
+                  Próximo
+                  <ChevronRight size={16} />
+                </StepNavButton>
+              )}
+            </div>
+          </StepNavigation>
+
           <StepTitle>{currentStepData?.title}</StepTitle>
           <StepDescription>{currentStepData?.description}</StepDescription>
 

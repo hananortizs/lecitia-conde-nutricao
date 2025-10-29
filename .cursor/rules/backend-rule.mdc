@@ -6,7 +6,7 @@ alwaysApply: true
 
 ## 🎯 **Visão Geral**
 
-Sistema de agendamento para nutricionista com captação de leads via calculadora de IMC.
+Sistema de agendamento para nutricionista com captação de leads via calculadora de IMC, integração com Google Login, sistema unificado de agendamento (Site + WhatsApp) e suporte a clientes recorrentes.
 
 ## 🏗️ **Arquitetura**
 
@@ -14,147 +14,282 @@ Sistema de agendamento para nutricionista com captação de leads via calculador
 - **Banco de Dados**: PostgreSQL
 - **ORM**: Entity Framework Core
 - **Padrão**: Clean Architecture (API, Core, Application, Infrastructure)
+- **Base Path**: `/lcn` (não `/api` ou `/pms`) - dinâmico por ambiente (dev/hml/prd)
 
 ## 📁 **Estrutura de Projetos**
 
 ```
 backend/
 ├── LeticiaConde.Api/           # Camada de apresentação (Controllers, Program.cs)
+│   ├── Controllers/
+│   │   ├── LeadsController.cs
+│   │   ├── AppointmentController.cs
+│   │   └── PaymentController.cs
 ├── LeticiaConde.Core/          # Entidades de domínio e interfaces
+│   └── Entities/
+│       ├── Lead.cs
+│       ├── Appointment.cs
+│       └── ScheduleConfiguration.cs
 ├── LeticiaConde.Application/   # Casos de uso e DTOs
+│   ├── DTOs/
+│   │   ├── LeadDto.cs
+│   │   └── AppointmentDto.cs
+│   ├── Interfaces/
+│   │   ├── ILeadService.cs
+│   │   └── IAppointmentService.cs
+│   └── Services/
+│       ├── LeadService.cs
+│       └── AppointmentService.cs
 └── LeticiaConde.Infrastructure/ # Acesso a dados e configurações externas
+    ├── Data/
+    │   └── ApplicationDbContext.cs
+    └── Migrations/
 ```
 
 ## 🗄️ **Entidades Principais**
 
 ### **Lead**
 
-- Captura de leads através da calculadora de IMC
-- Campos: Id, Name, Email, WhatsApp, Weight, Height, Bmi, BmiClassification, CaptureDate, Converted
+- Captura de leads através da calculadora de IMC e Google Login
+- Campos: `Id`, `Name`, `Email`, `WhatsApp`, `Weight`, `Height`, `Bmi`, `BmiClassification`, `CaptureDate`, `Converted`, `GoogleId` (opcional)
+- **Regra**: Email e WhatsApp únicos por lead
 
 ### **Appointment**
 
-- Agendamentos de consultas nutricionais
-- Campos: Id, LeadId, DateTime, Status, ReservationDate, ConfirmationDate, VirtualRoomLink, Observations, TransactionId
-- Status: Reserved, Confirmed, Cancelled, Completed
+- Agendamentos de consultas nutricionais com origem (site/whatsapp)
+- Campos: `Id`, `LeadId`, `DateTime`, `Status`, `Origin`, `ReservationDate`, `ConfirmationDate`, `VirtualRoomLink`, `Observations`, `TransactionId`
+- **Status**: `Reserved` (15min), `Confirmed`, `Cancelled`, `Completed`
+- **Origin**: `site` ou `whatsapp`
+- **Duração**: 30-90 minutos (flexível, mínimo 30min)
 
 ### **ScheduleConfiguration**
 
 - Configuração de horários de funcionamento
-- Campos: Id, DayOfWeek, DayName, Active, StartTime, EndTime, Sabbath, Observations
+- Campos: `Id`, `DayOfWeek`, `DayName`, `Active`, `StartTime`, `EndTime`, `Sabbath`, `Observations`
+
+### **PreConsultation** (Futuro)
+
+- Dados da anamnese completa do cliente
+- Campos: Informações básicas, objetivos, experiência, hábitos alimentares
+- Relacionamento: `LeadId` → `Lead`
 
 ## 🔧 **Regras de Negócio**
 
 ### **Horários de Funcionamento**
 
-- **Monday to Thursday**: 17:00 to 22:00
-- **Sunday**: Open (flexible hours)
-- **Friday and Saturday**: Blocked (Sabbath)
+- **Segunda a Quinta**: 17:00 às 22:00
+- **Domingo**: Horário aberto (sem restrições)
+- **Sexta e Sábado**: Totalmente bloqueado (Sabbat)
+- **Sabbat**: Do pôr do sol de sexta até pôr do sol de sábado (API externa)
 
-### **Sabbath Rule**
+### **Sistema de Reserva**
 
-- Dynamic blocking based on sunset time
-- External API integration to get sunset time
-- Automatic blocking between Friday sunset and Saturday sunset
+- **Reserva Provisória**: 15 minutos para pagamento
+- **Timeout**: Após 15min sem pagamento, status → `Cancelled` e slot liberado
+- **Confirmação**: Apenas após webhook de pagamento confirmado
+- **Sala Virtual**: Gerada automaticamente após confirmação (Google Meet)
 
-### **Reservation System**
+### **Cliente Recorrente**
 
-- 15-minute provisional reservation
-- Confirmation via payment webhook
-- Automatic virtual room link generation
+- Identificação via email ou WhatsApp existente
+- Permite agendamento simplificado
+- Permite reagendamento (até 24h antes)
+- Fluxo diferenciado via WhatsApp (recomendado)
+
+### **Reagendamento**
+
+- Permitido até 24h antes da consulta
+- Liberação automática do slot anterior
+- Novo slot verificado quanto à disponibilidade
+- Histórico mantido para auditoria
 
 ## 🌐 **API Endpoints**
 
-### **Leads** (`/api/leads`)
+### **Configuração Global de Rotas**
 
-- `POST /validate-bmi` - Validate BMI calculation (for consistency)
-- `POST /capture-lead` - Capture lead with BMI from frontend
-- `GET /{id}` - Get lead by ID
-- `GET /` - List all leads
-- `PUT /{id}/mark-converted` - Mark as converted
+O sistema utiliza convenções globais para configuração de rotas:
 
-### **Appointments** (`/api/appointments`)
+1. **Prefixo Global**: Todas as rotas automaticamente recebem o prefixo `/lcn`
+   - Configurado em `Program.cs` via `UseGeneralRoutePrefix("lcn")`
+   - Não é necessário especificar o prefixo em cada controller
 
-- `GET /available-slots` - Get available time slots
-- `POST /reserve` - Reserve time slot
-- `GET /{id}` - Get appointment by ID
-- `GET /` - List all appointments
-- `PUT /{id}/cancel` - Cancel appointment
-- `GET /check-availability` - Check availability
+2. **Kebab-Case Automático**: Todos os nomes de controllers são convertidos para kebab-case
+   - Exemplo: `LeadsController` → `leads`, `AppointmentController` → `appointment`
+   - Implementado via `KebabCaseControllerModelConvention`
 
-### **Payments** (`/api/payments`)
+3. **Uso de [controller]**: Controllers devem usar `[Route("[controller]")]` 
+   - O ASP.NET Core substitui automaticamente por `[controller]` pelo nome do controller
+   - A convenção de kebab-case transforma para kebab-case automaticamente
 
-- `POST /webhook` - Payment confirmation webhook
-- `POST /confirm-appointment` - Confirm appointment
+### **Base Path**: `/lcn` (não `/api` ou `/pms`)
+
+**IMPORTANTE**: Todos os endpoints usam `/lcn/` como base path. O frontend deve usar `/lcn/` também.
+
+### **Estrutura de Rotas**
+
+Todas as rotas seguem o padrão: `/lcn/{controller-kebab-case}/{action-kebab-case}`
+
+**Exemplo:**
+- `LeadsController` com `[Route("[controller]")]` → `/lcn/leads`
+- `AppointmentController` com `[Route("[controller]")]` → `/lcn/appointment`
+- `PaymentController` com `[Route("[controller]")]` → `/lcn/payment`
+
+### **Leads** (`/lcn/leads`)
+
+- ✅ `POST /lcn/leads/capture-lead` - Capturar lead com IMC
+- ✅ `GET /lcn/leads/{id}` - Obter lead por ID
+- ✅ `GET /lcn/leads` - Listar todos os leads
+- ✅ `PUT /lcn/leads/{id}/mark-converted` - Marcar como convertido
+- 🔴 `GET /lcn/leads/find?email={email}&whatsapp={whatsapp}` - **PENDENTE: Verificar cliente recorrente**
+
+### **Appointments** (`/lcn/appointment`)
+
+- Controller: `AppointmentController` com `[Route("[controller]")]` → `/lcn/appointment`
+- ✅ `GET /lcn/appointment/available-slots?startDate={date}&endDate={date}` - Slots disponíveis
+- ✅ `POST /lcn/appointment/reserve` - Reservar horário (via site)
+- ✅ `GET /lcn/appointment/{id}` - Obter appointment por ID
+- ✅ `GET /lcn/appointment` - Listar todos os appointments
+- ✅ `PUT /lcn/appointment/{id}/cancel` - Cancelar appointment
+- ✅ `GET /lcn/appointment/check-availability?dateTime={datetime}` - Verificar disponibilidade
+- 🔴 `POST /lcn/appointment/reserve-whatsapp` - **PENDENTE: Reservar via WhatsApp**
+- 🔴 `PUT /lcn/appointment/{id}/reschedule` - **PENDENTE: Reagendar consulta**
+
+### **Pre-Consultation Processes** (`/lcn/pre-consultation`)
+
+- 🔴 `POST /lcn/pre-consultation` - **PENDENTE: Salvar anamnese completa**
+- Campos esperados: `LeadId`, `BasicInfo`, `Goals`, `Experience`, `Habits`
+
+### **Payments** (`/lcn/payment`)
+
+- ✅ `POST /lcn/payment/webhook` - Webhook de confirmação de pagamento
+- ✅ `POST /lcn/payment/confirm-appointment` - Confirmar appointment
 
 ## 🔒 **Validações e Segurança**
 
 ### **Data Validation**
 
-- Input validation with Data Annotations
-- Business rule validation in services
-- Centralized exception handling
+- Input validation com Data Annotations
+- Validação de regras de negócio nos services
+- Tratamento centralizado de exceções
+- Validação de conflitos de agendamento
 
 ### **Security**
 
-- CORS configured for frontend
-- Input validation against attacks
-- Audit logs for critical operations
+- CORS configurado para frontend específico
+- Validação de entrada contra ataques
+- Logs de auditoria para operações críticas
+- Proteção contra SQL Injection (EF Core)
+
+### **Validações de Agendamento**
+
+- Verificar se está dentro do horário de funcionamento
+- Verificar se não é período de Sabbat
+- Verificar se não há conflito com outros agendamentos
+- Verificar se não é no passado
+- Verificar disponibilidade antes de criar
 
 ## 📊 **Database Configuration**
 
 ### **PostgreSQL**
 
-- Host: localhost
-- Database: lcn-database
-- Username: leticia_user
-- Password: leticia123
+- Host: localhost (development)
+- Database: `leticia_conde_nutricao`
+- Username: `leticia_user`
+- Password: `leticia123`
 
 ### **Migrations**
 
-- Automatic application in development
-- Schema versioning with Entity Framework
-- Automatic backup before migrations
+- Entity Framework Core migrations
+- Aplicação automática em desenvolvimento
+- Versionamento de schema
+- Backup automático antes de migrations (futuro)
+
+### **Timezone**
+
+- Armazenamento: UTC no banco de dados
+- Exibição: America/Sao_Paulo (UTC-3)
+- Conversões automáticas no Application layer
+
+## 🔄 **Fluxos de Negócio**
+
+### **Fluxo: Cliente Novo via Site**
+
+1. Cliente calcula IMC → Lead criado
+2. Cliente preenche anamnese completa
+3. Sistema mostra horários disponíveis (API unificada)
+4. Cliente seleciona horário
+5. Sistema reserva (Status: `Reserved`, 15min timeout)
+6. Cliente realiza pagamento
+7. Webhook confirma pagamento → Status: `Confirmed`
+8. Sistema gera link sala virtual (Google Meet)
+9. Cliente recebe confirmação
+
+### **Fluxo: Cliente Recorrente via WhatsApp**
+
+1. Cliente envia mensagem via WhatsApp
+2. Sistema verifica lead existente (`GET /lcn/leads/find`)
+3. Sistema verifica disponibilidade (`GET /lcn/appointment/check-availability`)
+4. Sistema reserva via WhatsApp (`POST /lcn/appointment/reserve-whatsapp`)
+5. Status: `Reserved` → Confirmação manual
+6. Após confirmação → Status: `Confirmed`
+7. Sistema gera link sala virtual
+8. Link enviado por WhatsApp
+
+### **Fluxo: Reagendamento**
+
+1. Cliente solicita reagendamento (site ou WhatsApp)
+2. Sistema verifica prazo (at least 24h antes)
+3. Sistema verifica nova disponibilidade
+4. Sistema cria novo appointment
+5. Sistema cancela appointment anterior (libera slot)
+6. Status anterior → `Cancelled`
+7. Status novo → `Reserved` ou `Confirmed`
+8. Cliente recebe confirmação com novo horário
 
 ## 🚀 **Deploy and Production**
 
-### **Docker**
+### **Base Path Dinâmico** (Futuro)
 
-- Containerization with Docker Compose
-- PostgreSQL and API in separate containers
-- Persistent volumes for data
+- **Desenvolvimento**: `/lcn-dev/`
+- **Homologação**: `/lcn-hml/`
+- **Produção**: `/lcn-prd/`
+
+**Nota**: Atualmente usando `/lcn` fixo para todos os ambientes.
 
 ### **Configurations**
 
-- Environment variables for sensitive settings
-- Structured logs for monitoring
-- Health checks for health verification
-
-## 🔄 **BMI Calculator Strategy**
-
-### **Hybrid Approach: Frontend + Backend**
-
-- **Frontend**: Instant calculation for better UX
-- **Backend**: Validation and consistency check
-- **Security**: Prevents data manipulation
-- **Performance**: No network latency for calculation
-
-### **Data Flow**
-
-1. User inputs weight/height on frontend
-2. Frontend calculates BMI instantly
-3. Frontend displays result immediately
-4. Frontend sends data to backend
-5. Backend validates calculation consistency
-6. Backend stores lead in database
+- Variáveis de ambiente para configurações sensíveis
+- Logs estruturados para monitoramento
+- Health checks para verificação de saúde
+- Docker Compose para containerização (opcional)
 
 ## 📝 **Naming Conventions**
 
 ### **API Routes**
 
-- Use kebab-case for all endpoints
-- Format: `/api/resource-principal/specific-action`
-- Examples: `/api/leads/capture-lead`, `/api/appointments/available-slots`
+- ✅ **Prefixo Global**: `/lcn` é aplicado automaticamente (não precisa especificar)
+- ✅ **Kebab-Case Automático**: Nomes de controllers convertidos automaticamente
+- ✅ **Use [controller]**: Sempre usar `[Route("[controller]")]` nos controllers
+- Formato final: `/lcn/{controller-kebab-case}/{action-kebab-case}`
+- Exemplos: 
+  - `LeadsController` com `[Route("[controller]")]` → `/lcn/leads`
+  - Ação `[HttpPost("capture-lead")]` → `/lcn/leads/capture-lead`
+  - `AppointmentController` com `[Route("[controller]")]` → `/lcn/appointment`
+  - Ação `[HttpGet("available-slots")]` → `/lcn/appointment/available-slots`
+
+### **Configuração em Controllers**
+
+```csharp
+[ApiController]
+[Route("[controller]")]  // ✅ Sempre usar [controller], não o nome completo
+public class LeadsController : ControllerBase
+{
+    [HttpPost("capture-lead")]  // ✅ Actions em kebab-case
+    public async Task<ActionResult> CaptureLead(...) { }
+}
+```
+
+**Resultado**: `/lcn/leads/capture-lead`
 
 ### **Code Elements**
 
@@ -172,23 +307,99 @@ backend/
 
 ## 🔧 **Development Guidelines**
 
+### **Configuração Global de Rotas**
+
+O sistema está configurado com convenções globais em `Program.cs`:
+
+```csharp
+builder.Services.AddControllers(options =>
+{
+    // Convenção para kebab-case automático
+    options.Conventions.Add(new KebabCaseControllerModelConvention());
+    
+    // Prefixo global "lcn" para todas as rotas
+    options.UseGeneralRoutePrefix("lcn");
+});
+```
+
+**Arquivos de Convenção:**
+- `Conventions/KebabCaseControllerModelConvention.cs` - Converte nomes de controllers para kebab-case
+- `Extensions/RoutePrefixConventionExtension.cs` - Aplica prefixo global às rotas
+
+**Como Usar:**
+
+1. ✅ **Sempre use `[Route("[controller]")]`** nos controllers (não especifique o nome completo)
+2. ✅ **Actions devem usar kebab-case** nos atributos HTTP (ex: `[HttpPost("capture-lead")]`)
+3. ✅ **O prefixo `/lcn` é aplicado automaticamente** (não precisa especificar)
+
+**Exemplo Correto:**
+
+```csharp
+[ApiController]
+[Route("[controller]")]  // ✅ Correto - usa [controller]
+public class LeadsController : ControllerBase
+{
+    [HttpPost("capture-lead")]  // ✅ Kebab-case
+    public async Task<ActionResult> CaptureLead(...) { }
+}
+```
+
+**Resultado**: A rota final será `/lcn/leads/capture-lead`
+
 ### **Error Handling**
 
-- Use specific exception types
-- Provide meaningful error messages
-- Log errors with context
-- Return appropriate HTTP status codes
+- Use tipos de exceção específicos
+- Forneça mensagens de erro significativas
+- Registre erros com contexto
+- Retorne códigos de status HTTP apropriados
+- Use padrão `ApiResponse<T>` para respostas consistentes
 
 ### **Logging**
 
-- Use structured logging
-- Include correlation IDs
-- Log at appropriate levels (Debug, Info, Warning, Error)
-- Include relevant context in log messages
+- Use logging estruturado
+- Inclua correlation IDs
+- Registre nos níveis apropriados (Debug, Info, Warning, Error)
+- Inclua contexto relevante nas mensagens
+- Logs de auditoria para operações críticas
+
+### **API Response Format**
+
+```csharp
+{
+  "success": true,
+  "data": { ... },
+  "error": null,
+  "message": "Operação realizada com sucesso"
+}
+```
 
 ### **Testing**
 
-- Write unit tests for business logic
-- Write integration tests for API endpoints
-- Mock external dependencies
-- Test error scenarios and edge cases
+- Escreva testes unitários para lógica de negócio
+- Escreva testes de integração para endpoints da API
+- Mock dependências externas
+- Teste cenários de erro e casos extremos
+- Teste regras de negócio (horários, Sabbat, conflitos)
+
+## 🎯 **Pendências Críticas**
+
+### **Endpoints Pendentes**
+
+1. `GET /lcn/leads/find` - Verificar cliente recorrente
+2. `POST /lcn/pre-consultation` - Salvar anamnese completa
+3. `POST /lcn/appointment/reserve-whatsapp` - Reservar via WhatsApp
+4. `PUT /lcn/appointment/{id}/reschedule` - Reagendar consulta
+
+### **Funcionalidades Pendentes**
+
+1. Geração automática de link Google Meet
+2. Timeout automático de 15 minutos para pagamento
+3. Sistema de notificações (email/SMS)
+4. Dashboard admin (futuro)
+5. Integração WhatsApp Bot (futuro)
+
+## 📚 **Referências**
+
+- Regras de Negócio: `backend/REGRAS_NEGOCIO.md`
+- Arquitetura de Agendamento: `backend/AGENDAMENTO_UNIFICADO.md`
+- Integração WhatsApp: `backend/WHATSAPP_INTEGRATION.md`

@@ -75,10 +75,8 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
       if (!window.google || !buttonRef.current) return;
 
       const clientId = GOOGLE_CONFIG.CLIENT_ID;
-      console.log("Client ID:", clientId); // Debug
 
       if (!clientId) {
-        console.error("Client ID não encontrado!");
         onError?.("Configuração do Google não encontrada");
         return;
       }
@@ -97,7 +95,6 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
           shape: "rectangular",
         });
       } catch (error) {
-        console.error("Erro ao inicializar Google Sign-In:", error);
         onError?.("Erro ao carregar Google Sign-In");
       }
     };
@@ -117,8 +114,6 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
       // Decodificar o JWT token
       const payload = JSON.parse(atob(response.credential.split(".")[1]));
 
-      console.log("Google Response Payload:", payload); // Debug
-
       const userData = {
         name: payload.name || "",
         email: payload.email || "",
@@ -130,10 +125,8 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
         emailVerified: payload.email_verified || false,
       };
 
-      console.log("User Data to Save:", userData); // Debug
       onSuccess(userData);
     } catch (error) {
-      console.error("Erro ao processar resposta do Google:", error);
       onError?.("Erro ao processar dados do usuário");
     }
   };

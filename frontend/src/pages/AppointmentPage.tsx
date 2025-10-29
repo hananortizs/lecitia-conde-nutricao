@@ -18,6 +18,7 @@ const PageContainer = styled.div`
   padding: ${(props) => props.theme.spacing.sm};
   box-sizing: border-box;
   overflow-x: hidden; /* Previne overflow horizontal */
+  width: 100%;
 
   @media (min-width: 480px) {
     padding: ${(props) => props.theme.spacing.md};
@@ -191,7 +192,6 @@ const AppointmentPage: React.FC<AppointmentPageProps> = ({ onNavigate }) => {
   const [capturedLead, setCapturedLead] = useState<CapturedLeadDto | null>(
     null
   );
-  const [appointmentId, setAppointmentId] = useState<number | null>(null);
 
   const handleBmiCalculate = async (
     data: BmiFormData,
@@ -212,14 +212,12 @@ const AppointmentPage: React.FC<AppointmentPageProps> = ({ onNavigate }) => {
       const lead = await leadService.captureLead(leadData);
       setCapturedLead(lead);
       setCurrentStep("appointment");
-    } catch (error) {
-      console.error("Erro ao capturar lead:", error);
+    } catch {
       alert("Erro ao processar seus dados. Tente novamente.");
     }
   };
 
-  const handleAppointmentCreated = (appointmentId: number) => {
-    setAppointmentId(appointmentId);
+  const handleAppointmentCreated = () => {
     setCurrentStep("success");
   };
 
@@ -236,7 +234,6 @@ const AppointmentPage: React.FC<AppointmentPageProps> = ({ onNavigate }) => {
   const handleStartOver = () => {
     setCurrentStep("bmi");
     setCapturedLead(null);
-    setAppointmentId(null);
   };
 
   const renderStepIndicator = () => (
@@ -357,7 +354,7 @@ const AppointmentPage: React.FC<AppointmentPageProps> = ({ onNavigate }) => {
                 Voltar ao Início
               </StyledButton>
               <StyledButton $variant="outline" onClick={handleStartOver}>
-                Agendar Nova Consulta
+                Novo Agendamento
               </StyledButton>
             </div>
           </>
@@ -370,13 +367,12 @@ const AppointmentPage: React.FC<AppointmentPageProps> = ({ onNavigate }) => {
 
   return (
     <PageContainer>
-      <BackButton $variant="ghost" onClick={handleBack}>
-        <ArrowLeft size={20} />
+      <BackButton $variant="ghost" $size="sm" onClick={handleBack}>
+        <ArrowLeft size={16} />
         Voltar
       </BackButton>
 
       {renderStepIndicator()}
-
       {renderContent()}
     </PageContainer>
   );

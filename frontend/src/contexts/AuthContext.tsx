@@ -49,7 +49,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       try {
         setUser(JSON.parse(savedUser));
       } catch (error) {
-        console.error("Erro ao carregar dados do usuário:", error);
         localStorage.removeItem("leticia_user");
       }
     }

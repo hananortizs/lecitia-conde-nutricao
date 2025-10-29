@@ -30,10 +30,10 @@ const HeroSection = styled.section`
     ${(props) => props.theme.colors.primary}10,
     ${(props) => props.theme.colors.secondary}05
   );
-  padding: ${(props) => props.theme.spacing.xxl} 0;
+  padding: ${(props) => props.theme.spacing.xl} 0;
   text-align: center;
   border-radius: ${(props) => props.theme.borderRadius.lg};
-  margin-bottom: ${(props) => props.theme.spacing.xxl};
+  margin-bottom: ${(props) => props.theme.spacing.xl};
 `;
 
 const HeroTitle = styled.h1`
@@ -66,8 +66,8 @@ const HeroSubtitle = styled.p`
 const ContentGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: ${(props) => props.theme.spacing.xxl};
-  margin-bottom: ${(props) => props.theme.spacing.xxl};
+  gap: ${(props) => props.theme.spacing.xl};
+  margin-bottom: ${(props) => props.theme.spacing.xl};
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -96,7 +96,7 @@ const ContactItem = styled.div`
   gap: ${(props) => props.theme.spacing.md};
   padding: ${(props) => props.theme.spacing.lg};
   margin-bottom: ${(props) => props.theme.spacing.md};
-  background: ${(props) => props.theme.colors.backgroundSecondary};
+  background: ${(props) => props.theme.colors.background};
   border-radius: ${(props) => props.theme.borderRadius.md};
   transition: all 0.3s ease;
 
@@ -180,7 +180,7 @@ const QuickActions = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: ${(props) => props.theme.spacing.lg};
-  margin-top: ${(props) => props.theme.spacing.xxl};
+  margin-top: ${(props) => props.theme.spacing.xl};
 `;
 
 const QuickActionCard = styled.div`
@@ -293,7 +293,6 @@ const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
 
     if (validateForm()) {
       // Aqui você pode implementar o envio do formulário
-      console.log("Dados do formulário:", formData);
       alert("Mensagem enviada com sucesso! Entraremos em contato em breve.");
       setFormData({
         name: "",

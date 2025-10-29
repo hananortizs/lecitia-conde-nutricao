@@ -7,6 +7,8 @@ import type { PreConsultationData } from "../../types";
 
 const StepContainer = styled.div`
   width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
 `;
 
 const GoalsContainer = styled.div<{ $isExpanded: boolean }>`
@@ -49,6 +51,9 @@ const GoalsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: ${(props) => props.theme.fluid.spacing.md};
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 
   @media ${(props) => props.theme.mq.down(768)} {
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));

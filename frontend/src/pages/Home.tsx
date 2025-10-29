@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { StyledButton } from "../components/styled/Button";
 import { StyledCard, CardGrid, FeatureCard } from "../components/styled/Card";
-import { Container, FullWidthContainer } from "../components/styled/Container";
+import { Container } from "../components/styled/Container";
 import BmiCalculator from "../components/BmiCalculator";
 
 const HeroSection = styled.section`
@@ -381,14 +381,8 @@ const Home: React.FC<HomeProps> = React.memo(({ onNavigate }) => {
     onNavigate?.("/pre-consulta");
   };
 
-  const handleBmiCalculate = async (
-    data: any,
-    bmi: number,
-    classification: any
-  ) => {
+  const handleBmiCalculate = async () => {
     // Salvar dados do IMC (opcional)
-    console.log("Dados do IMC calculado:", { data, bmi, classification });
-
     // O resultado já é mostrado na própria calculadora
     // Não precisa de alert nem redirecionamento automático
   };
@@ -495,7 +489,10 @@ const Home: React.FC<HomeProps> = React.memo(({ onNavigate }) => {
               Descubra seu Índice de Massa Corporal e receba orientações
               personalizadas
             </SectionSubtitle>
-            <BmiCalculator onCalculate={handleBmiCalculate} onNavigate={onNavigate} />
+            <BmiCalculator
+              onCalculate={handleBmiCalculate}
+              onNavigate={onNavigate}
+            />
           </Container>
         </BmiSection>
       )}

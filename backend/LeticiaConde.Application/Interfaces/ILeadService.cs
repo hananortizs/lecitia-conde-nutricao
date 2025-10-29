@@ -25,8 +25,9 @@ public interface ILeadService
     /// Gets a lead by ID
     /// </summary>
     /// <param name="id">Lead ID</param>
-    /// <returns>Found lead or null</returns>
-    Task<CapturedLeadDto?> GetLeadByIdAsync(int id);
+    /// <returns>Found lead</returns>
+    /// <exception cref="Exceptions.NotFoundException">Thrown when lead is not found</exception>
+    Task<CapturedLeadDto> GetLeadByIdAsync(int id);
 
     /// <summary>
     /// Gets all leads
@@ -38,7 +39,7 @@ public interface ILeadService
     /// Marks a lead as converted
     /// </summary>
     /// <param name="id">Lead ID</param>
-    /// <returns>True if marked successfully</returns>
-    Task<bool> MarkAsConvertedAsync(int id);
+    /// <exception cref="Exceptions.NotFoundException">Thrown when lead is not found</exception>
+    Task MarkAsConvertedAsync(int id);
 }
 

@@ -23,14 +23,12 @@ const api = axios.create({
   timeout: 10000,
 });
 
-// Request interceptor for logging
+// Request interceptor
 api.interceptors.request.use(
   (config) => {
-    console.log(`API Request: ${config.method?.toUpperCase()} ${config.url}`);
     return config;
   },
   (error) => {
-    console.error("API Request Error:", error);
     return Promise.reject(error);
   }
 );
@@ -38,11 +36,9 @@ api.interceptors.request.use(
 // Response interceptor for error handling
 api.interceptors.response.use(
   (response) => {
-    console.log(`API Response: ${response.status} ${response.config.url}`);
     return response;
   },
   (error) => {
-    console.error("API Response Error:", error.response?.data || error.message);
     return Promise.reject(error);
   }
 );
@@ -52,7 +48,7 @@ export const leadService = {
   // Validate BMI calculation
   async validateBmi(data: CalculateBmiDto): Promise<BmiResultDto> {
     const response: AxiosResponse<ApiResponse<BmiResultDto>> = await api.post(
-      "/pms/leads/validate-bmi",
+      "/lcn/leads/validate-bmi",
       data
     );
     return response.data.data!;
@@ -61,14 +57,14 @@ export const leadService = {
   // Capture a new lead
   async captureLead(data: CaptureLeadDto): Promise<CapturedLeadDto> {
     const response: AxiosResponse<ApiResponse<CapturedLeadDto>> =
-      await api.post("/pms/leads/capture-lead", data);
+      await api.post("/lcn/leads/capture-lead", data);
     return response.data.data!;
   },
 
   // Get lead by ID
   async getLeadById(id: number): Promise<CapturedLeadDto> {
     const response: AxiosResponse<ApiResponse<CapturedLeadDto>> = await api.get(
-      `/pms/leads/${id}`
+      `/lcn/leads/${id}`
     );
     return response.data.data!;
   },
@@ -76,14 +72,14 @@ export const leadService = {
   // Get all leads
   async getAllLeads(): Promise<CapturedLeadDto[]> {
     const response: AxiosResponse<ApiResponse<CapturedLeadDto[]>> =
-      await api.get("/pms/leads");
+      await api.get("/lcn/leads");
     return response.data.data!;
   },
 
   // Mark lead as converted
   async markAsConverted(id: number): Promise<boolean> {
     const response: AxiosResponse<ApiResponse<boolean>> = await api.put(
-      `/pms/leads/${id}/mark-converted`
+      `/lcn/leads/${id}/mark-converted`
     );
     return response.data.data!;
   },
@@ -101,14 +97,14 @@ export const appointmentService = {
     if (endDate) params.append("endDate", endDate);
 
     const response: AxiosResponse<ApiResponse<AvailableSlotDto[]>> =
-      await api.get(`/api/appointments/available-slots?${params.toString()}`);
+      await api.get(`/lcn/appointment/available-slots?${params.toString()}`);
     return response.data.data!;
   },
 
   // Reserve a time slot
   async reserveTimeSlot(data: RequestAppointmentDto): Promise<AppointmentDto> {
     const response: AxiosResponse<ApiResponse<AppointmentDto>> = await api.post(
-      "/api/appointments/reserve",
+      "/lcn/appointment/reserve",
       data
     );
     return response.data.data!;
@@ -117,7 +113,7 @@ export const appointmentService = {
   // Get appointment by ID
   async getAppointmentById(id: number): Promise<AppointmentDto> {
     const response: AxiosResponse<ApiResponse<AppointmentDto>> = await api.get(
-      `/api/appointments/${id}`
+      `/lcn/appointment/${id}`
     );
     return response.data.data!;
   },
@@ -125,14 +121,14 @@ export const appointmentService = {
   // Get all appointments
   async getAllAppointments(): Promise<AppointmentDto[]> {
     const response: AxiosResponse<ApiResponse<AppointmentDto[]>> =
-      await api.get("/api/appointments");
+      await api.get("/lcn/appointment");
     return response.data.data!;
   },
 
   // Cancel appointment
   async cancelAppointment(id: number): Promise<boolean> {
     const response: AxiosResponse<ApiResponse<boolean>> = await api.put(
-      `/api/appointments/${id}/cancel`
+      `/lcn/appointment/${id}/cancel`
     );
     return response.data.data!;
   },
@@ -140,7 +136,7 @@ export const appointmentService = {
   // Check availability
   async checkAvailability(dateTime: string): Promise<boolean> {
     const response: AxiosResponse<ApiResponse<boolean>> = await api.get(
-      `/api/appointments/check-availability?dateTime=${dateTime}`
+      `/lcn/appointment/check-availability?dateTime=${dateTime}`
     );
     return response.data.data!;
   },
@@ -151,7 +147,7 @@ export const paymentService = {
   // Confirm payment via webhook
   async confirmPayment(data: ConfirmPaymentDto): Promise<boolean> {
     const response: AxiosResponse<ApiResponse<boolean>> = await api.post(
-      "/pms/pagamento/webhook",
+      "/lcn/payment/webhook",
       data
     );
     return response.data.data!;

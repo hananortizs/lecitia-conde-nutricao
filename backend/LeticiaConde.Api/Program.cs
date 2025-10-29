@@ -1,12 +1,22 @@
 using LeticiaConde.Infrastructure.Data;
 using LeticiaConde.Application.Services;
 using LeticiaConde.Application.Interfaces;
+using LeticiaConde.Api.Conventions;
+using LeticiaConde.Api.Extensions;
+using LeticiaConde.Api.Middleware;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    // Adicionar convenção para kebab-case automático
+    options.Conventions.Add(new KebabCaseControllerModelConvention());
+    
+    // Adicionar prefixo global "lcn" para todas as rotas
+    options.UseGeneralRoutePrefix("lcn");
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -43,6 +53,7 @@ builder.Services.AddHttpClient();
 // Registro dos serviços
 builder.Services.AddScoped<ILeadService, LeadService>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 var app = builder.Build();
 
@@ -58,6 +69,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
+
+// Global exception handler middleware
+app.UseMiddleware<GlobalExceptionHandler>();
+
 app.UseAuthorization();
 app.MapControllers();
 
@@ -72,7 +87,7 @@ if (app.Environment.IsDevelopment())
 // Exibir informações da API no console
 Console.WriteLine("🚀 LETÍCIA CONDE NUTRIÇÃO API");
 Console.WriteLine($"🌐 Swagger UI:     \u001b[34mhttp://localhost:5014/swagger\u001b[0m");
-Console.WriteLine($"📊 API Base URL:   \u001b[34mhttp://localhost:5014/api\u001b[0m");
+Console.WriteLine($"📊 API Base URL:   \u001b[34mhttp://localhost:5014/lcn\u001b[0m");
 Console.WriteLine($"🔧 Ambiente:       {app.Environment.EnvironmentName}");
 Console.WriteLine($"🗄️  Banco:          PostgreSQL (lcn-database)");
 Console.WriteLine($"🔗 Conexão:        {connectionString.Split(';')[0]}");

@@ -178,7 +178,7 @@ const ConsultationInvite = styled.div`
 `;
 
 const LockedSection = styled.div`
-  background: ${(props) => props.theme.colors.backgroundSecondary};
+  background: ${(props) => props.theme.colors.background};
   border: 2px dashed ${(props) => props.theme.colors.border};
   border-radius: ${(props) => props.theme.borderRadius.lg};
   padding: ${(props) => props.theme.spacing.xl};
@@ -302,7 +302,7 @@ const UserInfo = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: ${(props) => props.theme.colors.backgroundSecondary};
+  background: ${(props) => props.theme.colors.background};
   border-radius: ${(props) => props.theme.borderRadius.md};
   padding: ${(props) => props.theme.spacing.md};
   margin-bottom: ${(props) => props.theme.spacing.md};
@@ -464,20 +464,22 @@ const BmiCalculator: React.FC<BmiCalculatorProps> = ({
   useEffect(() => {
     if (isAuthenticated && user) {
       // Se logado com Google, verificar apenas WhatsApp
-      const hasWhatsApp =
+      const hasWhatsApp = !!(
         watchedValues.whatsApp &&
-        watchedValues.whatsApp.replace(/\D/g, "").length >= 10;
+        watchedValues.whatsApp.replace(/\D/g, "").length >= 10
+      );
 
       setIsCalculatorUnlocked(hasWhatsApp);
     } else {
       // Se não logado, verificar se preencheu manualmente
-      const hasBasicData =
+      const hasBasicData = !!(
         watchedValues.name &&
         watchedValues.email &&
         watchedValues.whatsApp &&
         watchedValues.name.length >= 2 &&
         watchedValues.email.includes("@") &&
-        watchedValues.whatsApp.replace(/\D/g, "").length >= 10;
+        watchedValues.whatsApp.replace(/\D/g, "").length >= 10
+      );
 
       setIsCalculatorUnlocked(hasBasicData);
     }
@@ -581,7 +583,6 @@ const BmiCalculator: React.FC<BmiCalculatorProps> = ({
   };
 
   const handleGoogleError = (error: string) => {
-    console.error("Erro no Google Login:", error);
     // Aqui você pode adicionar uma notificação de erro se quiser
   };
 
@@ -600,7 +601,7 @@ const BmiCalculator: React.FC<BmiCalculatorProps> = ({
 
   return (
     <CalculatorContainer>
-      <StyledCard $variant="elevated">
+      <StyledCard variant="elevated">
         <CardHeader>
           <IconWrapper>
             <Calculator size={32} />
@@ -737,7 +738,7 @@ const BmiCalculator: React.FC<BmiCalculatorProps> = ({
                   onBlur={() => {
                     trigger("whatsApp");
                   }}
-                  $error={!!errors.whatsApp}
+                  error={!!errors.whatsApp}
                 />
                 {errors.whatsApp && (
                   <ErrorMessage>{errors.whatsApp.message}</ErrorMessage>

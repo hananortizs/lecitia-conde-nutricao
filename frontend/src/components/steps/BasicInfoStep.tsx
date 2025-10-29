@@ -9,6 +9,8 @@ import type { PreConsultationData } from "../../types";
 
 const StepContainer = styled.div`
   width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
 `;
 
 const FormGrid = styled.div`
@@ -16,6 +18,9 @@ const FormGrid = styled.div`
   grid-template-columns: 1fr;
   gap: 1.5rem;
   margin-bottom: 2rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 
   @media (min-width: 768px) {
     grid-template-columns: 1fr 1fr;

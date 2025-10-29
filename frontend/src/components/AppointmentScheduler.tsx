@@ -1,19 +1,11 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Calendar, Clock, User, CheckCircle, AlertCircle } from "lucide-react";
-import {
-  format,
-  addDays,
-  isSameDay,
-  isBefore,
-  isAfter,
-  startOfDay,
-  endOfDay,
-} from "date-fns";
+import { format, isSameDay, isBefore, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { StyledButton, StyledCard, CardHeader, CardBody } from "./styled";
 import { appointmentService } from "../services/api";
-import { AvailableSlotDto, AppointmentStatus } from "../types";
+import { AvailableSlotDto } from "../types";
 
 const SchedulerContainer = styled.div`
   max-width: 1000px;
@@ -287,7 +279,6 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
     const year = date.getFullYear();
     const month = date.getMonth();
     const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
     const startDate = new Date(firstDay);
     startDate.setDate(startDate.getDate() - firstDay.getDay());
 
@@ -405,9 +396,8 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
         );
 
         setAvailableSlots(slots);
-      } catch (err) {
+      } catch {
         setError("Erro ao carregar horários disponíveis. Tente novamente.");
-        console.error("Error loading available slots:", err);
       } finally {
         setIsLoading(false);
       }
@@ -455,9 +445,8 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
 
       // Reset selection
       setSelectedTime(null);
-    } catch (err) {
+    } catch {
       setError("Erro ao criar agendamento. Tente novamente.");
-      console.error("Error creating appointment:", err);
     } finally {
       setIsLoading(false);
     }
@@ -630,7 +619,7 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
                   $variant="primary"
                   $size="lg"
                   onClick={handleCreateAppointment}
-                  loading={isLoading}
+                  $loading={isLoading}
                   $fullWidth
                 >
                   Confirmar Agendamento

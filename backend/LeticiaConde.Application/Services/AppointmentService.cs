@@ -1,5 +1,6 @@
 using LeticiaConde.Application.DTOs;
 using LeticiaConde.Application.Interfaces;
+using LeticiaConde.Application.Exceptions;
 using LeticiaConde.Core.Entities;
 using LeticiaConde.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -34,10 +35,21 @@ public class AppointmentService : IAppointmentService
     /// <summary>
     /// Gets available time slots for appointment
     /// </summary>
-    /// <param name="startDate">Start date for search</param>
-    /// <param name="endDate">End date for search</param>
+    /// <param name="startDate">Start date for search (defaults to today if null)</param>
+    /// <param name="endDate">End date for search (defaults to 30 days from start if null)</param>
     /// <returns>List of available slots</returns>
-    public async Task<IEnumerable<AvailableSlotDto>> GetAvailableSlotsAsync(DateTime startDate, DateTime endDate)
+    public async Task<IEnumerable<AvailableSlotDto>> GetAvailableSlotsAsync(DateTime? startDate = null, DateTime? endDate = null)
+    {
+        var start = startDate ?? DateTime.Today;
+        var end = endDate ?? start.AddDays(30);
+        
+        return await GetAvailableSlotsInternalAsync(start, end);
+    }
+
+    /// <summary>
+    /// Internal method to get available slots with explicit dates
+    /// </summary>
+    private async Task<IEnumerable<AvailableSlotDto>> GetAvailableSlotsInternalAsync(DateTime startDate, DateTime endDate)
     {
         var slots = new List<AvailableSlotDto>();
         var configurations = await _context.ScheduleConfigurations.ToListAsync();
@@ -102,14 +114,14 @@ public class AppointmentService : IAppointmentService
         var available = await CheckAvailabilityAsync(dto.DateTime);
         if (!available)
         {
-            throw new InvalidOperationException("Time slot not available for appointment");
+            throw new ConflictException("Time slot not available for appointment");
         }
 
         // Check if the lead exists
         var lead = await _context.Leads.FindAsync(dto.LeadId);
         if (lead == null)
         {
-            throw new ArgumentException("Lead not found");
+            throw new NotFoundException("Lead", dto.LeadId);
         }
 
         // Create the appointment
@@ -129,7 +141,7 @@ public class AppointmentService : IAppointmentService
         lead.Converted = true;
         await _context.SaveChangesAsync();
 
-        return await GetAppointmentByIdAsync(appointment.Id) ?? throw new InvalidOperationException("Error creating appointment");
+        return await GetAppointmentByIdInternalAsync(appointment.Id);
     }
 
     /// <summary>
@@ -143,12 +155,12 @@ public class AppointmentService : IAppointmentService
         var appointment = await _context.Appointments.FindAsync(appointmentId);
         if (appointment == null)
         {
-            throw new ArgumentException("Appointment not found");
+            throw new NotFoundException("Appointment", appointmentId);
         }
 
         if (appointment.Status != AppointmentStatus.Reserved)
         {
-            throw new InvalidOperationException("Appointment cannot be confirmed in current status");
+            throw new ValidationException("Appointment cannot be confirmed in current status");
         }
 
         appointment.Status = AppointmentStatus.Confirmed;
@@ -160,22 +172,31 @@ public class AppointmentService : IAppointmentService
 
         await _context.SaveChangesAsync();
 
-        return await GetAppointmentByIdAsync(appointmentId) ?? throw new InvalidOperationException("Error confirming appointment");
+        return await GetAppointmentByIdInternalAsync(appointmentId);
     }
 
     /// <summary>
     /// Gets an appointment by ID
     /// </summary>
     /// <param name="id">Appointment ID</param>
-    /// <returns>Found appointment or null</returns>
-    public async Task<AppointmentDto?> GetAppointmentByIdAsync(int id)
+    /// <returns>Found appointment</returns>
+    /// <exception cref="NotFoundException">Thrown when appointment is not found</exception>
+    public async Task<AppointmentDto> GetAppointmentByIdAsync(int id)
+    {
+        return await GetAppointmentByIdInternalAsync(id);
+    }
+
+    /// <summary>
+    /// Internal method to get appointment by ID
+    /// </summary>
+    private async Task<AppointmentDto> GetAppointmentByIdInternalAsync(int id)
     {
         var appointment = await _context.Appointments
             .Include(a => a.Lead)
             .FirstOrDefaultAsync(a => a.Id == id);
 
         if (appointment == null)
-            return null;
+            throw new NotFoundException("Appointment", id);
 
         return new AppointmentDto
         {
@@ -224,17 +245,15 @@ public class AppointmentService : IAppointmentService
     /// Cancels an appointment
     /// </summary>
     /// <param name="id">Appointment ID</param>
-    /// <returns>True if cancelled successfully</returns>
-    public async Task<bool> CancelAppointmentAsync(int id)
+    /// <exception cref="NotFoundException">Thrown when appointment is not found</exception>
+    public async Task CancelAppointmentAsync(int id)
     {
         var appointment = await _context.Appointments.FindAsync(id);
         if (appointment == null)
-            return false;
+            throw new NotFoundException("Appointment", id);
 
         appointment.Status = AppointmentStatus.Cancelled;
         await _context.SaveChangesAsync();
-
-        return true;
     }
 
     /// <summary>

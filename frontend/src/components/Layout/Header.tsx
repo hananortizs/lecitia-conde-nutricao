@@ -1,44 +1,13 @@
 import React, { useEffect, useRef } from "react";
-import styled, { ThemeProvider, keyframes } from "styled-components";
-import { Moon, Sun, Menu, X } from "lucide-react";
+import styled, { ThemeProvider, keyframes, css } from "styled-components";
+import { Moon, Sun, X } from "lucide-react";
 import { useTheme } from "../../contexts/ThemeContext";
 import { StyledButton } from "../styled/Button";
 
-// Animações
-const slideInFromRight = keyframes`
+// Animações modernas com Material Design 3 easings
+const scaleUp = keyframes`
   from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-`;
-
-const slideOutToRight = keyframes`
-  from {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-`;
-
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-`;
-
-const scaleIn = keyframes`
-  from {
-    transform: scale(0.8);
+    transform: scale(0.95);
     opacity: 0;
   }
   to {
@@ -50,19 +19,19 @@ const scaleIn = keyframes`
 const HeaderContainer = styled.header`
   background-color: ${(props) => props.theme.colors.background};
   border-bottom: 0.0625rem solid ${(props) => props.theme.colors.border};
-  padding: ${(props) => props.theme.spacing.xs} 0; /* Mobile pequeno (320-479px) */
+  padding: ${(props) => props.theme.spacing.xs} 0;
   position: sticky;
   top: 0;
   z-index: 1000;
-  backdrop-filter: blur(0.625rem); /* 10px */
+  backdrop-filter: blur(0.625rem);
   background-color: ${(props) => props.theme.colors.background}dd;
 
   @media (min-width: 480px) {
-    padding: ${(props) => props.theme.spacing.sm} 0; /* Mobile grande (480-767px) */
+    padding: ${(props) => props.theme.spacing.sm} 0;
   }
 
   @media (min-width: 768px) {
-    padding: ${(props) => props.theme.spacing.md} 0; /* Desktop (768px+) */
+    padding: ${(props) => props.theme.spacing.md} 0;
   }
 `;
 
@@ -70,201 +39,270 @@ const HeaderContent = styled.div`
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
-  padding: 0 ${(props) => props.theme.spacing.xs}; /* Mobile pequeno (320-479px) */
+  padding: 0 ${(props) => props.theme.spacing.xs};
   display: flex;
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
 
   @media (min-width: 480px) {
-    padding: 0 ${(props) => props.theme.spacing.sm}; /* Mobile grande (480-767px) */
+    padding: 0 ${(props) => props.theme.spacing.sm};
   }
 
   @media (min-width: 768px) {
-    padding: 0 ${(props) => props.theme.spacing.lg}; /* Desktop (768px+) */
+    padding: 0 ${(props) => props.theme.spacing.lg};
   }
 `;
 
 const Logo = styled.div`
   display: flex;
   align-items: center;
-  gap: ${(props) => props.theme.spacing.xs}; /* Mobile pequeno - gap menor */
-  font-size: 0.875rem; /* Mobile pequeno (320-479px) */
+  gap: ${(props) => props.theme.spacing.xs};
+  font-size: 0.875rem;
   font-weight: 700;
   color: ${(props) => props.theme.colors.primary};
   text-decoration: none;
+  cursor: pointer;
 
   &:hover {
     color: ${(props) => props.theme.colors.accent};
   }
 
   @media (min-width: 480px) {
-    gap: ${(props) => props.theme.spacing.sm}; /* Mobile grande - gap maior */
-    font-size: 1.125rem; /* Mobile grande (480-767px) */
+    gap: ${(props) => props.theme.spacing.sm};
+    font-size: 1.125rem;
   }
 
   @media (min-width: 768px) {
-    font-size: 1.5rem; /* Desktop (768px+) */
+    font-size: 1.5rem;
   }
 `;
 
-const Nav = styled.nav<{ $isOpen: boolean }>`
-  /* Mobile pequeno e grande - escondido por padrão */
-  display: ${(props) => (props.$isOpen ? "flex" : "none")};
+// Desktop Navigation
+const DesktopNav = styled.nav`
+  display: none;
+
+  @media (min-width: 768px) {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: ${(props) => props.theme.spacing.lg};
+  }
+`;
+
+// Mobile Navigation Drawer (Material Design 3 style)
+const MobileNavDrawer = styled.div<{ $isOpen: boolean }>`
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
-  width: 320px;
+  width: min(85vw, 360px);
   height: 100vh;
-  background: linear-gradient(
-    135deg,
-    ${(props) => props.theme.colors.background}98,
-    ${(props) => props.theme.colors.background}95
-  );
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: stretch;
+  background: ${(props) => props.theme.colors.background};
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.15), -2px 0 8px rgba(0, 0, 0, 0.1);
+  z-index: 2000;
   transform: ${(props) =>
     props.$isOpen ? "translateX(0)" : "translateX(100%)"};
-  animation: ${(props) => (props.$isOpen ? slideInFromRight : slideOutToRight)}
-    0.3s ease-out;
-  z-index: 1001;
-  padding: 0;
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+  will-change: transform;
+  min-height: 100vh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
-  border-left: 1px solid ${(props) => props.theme.colors.border}30;
-
-  @media (min-width: 480px) {
-    width: 360px;
-  }
+  display: flex;
+  flex-direction: column;
+  pointer-events: ${(props) => (props.$isOpen ? "auto" : "none")};
+  visibility: ${(props) => (props.$isOpen ? "visible" : "hidden")};
 
   @media (min-width: 768px) {
-    /* Desktop - visível e horizontal */
-    display: flex;
-    position: static;
-    flex-direction: row;
-    align-items: center;
-    gap: ${(props) => props.theme.spacing.lg};
-    transform: none;
-    background: transparent;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    animation: none;
-    padding: 0;
-    width: auto;
-    height: auto;
-    overflow: visible;
-    box-shadow: none;
-    border-left: none;
+    display: none;
   }
 `;
 
-const NavLink = styled.a<{ $isActive?: boolean }>`
-  color: ${(props) => props.theme.colors.text};
-  text-decoration: none;
-  font-weight: 500;
-  padding: ${(props) => props.theme.spacing.lg}
-    ${(props) => props.theme.spacing.lg};
-  border-radius: ${(props) => props.theme.borderRadius.lg};
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-size: 1.125rem;
-  cursor: pointer;
-  position: relative;
+const DrawerHeader = styled.div`
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  width: 100%;
-  min-height: 56px;
-  animation: ${scaleIn} 0.3s ease-out;
-  animation-delay: ${(props) => (props.$isActive ? "0s" : "0.1s")};
-  text-align: left;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  -webkit-tap-highlight-color: transparent; /* Remove highlight no mobile */
-  touch-action: manipulation; /* Melhora responsividade do touch */
-  user-select: none; /* Previne seleção de texto acidental */
-  pointer-events: auto; /* Garante que seja clicável */
-  z-index: 10; /* Garante que esteja acima de outros elementos */
-  border-left: 3px solid transparent;
-  margin-left: ${(props) => props.theme.spacing.sm};
+  justify-content: space-between;
+  padding: ${(props) => props.theme.spacing.lg};
+  border-bottom: 1px solid ${(props) => props.theme.colors.border};
+  min-height: 64px;
+  flex-shrink: 0;
+`;
+
+const DrawerTitle = styled.h2`
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: ${(props) => props.theme.colors.text};
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: ${(props) => props.theme.spacing.sm};
+`;
+
+const CloseButton = styled.button`
+  background: transparent;
+  border: none;
+  color: ${(props) => props.theme.colors.text};
+  cursor: pointer;
+  padding: ${(props) => props.theme.spacing.sm};
+  border-radius: ${(props) => props.theme.borderRadius.md};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  -webkit-tap-highlight-color: transparent;
 
   &:hover {
-    color: ${(props) => props.theme.colors.primary};
-    background: linear-gradient(
-      135deg,
-      ${(props) => props.theme.colors.primary}10,
-      ${(props) => props.theme.colors.primary}05
-    );
-    transform: translateX(8px);
-    box-shadow: 0 4px 15px ${(props) => props.theme.colors.primary}15;
-    border-left-color: ${(props) => props.theme.colors.primary}50;
+    background: ${(props) => props.theme.colors.primary}10;
   }
 
   &:active {
+    background: ${(props) => props.theme.colors.primary}20;
+    transform: scale(0.95);
+  }
+`;
+
+const DrawerContent = styled.div`
+  flex: 1;
+  padding: ${(props) => props.theme.spacing.md};
+  display: flex;
+  flex-direction: column;
+  gap: ${(props) => props.theme.spacing.xs};
+  overflow-y: auto;
+`;
+
+const NavItem = styled.button<{
+  $isActive?: boolean;
+  $delay?: number;
+  $isVisible?: boolean;
+}>`
+  width: 100%;
+  background: ${(props) =>
+    props.$isActive ? `${props.theme.colors.primary}15` : "transparent"};
+  border: none;
+  border-radius: ${(props) => props.theme.borderRadius.lg};
+  padding: ${(props) => props.theme.spacing.md}
+    ${(props) => props.theme.spacing.lg};
+  color: ${(props) =>
+    props.$isActive ? props.theme.colors.primary : props.theme.colors.text};
+  font-size: 1rem;
+  font-weight: ${(props) => (props.$isActive ? 600 : 500)};
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: ${(props) => props.theme.spacing.md};
+  min-height: 56px;
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  overflow: hidden;
+  opacity: ${(props) => (props.$isVisible ? 1 : 0)};
+  ${(props) =>
+    props.$isVisible &&
+    css`
+      animation: ${scaleUp} 0.3s ease-out ${props.$delay || 0}ms forwards;
+    `}
+
+  /* Ripple effect */
+  &::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: ${(props) => props.theme.colors.primary}20;
+    transform: translate(-50%, -50%);
+    transition: width 0.4s ease, height 0.4s ease;
+  }
+
+  &:active::before {
+    width: 300px;
+    height: 300px;
+  }
+
+  /* Icon */
+  &::after {
+    content: attr(data-icon);
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  &:hover {
+    background: ${(props) =>
+      props.$isActive
+        ? `${props.theme.colors.primary}20`
+        : `${props.theme.colors.primary}08`};
     transform: translateX(4px);
   }
 
-  @media (min-width: 480px) {
-    font-size: 1.25rem;
-    min-height: 64px;
-    padding: ${(props) => props.theme.spacing.xl}
-      ${(props) => props.theme.spacing.lg};
+  &:active {
+    transform: translateX(2px);
   }
 
-  @media (min-width: 768px) {
-    font-size: 1rem;
-    min-width: auto;
-    width: auto;
-    min-height: auto;
-    padding: ${(props) => props.theme.spacing.sm}
-      ${(props) => props.theme.spacing.md};
-    animation: none;
-    white-space: normal;
-    text-align: center;
-    justify-content: center;
-    border-left: none;
-    margin-left: 0;
-
-    &:hover {
-      transform: translateY(-2px);
-      border-left-color: transparent;
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
-  }
-
-  /* Marcação da página ativa */
+  /* Active indicator */
   ${(props) =>
     props.$isActive &&
     `
-    color: ${props.theme.colors.primary};
-    font-weight: 600;
-    background: linear-gradient(
-      135deg,
-      ${props.theme.colors.primary}15,
-      ${props.theme.colors.primary}08
-    );
-    border-left-color: ${props.theme.colors.primary};
-    transform: translateX(4px);
-    
+    span {
+      position: relative;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        right: calc(-1 * ${props.theme.spacing.lg});
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 40%;
+        background: ${props.theme.colors.primary};
+        border-radius: 2px;
+      }
+    }
+  `}
+
+  @media (min-width: 480px) {
+    min-height: 60px;
+    font-size: 1.0625rem;
+    padding: ${(props) => props.theme.spacing.lg};
+  }
+`;
+
+const DesktopNavLink = styled.a<{ $isActive?: boolean }>`
+  color: ${(props) =>
+    props.$isActive ? props.theme.colors.primary : props.theme.colors.text};
+  text-decoration: none;
+  font-weight: ${(props) => (props.$isActive ? 600 : 500)};
+  padding: ${(props) => props.theme.spacing.sm}
+    ${(props) => props.theme.spacing.md};
+  border-radius: ${(props) => props.theme.borderRadius.md};
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  position: relative;
+  cursor: pointer;
+
+  &:hover {
+    color: ${(props) => props.theme.colors.primary};
+    background: ${(props) => props.theme.colors.primary}08;
+  }
+
+  ${(props) =>
+    props.$isActive &&
+    `
     &::after {
       content: '';
       position: absolute;
-      bottom: -0.5rem;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0.375rem;
-      height: 0.375rem;
-      background: linear-gradient(135deg, ${props.theme.colors.primary}, ${props.theme.colors.secondary});
-      border-radius: 50%;
-      box-shadow: 0 0 0.5rem ${props.theme.colors.primary}40;
+      bottom: -4px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: ${props.theme.colors.primary};
+      border-radius: 2px;
     }
   `}
 `;
@@ -275,24 +313,29 @@ const HeaderActions = styled.div`
   gap: ${(props) => props.theme.spacing.sm};
 `;
 
-const MobileMenuButton = styled.button<{ $isOpen: boolean }>`
-  display: block;
-  background: none;
+const MobileMenuButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
   border: none;
   color: ${(props) => props.theme.colors.text};
   cursor: pointer;
   padding: ${(props) => props.theme.spacing.sm};
   border-radius: ${(props) => props.theme.borderRadius.md};
-  transition: all 0.3s ease;
+  width: 40px;
+  height: 40px;
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  -webkit-tap-highlight-color: transparent;
   position: relative;
-  z-index: 1002;
+  z-index: 2001;
 
   &:hover {
-    background-color: ${(props) => props.theme.colors.primary}10;
-    transform: scale(1.05);
+    background: ${(props) => props.theme.colors.primary}10;
   }
 
   &:active {
+    background: ${(props) => props.theme.colors.primary}20;
     transform: scale(0.95);
   }
 
@@ -305,8 +348,6 @@ const HamburgerIcon = styled.div<{ $isOpen: boolean }>`
   width: 24px;
   height: 18px;
   position: relative;
-  transform: rotate(0deg);
-  transition: 0.3s ease-in-out;
   cursor: pointer;
 
   span {
@@ -316,24 +357,22 @@ const HamburgerIcon = styled.div<{ $isOpen: boolean }>`
     width: 100%;
     background: ${(props) => props.theme.colors.text};
     border-radius: 1px;
-    opacity: 1;
     left: 0;
-    transform: rotate(0deg);
-    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
 
     &:nth-child(1) {
-      top: 0px;
+      top: 0;
       transform: ${(props) =>
         props.$isOpen
           ? "rotate(45deg) translate(5px, 5px)"
-          : "rotate(0deg) translate(0px, 0px)"};
+          : "rotate(0) translate(0, 0)"};
     }
 
     &:nth-child(2) {
       top: 8px;
-      opacity: ${(props) => (props.$isOpen ? "0" : "1")};
+      opacity: ${(props) => (props.$isOpen ? 0 : 1)};
       transform: ${(props) =>
-        props.$isOpen ? "translateX(20px)" : "translateX(0px)"};
+        props.$isOpen ? "translateX(-20px)" : "translateX(0)"};
     }
 
     &:nth-child(3) {
@@ -341,147 +380,25 @@ const HamburgerIcon = styled.div<{ $isOpen: boolean }>`
       transform: ${(props) =>
         props.$isOpen
           ? "rotate(-45deg) translate(5px, -5px)"
-          : "rotate(0deg) translate(0px, 0px)"};
+          : "rotate(0) translate(0, 0)"};
     }
   }
 `;
 
-// Alternativa: Hamburger que vira seta
-const ArrowIcon = styled.div<{ $isOpen: boolean }>`
-  width: 24px;
-  height: 18px;
-  position: relative;
-  transform: ${(props) => (props.$isOpen ? "rotate(180deg)" : "rotate(0deg)")};
-  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-
-  &::before,
-  &::after {
-    content: "";
-    position: absolute;
-    height: 2px;
-    background: ${(props) => props.theme.colors.text};
-    border-radius: 1px;
-    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  &::before {
-    width: 12px;
-    top: 6px;
-    left: 0;
-    transform: ${(props) =>
-      props.$isOpen
-        ? "rotate(45deg) translate(2px, 2px)"
-        : "rotate(0deg) translate(0px, 0px)"};
-  }
-
-  &::after {
-    width: 12px;
-    top: 10px;
-    left: 0;
-    transform: ${(props) =>
-      props.$isOpen
-        ? "rotate(-45deg) translate(2px, -2px)"
-        : "rotate(0deg) translate(0px, 0px)"};
-  }
-`;
-
-// Alternativa: Hamburger com animação de "pulse"
-const PulseIcon = styled.div<{ $isOpen: boolean }>`
-  width: 24px;
-  height: 18px;
-  position: relative;
-  cursor: pointer;
-
-  span {
-    display: block;
-    position: absolute;
-    height: 2px;
-    width: 100%;
-    background: ${(props) => props.theme.colors.text};
-    border-radius: 1px;
-    opacity: 1;
-    left: 0;
-    transform: rotate(0deg);
-    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-    &:nth-child(1) {
-      top: 0px;
-      transform: ${(props) =>
-        props.$isOpen
-          ? "rotate(45deg) translate(6px, 6px)"
-          : "rotate(0deg) translate(0px, 0px)"};
-    }
-
-    &:nth-child(2) {
-      top: 8px;
-      opacity: ${(props) => (props.$isOpen ? "0" : "1")};
-      transform: ${(props) => (props.$isOpen ? "scale(0)" : "scale(1)")};
-    }
-
-    &:nth-child(3) {
-      top: 16px;
-      transform: ${(props) =>
-        props.$isOpen
-          ? "rotate(-45deg) translate(6px, -6px)"
-          : "rotate(0deg) translate(0px, 0px)"};
-    }
-  }
-
-  ${(props) =>
-    !props.$isOpen &&
-    `
-    animation: pulse 2s infinite;
-    
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-  `}
-`;
-
-const NavLinksContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: ${(props) => props.theme.spacing.sm};
-  width: 100%;
-  padding: ${(props) => props.theme.spacing.xxl}
-    ${(props) => props.theme.spacing.lg} ${(props) => props.theme.spacing.xl};
-  flex: 1;
-  pointer-events: auto; /* Garante que seja clicável */
-  z-index: 10; /* Garante que esteja acima de outros elementos */
-
-  @media (min-width: 480px) {
-    gap: ${(props) => props.theme.spacing.md};
-    padding: ${(props) => props.theme.spacing.xxl}
-      ${(props) => props.theme.spacing.xl} ${(props) => props.theme.spacing.xl};
-  }
-
-  @media (min-width: 768px) {
-    flex-direction: row;
-    align-items: center;
-    gap: ${(props) => props.theme.spacing.lg};
-    padding: 0;
-    flex: none;
-  }
-`;
-
-const Overlay = styled.div<{ $isOpen: boolean }>`
+const Backdrop = styled.div<{ $isOpen: boolean }>`
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  z-index: 1000;
+  z-index: 1999;
   opacity: ${(props) => (props.$isOpen ? 1 : 0)};
   visibility: ${(props) => (props.$isOpen ? "visible" : "hidden")};
-  transition: all 0.3s ease;
-  animation: ${(props) => (props.$isOpen ? fadeIn : "none")} 0.3s ease-out;
+  transition: opacity 0.3s cubic-bezier(0.2, 0, 0, 1),
+    visibility 0.3s cubic-bezier(0.2, 0, 0, 1);
   pointer-events: ${(props) => (props.$isOpen ? "auto" : "none")};
 
   @media (min-width: 768px) {
@@ -497,77 +414,59 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
   const { isDark, toggleTheme, theme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
-  const navRef = useRef<HTMLDivElement>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
   const startX = useRef<number>(0);
   const currentX = useRef<number>(0);
   const isDragging = useRef<boolean>(false);
 
   const handleNavClick = (path: string) => {
-    console.log("Navigation clicked:", path); // Debug log
-    console.log("onNavigate function:", onNavigate); // Debug log
     onNavigate?.(path);
     setIsMobileMenuOpen(false);
   };
 
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+    setIsMobileMenuOpen((prev) => !prev);
   };
 
-  // Função para determinar se um link está ativo
   const isActivePage = (path: string) => {
     const page = path.replace("/", "") || "home";
     return currentPage === page;
   };
 
-  // Suporte a gestos de swipe
+  // Swipe to close gesture
   const handleTouchStart = (e: React.TouchEvent) => {
-    // Só ativa o swipe se não estiver clicando em um link
     const target = e.target as HTMLElement;
-    if (target.closest("a")) {
-      isDragging.current = false;
+    if (target.closest("button") || target.closest("a")) {
       return;
     }
-
     startX.current = e.touches[0].clientX;
     isDragging.current = true;
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging.current) return;
+    if (!isDragging.current || !isMobileMenuOpen) return;
     currentX.current = e.touches[0].clientX;
+    const diffX = currentX.current - startX.current;
+    if (diffX > 0 && drawerRef.current) {
+      drawerRef.current.style.transform = `translateX(${Math.min(
+        diffX,
+        360
+      )}px)`;
+    }
   };
 
-  const handleTouchEnd = (e: React.TouchEvent) => {
+  const handleTouchEnd = () => {
     if (!isDragging.current) return;
-
-    // Se o toque foi em um link, não processa o swipe
-    const target = e.target as HTMLElement;
-    if (target.closest("a")) {
-      isDragging.current = false;
-      return;
-    }
-
-    const diffX = startX.current - currentX.current;
-
-    // Se o usuário fez swipe da direita para esquerda (fechar menu)
-    if (diffX > 50 && isMobileMenuOpen) {
+    const diffX = currentX.current - startX.current;
+    if (diffX > 100) {
       setIsMobileMenuOpen(false);
+    } else if (drawerRef.current) {
+      drawerRef.current.style.transform = "";
     }
-
-    // Se o usuário fez swipe da esquerda para direita (abrir menu)
-    if (diffX < -50 && !isMobileMenuOpen) {
-      setIsMobileMenuOpen(true);
-    }
-
     isDragging.current = false;
   };
 
-  // Fechar menu ao clicar no overlay
-  const handleOverlayClick = () => {
-    setIsMobileMenuOpen(false);
-  };
-
-  // Fechar menu com ESC
+  // Close on ESC key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isMobileMenuOpen) {
@@ -577,17 +476,28 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
 
     if (isMobileMenuOpen) {
       document.addEventListener("keydown", handleKeyDown);
-      // Prevenir scroll do body quando menu está aberto
       document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = "";
     }
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = "";
     };
   }, [isMobileMenuOpen]);
+
+  // Close drawer when clicking backdrop
+  const handleBackdropClick = () => {
+    setIsMobileMenuOpen(false);
+  };
+
+  const navItems = [
+    { path: "/", label: "Início", icon: "🏠" },
+    { path: "/pre-consulta", label: "Agendar Consulta", icon: "📅" },
+    { path: "/sobre", label: "Sobre", icon: "👩‍⚕️" },
+    { path: "/contato", label: "Contato", icon: "📞" },
+  ];
 
   return (
     <ThemeProvider theme={theme}>
@@ -597,99 +507,21 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
             🥗 Letícia Conde Nutricionista
           </Logo>
 
-          {/* Overlay para mobile */}
-          <Overlay $isOpen={isMobileMenuOpen} onClick={handleOverlayClick} />
-
-          <Nav
-            ref={navRef}
-            $isOpen={isMobileMenuOpen}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-          >
-            <NavLinksContainer>
-              <NavLink
+          {/* Desktop Navigation */}
+          <DesktopNav>
+            {navItems.map((item) => (
+              <DesktopNavLink
+                key={item.path}
                 onClick={(e) => {
                   e.preventDefault();
-                  e.stopPropagation();
-                  handleNavClick("/");
+                  handleNavClick(item.path);
                 }}
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleNavClick("/");
-                }}
-                onTouchEnd={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleNavClick("/");
-                }}
-                $isActive={isActivePage("/")}
+                $isActive={isActivePage(item.path)}
               >
-                🏠 Início
-              </NavLink>
-              <NavLink
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleNavClick("/pre-consulta");
-                }}
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleNavClick("/pre-consulta");
-                }}
-                onTouchEnd={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleNavClick("/pre-consulta");
-                }}
-                $isActive={isActivePage("/pre-consulta")}
-              >
-                📅 Agendar Consulta
-              </NavLink>
-              <NavLink
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleNavClick("/sobre");
-                }}
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleNavClick("/sobre");
-                }}
-                onTouchEnd={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleNavClick("/sobre");
-                }}
-                $isActive={isActivePage("/sobre")}
-              >
-                👩‍⚕️ Sobre
-              </NavLink>
-              <NavLink
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleNavClick("/contato");
-                }}
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleNavClick("/contato");
-                }}
-                onTouchEnd={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleNavClick("/contato");
-                }}
-                $isActive={isActivePage("/contato")}
-              >
-                📞 Contato
-              </NavLink>
-            </NavLinksContainer>
-          </Nav>
+                {item.label}
+              </DesktopNavLink>
+            ))}
+          </DesktopNav>
 
           <HeaderActions>
             <StyledButton
@@ -702,19 +534,61 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
             </StyledButton>
 
             <MobileMenuButton
-              $isOpen={isMobileMenuOpen}
               onClick={toggleMobileMenu}
               aria-label={isMobileMenuOpen ? "Fechar menu" : "Abrir menu"}
+              aria-expanded={isMobileMenuOpen}
             >
-              <PulseIcon $isOpen={isMobileMenuOpen}>
+              <HamburgerIcon $isOpen={isMobileMenuOpen}>
                 <span></span>
                 <span></span>
                 <span></span>
-              </PulseIcon>
+              </HamburgerIcon>
             </MobileMenuButton>
           </HeaderActions>
         </HeaderContent>
       </HeaderContainer>
+
+      {/* Mobile Drawer */}
+      <>
+        <Backdrop $isOpen={isMobileMenuOpen} onClick={handleBackdropClick} />
+        {isMobileMenuOpen && (
+          <MobileNavDrawer
+            ref={drawerRef}
+            $isOpen={isMobileMenuOpen}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            role="navigation"
+            aria-label="Menu principal"
+          >
+            <DrawerHeader>
+              <DrawerTitle>Menu</DrawerTitle>
+              <CloseButton
+                onClick={toggleMobileMenu}
+                aria-label="Fechar menu"
+                tabIndex={isMobileMenuOpen ? 0 : -1}
+              >
+                <X size={24} />
+              </CloseButton>
+            </DrawerHeader>
+            <DrawerContent>
+              {navItems.map((item, index) => (
+                <NavItem
+                  key={item.path}
+                  data-icon={item.icon}
+                  $isActive={isActivePage(item.path)}
+                  $isVisible={isMobileMenuOpen}
+                  $delay={index * 30}
+                  onClick={() => handleNavClick(item.path)}
+                  tabIndex={isMobileMenuOpen ? 0 : -1}
+                >
+                  <span>{item.label}</span>
+                </NavItem>
+              ))}
+            </DrawerContent>
+          </MobileNavDrawer>
+        )}
+      </>
     </ThemeProvider>
   );
 };

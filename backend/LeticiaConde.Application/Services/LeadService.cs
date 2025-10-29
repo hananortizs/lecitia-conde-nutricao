@@ -1,5 +1,6 @@
 using LeticiaConde.Application.DTOs;
 using LeticiaConde.Application.Interfaces;
+using LeticiaConde.Application.Exceptions;
 using LeticiaConde.Core.Entities;
 using LeticiaConde.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -58,12 +59,12 @@ public class LeadService : ILeadService
         // Validates if frontend calculation matches expected
         if (Math.Abs(dto.Bmi - expectedBmi) > 0.01m)
         {
-            throw new ArgumentException("BMI calculation mismatch. Please recalculate on frontend.");
+            throw new ValidationException("BMI calculation mismatch. Please recalculate on frontend.");
         }
 
         if (dto.BmiClassification != expectedClassification.Classification)
         {
-            throw new ArgumentException("BMI classification mismatch. Please recalculate on frontend.");
+            throw new ValidationException("BMI classification mismatch. Please recalculate on frontend.");
         }
 
         // Creates the lead
@@ -98,13 +99,14 @@ public class LeadService : ILeadService
     /// Gets a lead by ID
     /// </summary>
     /// <param name="id">Lead ID</param>
-    /// <returns>Found lead or null</returns>
-    public async Task<CapturedLeadDto?> GetLeadByIdAsync(int id)
+    /// <returns>Found lead</returns>
+    /// <exception cref="NotFoundException">Thrown when lead is not found</exception>
+    public async Task<CapturedLeadDto> GetLeadByIdAsync(int id)
     {
         var lead = await _context.Leads.FindAsync(id);
         
         if (lead == null)
-            return null;
+            throw new NotFoundException("Lead", id);
 
         return new CapturedLeadDto
         {
@@ -144,18 +146,16 @@ public class LeadService : ILeadService
     /// Marks a lead as converted
     /// </summary>
     /// <param name="id">Lead ID</param>
-    /// <returns>True if marked successfully</returns>
-    public async Task<bool> MarkAsConvertedAsync(int id)
+    /// <exception cref="NotFoundException">Thrown when lead is not found</exception>
+    public async Task MarkAsConvertedAsync(int id)
     {
         var lead = await _context.Leads.FindAsync(id);
         
         if (lead == null)
-            return false;
+            throw new NotFoundException("Lead", id);
 
         lead.Converted = true;
         await _context.SaveChangesAsync();
-        
-        return true;
     }
 
     /// <summary>

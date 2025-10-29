@@ -10,10 +10,10 @@ public interface IAppointmentService
     /// <summary>
     /// Gets available time slots for appointment
     /// </summary>
-    /// <param name="startDate">Start date for search</param>
-    /// <param name="endDate">End date for search</param>
+    /// <param name="startDate">Start date for search (defaults to today if null)</param>
+    /// <param name="endDate">End date for search (defaults to 30 days from start if null)</param>
     /// <returns>List of available slots</returns>
-    Task<IEnumerable<AvailableSlotDto>> GetAvailableSlotsAsync(DateTime startDate, DateTime endDate);
+    Task<IEnumerable<AvailableSlotDto>> GetAvailableSlotsAsync(DateTime? startDate = null, DateTime? endDate = null);
 
     /// <summary>
     /// Reserves a time slot for appointment
@@ -34,8 +34,9 @@ public interface IAppointmentService
     /// Gets an appointment by ID
     /// </summary>
     /// <param name="id">Appointment ID</param>
-    /// <returns>Found appointment or null</returns>
-    Task<AppointmentDto?> GetAppointmentByIdAsync(int id);
+    /// <returns>Found appointment</returns>
+    /// <exception cref="Exceptions.NotFoundException">Thrown when appointment is not found</exception>
+    Task<AppointmentDto> GetAppointmentByIdAsync(int id);
 
     /// <summary>
     /// Gets all appointments
@@ -47,8 +48,8 @@ public interface IAppointmentService
     /// Cancels an appointment
     /// </summary>
     /// <param name="id">Appointment ID</param>
-    /// <returns>True if cancelled successfully</returns>
-    Task<bool> CancelAppointmentAsync(int id);
+    /// <exception cref="Exceptions.NotFoundException">Thrown when appointment is not found</exception>
+    Task CancelAppointmentAsync(int id);
 
     /// <summary>
     /// Checks if a time slot is available

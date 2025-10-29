@@ -6,15 +6,18 @@ alwaysApply: true
 
 ## 🎯 **Visão Geral**
 
-Single Page Application (SPA) para captação de leads e agendamento de consultas nutricionais.
+Single Page Application (SPA) para captação de leads e agendamento de consultas nutricionais com integração Google Login, sistema de anamnese multi-step e agendamento unificado (Site + WhatsApp).
 
 ## 🏗️ **Arquitetura**
 
-- **Framework**: React 18+ com Vite
-- **Linguagem**: JavaScript/TypeScript
-- **Bundler**: Vite
-- **Styling**: CSS Modules ou Styled Components
-- **State Management**: React Hooks (useState, useEffect, useContext)
+- **Framework**: React 19 com TypeScript
+- **Build Tool**: Vite 7+
+- **Styling**: Styled Components (CSS-in-JS)
+- **Form Management**: React Hook Form
+- **HTTP Client**: Axios
+- **State Management**: React Hooks + Context API
+- **Icons**: Lucide React
+- **Date Handling**: date-fns
 
 ## 📁 **Estrutura de Pastas**
 
@@ -23,56 +26,118 @@ frontend/
 ├── public/                     # Arquivos estáticos
 ├── src/
 │   ├── components/            # Componentes reutilizáveis
-│   │   ├── common/           # Componentes comuns (Button, Input, Modal)
-│   │   ├── forms/            # Formulários específicos
-│   │   └── layout/           # Componentes de layout (Header, Footer, Sidebar)
+│   │   ├── styled/           # Componentes estilizados base (Button, Input, Card)
+│   │   ├── Layout/           # Layout e navegação (Header, Footer, Layout)
+│   │   ├── BmiCalculator.tsx # Calculadora de IMC
+│   │   ├── AppointmentSteps.tsx # Sistema de anamnese multi-step
+│   │   ├── AppointmentStart.tsx # Tela inicial de decisão (Site/WhatsApp)
+│   │   ├── AppointmentScheduler.tsx # Agendamento tradicional
+│   │   ├── GoogleLoginButton.tsx # Botão de login Google
+│   │   ├── PreConsultationForm.tsx # Formulário de pré-consulta (legado)
+│   │   └── steps/            # Steps da anamnese
+│   │       ├── BasicInfoStep.tsx
+│   │       ├── GoalsStep.tsx
+│   │       ├── ExperienceStep.tsx
+│   │       └── AppointmentStep.tsx
 │   ├── pages/                # Páginas da aplicação
-│   │   ├── HomePage.jsx      # Página inicial com calculadora IMC
-│   │   ├── AppointmentPage.jsx # Página de agendamento
-│   │   └── ThankYouPage.jsx  # Página de confirmação
-│   ├── hooks/                # Custom hooks
-│   │   ├── useBmiCalculator.js # Hook para cálculo de IMC
-│   │   ├── useAppointment.js  # Hook para agendamentos
-│   │   └── useTheme.js        # Hook para temas
-│   ├── utils/                # Utilitários e helpers
-│   │   ├── bmiCalculator.js  # Cálculo de IMC
-│   │   ├── api.js           # Cliente da API
-│   │   └── validators.js    # Validações
+│   │   ├── Home.tsx          # Página inicial
+│   │   ├── AppointmentPage.tsx # Página de agendamento (legado)
+│   │   ├── AboutPage.tsx     # Página sobre
+│   │   └── ContactPage.tsx   # Página de contato
+│   ├── contexts/             # Contextos React
+│   │   ├── ThemeContext.tsx  # Contexto de tema (claro/escuro)
+│   │   └── AuthContext.tsx   # Contexto de autenticação (Google Login)
 │   ├── services/             # Serviços e integrações
-│   │   ├── apiService.js    # Serviço da API
-│   │   └── themeService.js  # Serviço de temas
-│   ├── styles/              # Estilos globais e temas
-│   │   ├── globals.css      # Estilos globais
-│   │   ├── light-theme.css  # Tema claro
-│   │   └── dark-theme.css   # Tema escuro
-│   ├── contexts/            # Contextos React
-│   │   └── ThemeContext.js  # Contexto de tema
-│   └── App.jsx              # Componente principal
+│   │   └── api.ts            # Cliente HTTP e serviços da API
+│   ├── types/                # Definições TypeScript
+│   │   └── index.ts          # Interfaces e tipos
+│   ├── theme/                # Sistema de temas
+│   │   └── index.ts          # Definições de tema
+│   ├── utils/                # Utilitários e helpers
+│   ├── config/               # Configurações
+│   │   └── google.ts         # Configuração Google OAuth
+│   └── App.tsx               # Componente principal
 ├── package.json
-└── vite.config.js
+└── vite.config.ts
 ```
+
+## 🌐 **Integração com API**
+
+### **Base URL**
+
+- **Development**: `http://localhost:5000` (padrão)
+- **Configuração**: Variável de ambiente `VITE_API_URL`
+- **Base Path**: `/lcn` (não `/api` ou `/pms`) - **IMPORTANTE**
+
+### **Endpoints Utilizados**
+
+**Espaços (✅ Implementados) / Pendentes (🔴)**
+
+#### **Leads**
+
+- ✅ `POST /lcn/leads/capture-lead` - Capturar lead
+- ✅ `GET /lcn/leads/{id}` - Obter lead por ID
+- ✅ `GET /lcn/leads` - Listar todos os leads
+- 🔴 `GET /lcn/leads/find?email={email}&whatsapp={whatsapp}` - **PENDENTE: Verificar cliente recorrente**
+
+#### **Appointments**
+
+- Controller: `AppointmentController` → `/lcn/appointment` (kebab-case automático)
+- ✅ `GET /lcn/appointment/available-slots` - Horários disponíveis
+- ✅ `POST /lcn/appointment/reserve` - Reservar horário
+- ✅ `GET /lcn/appointment/check-availability` - Verificar disponibilidade
+- 🔴 `POST /lcn/pre-consultation` - **PENDENTE: Salvar anamnese completa**
+- 🔴 `POST /lcn/appointment/reserve-whatsapp` - **PENDENTE: Reservar via WhatsApp**
+- 🔴 `PUT /lcn/appointment/{id}/reschedule` - **PENDENTE: Reagendar**
+
+#### **Payment**
+
+- ✅ `POST /lcn/payment/webhook` - Webhook de pagamento
+
+### **Cliente HTTP (Axios)**
+
+- Base URL configurável via `.env`
+- Interceptadores para tratamento de erros
+- Loading states para melhor UX
+- Timeout de 10 segundos
+- Retry automático em caso de falha (futuro)
+
+### **⚠️ IMPORTANTE: Base Path Correto**
+
+O arquivo `frontend/src/services/api.ts` usa base path `/lcn/`:
+
+- ✅ **Correto**: `/lcn/leads/...`, `/lcn/appointment/...`, `/lcn/payment/...`
+- ❌ **Incorreto**: `/api/...` ou `/pms/...`
 
 ## 🎨 **Sistema de Temas**
 
 ### **Paleta de Cores - Tema Claro**
 
-- **Primary**: #2E7D32 (Verde escuro)
-- **Secondary**: #4CAF50 (Verde médio)
-- **Accent**: #FFC107 (Âmbar)
-- **Background**: #FFFFFF (Branco)
-- **Surface**: #F5F5F5 (Cinza claro)
-- **Text**: #212121 (Preto)
-- **Text Secondary**: #757575 (Cinza médio)
+- **Primary**: #4CAF50 (Verde médio - Saúde)
+- **Secondary**: #2196F3 (Azul - Confiança)
+- **Accent/CTA**: #FF7043 (Laranja - Energia)
+- **Background**: #FAFAFA
+- **Surface**: #FFFFFF
+- **Text**: #333333
+- **Text Secondary**: #757575
+- **Border**: #E0E0E0
+- **Success Coldor**: #4CAF50
+- **Error**: #F44336
+- **Warning**: #FF9800
 
 ### **Paleta de Cores - Tema Escuro**
 
-- **Primary**: #4CAF50 (Verde médio)
-- **Secondary**: #66BB6A (Verde claro)
-- **Accent**: #FFD54F (Âmbar claro)
-- **Background**: #121212 (Preto)
-- **Surface**: #1E1E1E (Cinza escuro)
-- **Text**: #FFFFFF (Branco)
-- **Text Secondary**: #B0B0B0 (Cinza claro)
+- **Primary**: #66BB6A (Verde claro)
+- **Secondary**: #42A5F5 (Azul claro)
+- **Accent/CTA**: #FF8A65 (Laranja claro)
+- **Background**: #121212
+- **Surface**: #1E1E1E
+- **Text**: #FAFAFA
+- **Text Secondary**: #B0B0B0
+- **Border**: #424242
+- **Success**: #66BB6A
+- **Error**: #EF5350
+- **Warning**: #FFA726
 
 ### **Detecção de Tema**
 
@@ -80,45 +145,102 @@ frontend/
 - Permitir alternância manual
 - Salvar preferência no localStorage
 - Aplicar tema instantaneamente
+- Transições suaves entre temas
 
 ## 🔧 **Funcionalidades Principais**
 
-### **Calculadora de IMC**
+### **✅ Calculadora de IMC**
 
-- Cálculo instantâneo no frontend
+- Cálculo instantâneo no frontend (peso / altura²)
 - Validação em tempo real
-- Classificação automática (Abaixo do peso, Normal, Sobrepeso, etc.)
+- Classificação automática (OMS):
+  - Abaixo do peso: < 18.5
+  - Peso normal: 18.5 - 24.9
+  - Sobrepeso: 25.0 - 29.9
+  - Obesidade Grau I: 30.0 - 34.9
+  - Obesidade Grau II: 35.0 - 39.9
+  - Obesidade Grau III: ≥ 40.0
 - Feedback visual imediato
+- Integração com Google Login
+- Pré-preenchimento automático de dados
+- Persistência de sessão (localStorage)
+- Altura em centímetros (50-300cm)
 
-### **Captação de Leads**
+### **✅ Autenticação Google**
 
-- Formulário de captura após cálculo do IMC
-- Validação de dados
-- Envio para API
-- Feedback de sucesso/erro
+- OAuth 2.0 com Google Identity Services
+- Captura de dados: `name`, `email`, `googleId`, `firstName`, `lastName`, `locale`, `emailVerified`
+- Persistência de sessão via `AuthContext`
+- Pré-preenchimento automático de formulários
+- Logout funcional com limpeza de dados
 
-### **Sistema de Agendamento**
+### **✅ Sistema de Anamnese Multi-Step**
 
-- Visualização de horários disponíveis
-- Seleção de data e hora
-- Validação de disponibilidade
-- Confirmação de agendamento
+**Fluxo Completo:**
 
-## 🌐 **Integração com API**
+1. **Tela Inicial** (`AppointmentStart.tsx`)
 
-### **Endpoints Utilizados**
+   - Decisão: Agendar via Site ou WhatsApp
+   - Badge "Indicado para novos clientes"
+   - Informação para clientes recorrentes
 
-- `POST /api/leads/capture-lead` - Capturar lead
-- `GET /api/appointments/available-slots` - Horários disponíveis
-- `POST /api/appointments/reserve` - Reservar horário
-- `GET /api/appointments/check-availability` - Verificar disponibilidade
+2. **Step 1: Informações Básicas** (`BasicInfoStep.tsx`)
 
-### **Cliente HTTP**
+   - Nome Completo \*
+   - Email \*
+   - WhatsApp \* (com máscara)
+   - Data de Nascimento \* (maior de 18 anos)
+   - Gênero \*
 
-- Usar fetch API ou axios
-- Interceptadores para tratamento de erros
-- Loading states para melhor UX
-- Retry automático em caso de falha
+3. **Step 2: Objetivos e Motivação** (`GoalsStep.tsx`)
+
+   - Objetivos principais (múltipla escolha)
+   - Motivação pessoal (texto)
+
+4. **Step 3: Experiência e Hábitos** (`ExperienceStep.tsx`)
+
+   - Experiência anterior com nutrição
+   - Dieta atual
+   - Frequência de refeições
+   - Restrições alimentares
+
+5. **Step 4: Agendamento** (`AppointmentStep.tsx`)
+   - Tipo de consulta (Primeira Consulta: 30-90min)
+   - Calendário interativo (date-fns)
+   - Seleção de data
+   - Seleção de horários disponíveis (buscar do backend - **PENDENTE**)
+   - Resumo da consulta
+
+**Guia de Progresso:**
+
+- Círculos numerados conectados por linha
+- Estados: Ativo, Completo, Inativo
+- Navegação por setas (topo) e botões (inferior)
+- Botões "Anterior/Próximo" condicionais
+
+### **🔴 Captação de Leads**
+
+- ✅ Formulário de captura após cálculo do IMC
+- ✅ Validação de dados
+- ✅ Envio para API (`POST /lcn/leads/capture-lead`)
+- ✅ Feedback de sucesso/erro
+- 🔴 Salvamento de anamnese completa (**PENDENTE**)
+
+### **🔴 Sistema de Agendamento**
+
+- ✅ Visualização de horários disponíveis (hardcoded - **CORRIGIR**)
+- ✅ Seleção de data e hora (calendário)
+- 🔴 Validação de disponibilidade em tempo real (**PENDENTE**)
+- 🔴 Criação de appointment após anamnese (**PENDENTE**)
+- 🔴 Integração com sistema de pagamento (**PENDENTE**)
+- 🔴 Confirmação de agendamento (**PENDENTE**)
+
+### **🔴 Cliente Recorrente**
+
+- 🔴 Verificação automática ao carregar componente (**PENDENTE**)
+- 🔴 Endpoint `GET /lcn/leads/find` (**PENDENTE no backend**)
+- 🔴 Fluxo diferenciado (WhatsApp recomendado) (**PENDENTE**)
+- 🔴 Identificação via email/WhatsApp (**PENDENTE**)
 
 ## 📱 **Responsividade**
 
@@ -134,6 +256,19 @@ frontend/
 - Expandir para telas maiores
 - Touch-friendly em dispositivos móveis
 - Performance otimizada
+- Prevenção de overflow horizontal
+- Scroll horizontal quando necessário (guia de progresso)
+- Cards empilhados verticalmente no mobile
+
+### **Melhorias Mobile**
+
+有些- Overflow horizontal evitado (width: 100%, max-width: 100%, box-sizing: border-box)
+
+- Padding e fontes responsivos
+- Botões com tamanhos adequados
+- Texto truncado com ellipsis quando necessário
+- Layout vertical para cards
+- Navegação tátil otimizada
 
 ## 🎯 **UX/UI Guidelines**
 
@@ -142,94 +277,158 @@ frontend/
 - Interface limpa e intuitiva
 - Feedback visual claro
 - Animações suaves e funcionais
-- Acessibilidade (WCAG 2.1)
+- Acessibilidade (WCAG 2.1 AA)
+- Navegação consistente
+- Estados de carregamento visíveis
+- Mensagens de erro amigáveis
 
 ### **Componentes**
 
-- Botões com estados (normal, hover, active, disabled)
-- Inputs com validação visual
-- Modais para confirmações
-- Loading spinners
-- Toast notifications
+- **Botões**: Estados (normal, hover, active, disabled, loading)
+- **Inputs**: Validação visual com mensagens de erro
+- **Modais**: Para confirmações importantes
+- **Loading Spinners**: Durante requisições
+- **Toast Notifications**: Para feedback de ações (futuro)
+- **Progress Indicators**: Para processos multi-step
+- **Cards**: Com sombras e bordas arredondadas
 
-## 🔄 **BMI Calculator Strategy**
+### **Padrões de Navegação**
 
-### **Frontend Implementation**
-
-- Cálculo instantâneo para melhor UX
-- Validação em tempo real
-- Feedback imediato ao usuário
-- Funciona offline
-
-### **Data Flow**
-
-1. Usuário insere peso/altura
-2. Frontend calcula IMC instantaneamente
-3. Frontend exibe resultado imediatamente
-4. Frontend envia dados para backend
-5. Backend valida consistência do cálculo
-6. Backend armazena lead no banco
+- **Guia de Progresso**: Círculos conectados com linha
+- **Navegação Entre Steps**: Setas no topo + botões no rodapé
+- **Condicional**: Botões só aparecem quando aplicável
+- **Feedback Visual**: Estados claros (ativo, completo, inativo)
 
 ## 📝 **Naming Conventions**
 
 ### **Arquivos e Pastas**
 
-- **Components**: PascalCase (e.g., `BmiCalculator.jsx`, `AppointmentForm.jsx`)
-- **Pages**: PascalCase (e.g., `HomePage.jsx`, `AppointmentPage.jsx`)
-- **Hooks**: camelCase com prefixo "use" (e.g., `useBmiCalculator.js`, `useTheme.js`)
-- **Utils**: camelCase (e.g., `bmiCalculator.js`, `apiService.js`)
-- **Styles**: kebab-case (e.g., `bmi-calculator.css`, `appointment-form.css`)
+- **Components**: PascalCase (e.g., `BmiCalculator.tsx`, `AppointmentSteps.tsx`)
+- **Pages**: PascalCase (e.g., `Home.tsx`, `AppointmentPage.tsx`)
+- **Hooks**: camelCase com prefixo "use" (e.g., `useAuth`, `useTheme`)
+- **Utils**: camelCase (e.g., `bmiCalculator.ts`, `validators.ts`)
+- **Types**: camelCase (e.g., `types.ts`)
+- **Services**: camelCase (e.g., `api.ts`)
 
 ### **Variáveis e Funções**
 
 - **Variables**: camelCase (e.g., `userName`, `isLoading`, `bmiResult`)
-- **Functions**: camelCase (e.g., `calculateBmi`, `validateInput`, `handleSubmit`)
+- **Functions**: camelCase (e.g함 `calculateBmi`, `validateInput`, `handleSubmit`)
 - **Constants**: UPPER_SNAKE_CASE (e.g., `API_BASE_URL`, `MAX_WEIGHT`)
-- **CSS Classes**: kebab-case (e.g., `bmi-calculator`, `appointment-form`)
+- **Styled Components**: PascalCase (e.g., `StyledButton`, `Container`, `StepIndicator`)
 
 ### **React Components**
 
-- **Component Names**: PascalCase (e.g., `BmiCalculator`, `AppointmentForm`)
+- **Component Names**: PascalCase (e.g., `BmiCalculator`, `AppointmentSteps`)
 - **Props**: camelCase (e.g., `onSubmit`, `isVisible`, `userData`)
 - **State Variables**: camelCase (e.g., `isLoading`, `formData`, `errorMessage`)
+- **Transient Props**: Prefixo `$` para styled-components (e.g., `$variant`, `$loading`, `$error`)
+
+### **Styled Components**
+
+- Use transient props (`$prop`) para evitar warnings do React
+- Props passadas para DOM devem ter prefixo `$`
+- Exemplo: `$variant`, `$loading`, `$disabled`, `$isActive`, `$isCompleted`
 
 ## 🚀 **Performance**
 
 ### **Otimizações**
 
-- Lazy loading de componentes
-- Code splitting por rota
-- Memoização com React.memo
+- Lazy loading de componentes (futuro)
+- Code splitting por rota (futuro)
+- Memoização com `React.memo` quando necessário
 - Otimização de re-renders
 - Compressão de imagens
+- Build otimizado com Vite
 
 ### **Bundle Size**
 
-- Tree shaking para remover código não utilizado
+- Tree shaking automático (Vite)
 - Minificação de CSS e JS
 - Otimização de assets
-- Análise de bundle size
+- Análise de bundle size (futuro)
 
 ## 🔧 **Development Guidelines**
 
 ### **Code Quality**
 
 - ESLint para linting
-- Prettier para formatação
-- Husky para pre-commit hooks
-- Testes unitários com Jest
-- Testes de integração com React Testing Library
+- TypeScript para type safety
+- Prettier para formatação (futuro)
+- Husky para pre-commit hooks (futuro)
+- Testes unitários com Jest (futuro)
+- Testes de integração com React Testing Library (futuro)
 
 ### **State Management**
 
-- Use React hooks para estado local
-- Context API para estado global
+- Use React hooks para estado local (`useState`, `useEffect`)
+- Context API para estado global (`ThemeContext`, `AuthContext`)
 - Evite prop drilling
 - Mantenha estado próximo ao componente que o usa
+- Persistência com `localStorage` quando apropriado
 
 ### **Error Handling**
 
-- Error boundaries para capturar erros
-- Tratamento de erros de API
-- Fallbacks para componentes que falham
+- Error boundaries para capturar erros (futuro)
+- Tratamento de erros de API no `api.ts`
+- Fallbacks para componentes que falham (futuro)
 - Logging de erros para debugging
+- Mensagens de erro amigáveis ao usuário
+
+### **Form Handling**
+
+- Use React Hook Form para formulários
+- Validação com `yup` ou `zod` (futuro)
+- Feedback visual de erros
+- Prevenção de submit duplo
+- Reset de formulários após sucesso
+
+## 🎯 **Pendências Críticas**
+
+### **Integração Backend**
+
+1. **✅ URLs da API Corrigidas**
+
+   - Arquivo: `frontend/src/services/api.ts`
+   - ✅ Base path `/lcn/` implementado
+   - ✅ Controller `AppointmentController` → `/lcn/appointment` (singular)
+
+2. **Implementar salvamento de anamnese**
+
+   - Arquivo: `App.tsx` - `handleAppointmentComplete`
+   - Criar endpoint no backend: `POST /lcn/pre-consultation`
+   - Enviar dados da anamnese completa
+
+3. **Integrar busca de horários do backend**
+
+   - Arquivo: `AppointmentStep.tsx`
+   - Usar `appointmentService.getAvailableSlots()`
+   - Buscar slots por data selecionada
+
+4. **Finalizar fluxo de agendamento**
+
+   - Criar appointment após anamnese
+   - Integrar `appointmentService.reserveTimeSlot()`
+   - Tratamento de erros
+
+5. **Verificar cliente recorrente**
+   - Arquivo: `AppointmentSteps.tsx` (linhas 471, 564)
+   - Remover TODOs
+   - Implementar busca via `GET /lcn/leads/find`
+   - Ajustar fluxo conforme tipo de cliente
+
+### **Funcionalidades Pendentes**
+
+1. Sistema de pagamento (integração)
+2. Geração de link Google Meet
+3. Páginas de feedback (sucesso/erro)
+4. Loading states em todas requisições
+5. Toast notifications
+6. Reagendamento de consultas
+7. Dashboard admin (futuro)
+
+## 📚 **Referências**
+
+- Regras de Negócio: `backend/REGRAS_NEGOCIO.md`
+- Arquitetura de Agendamento: `backend/AGENDAMENTO_UNIFICADO.md`
+- Análise do Projeto: `ANALISE_PROJETO_PROXIMOS_PASSOS.md`

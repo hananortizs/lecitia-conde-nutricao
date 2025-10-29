@@ -7,7 +7,6 @@ import AppointmentPage from "./pages/AppointmentPage";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
 import AppointmentSteps from "./components/AppointmentSteps";
-import type { PreConsultationData } from "./types";
 
 type Page = "home" | "pre-consulta" | "agendamento" | "sobre" | "contato";
 
@@ -77,10 +76,9 @@ function App() {
     }
   };
 
-  const handleAppointmentComplete = async (data: PreConsultationData) => {
+  const handleAppointmentComplete = async () => {
     try {
       // Aqui você pode salvar os dados do agendamento
-      console.log("Dados do agendamento:", data);
 
       // Mostrar mensagem de sucesso
       alert(
@@ -89,8 +87,7 @@ function App() {
 
       // Navegar para home
       handleNavigate("/");
-    } catch (error) {
-      console.error("Erro ao processar agendamento:", error);
+    } catch {
       alert("Erro ao processar seu agendamento. Tente novamente.");
     }
   };

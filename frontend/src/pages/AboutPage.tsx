@@ -15,10 +15,10 @@ const HeroSection = styled.section`
     ${(props) => props.theme.colors.primary}10,
     ${(props) => props.theme.colors.secondary}05
   );
-  padding: ${(props) => props.theme.spacing.xxl} 0;
+  padding: ${(props) => props.theme.spacing.xl} 0;
   text-align: center;
   border-radius: ${(props) => props.theme.borderRadius.lg};
-  margin-bottom: ${(props) => props.theme.spacing.xxl};
+  margin-bottom: ${(props) => props.theme.spacing.xl};
 `;
 
 const HeroTitle = styled.h1`
@@ -49,7 +49,7 @@ const HeroSubtitle = styled.p`
 `;
 
 const ContentSection = styled.section`
-  margin-bottom: ${(props) => props.theme.spacing.xxl};
+  margin-bottom: ${(props) => props.theme.spacing.xl};
 `;
 
 const SectionTitle = styled.h2`

@@ -1954,7 +1954,7 @@ const PreConsultationForm: React.FC<PreConsultationFormProps> = ({
                 type="submit"
                 $variant="primary"
                 $size="lg"
-                loading={isSubmitting}
+                $loading={isSubmitting}
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Enviando..." : "Continuar para Agendamento"}

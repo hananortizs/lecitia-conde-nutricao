@@ -64,6 +64,7 @@ public class GlobalExceptionHandler
 
         var response = new
         {
+            data = (object?)null,
             error = message,
             success = false
         };

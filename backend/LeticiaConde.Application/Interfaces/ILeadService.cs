@@ -30,10 +30,22 @@ public interface ILeadService
     Task<CapturedLeadDto> GetLeadByIdAsync(int id);
 
     /// <summary>
-    /// Gets all leads
+    /// Gets all leads with pagination and optional conversion filter
     /// </summary>
-    /// <returns>List of leads</returns>
-    Task<IEnumerable<CapturedLeadDto>> GetAllLeadsAsync();
+    /// <param name="page">Page number (1-based)</param>
+    /// <param name="pageSize">Items per page</param>
+    /// <param name="converted">Optional filter by converted status</param>
+    /// <returns>Paged list of leads</returns>
+    Task<PagedResult<CapturedLeadDto>> GetAllLeadsAsync(int page = 1, int pageSize = 10, bool? converted = null);
+
+    /// <summary>
+    /// Searches leads by name, email or WhatsApp with pagination
+    /// </summary>
+    /// <param name="query">Search term (optional)</param>
+    /// <param name="page">Page number (1-based)</param>
+    /// <param name="pageSize">Items per page</param>
+    /// <returns>Paged list of leads</returns>
+    Task<PagedResult<CapturedLeadDto>> SearchLeadsAsync(string? query, int page = 1, int pageSize = 10);
 
     /// <summary>
     /// Marks a lead as converted

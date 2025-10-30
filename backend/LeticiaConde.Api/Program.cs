@@ -5,6 +5,8 @@ using LeticiaConde.Api.Conventions;
 using LeticiaConde.Api.Extensions;
 using LeticiaConde.Api.Middleware;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
+using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,13 +16,28 @@ builder.Services.AddControllers(options =>
     // Adicionar convenção para kebab-case automático
     options.Conventions.Add(new KebabCaseControllerModelConvention());
     
-    // Adicionar prefixo global "lcn" para todas as rotas
-    options.UseGeneralRoutePrefix("lcn");
+    // Adicionar prefixo global "lcn/v1" para todas as rotas (versionamento)
+    options.UseGeneralRoutePrefix("lcn/v1");
 });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new() { Title = "Letícia Conde Nutricionista API", Version = "v1" });
+    // Incluir comentários XML para descrever controllers, actions e DTOs
+    var baseDir = AppContext.BaseDirectory;
+    var xmlFiles = new[] {
+        "LeticiaConde.Api.xml",
+        "LeticiaConde.Application.xml",
+        "LeticiaConde.Core.xml"
+    };
+    foreach (var xml in xmlFiles)
+    {
+        var path = Path.Combine(baseDir, xml);
+        if (File.Exists(path))
+        {
+            c.IncludeXmlComments(path, includeControllerXmlComments: true);
+        }
+    }
 });
 
 // Configuração do banco de dados PostgreSQL
@@ -87,7 +104,7 @@ if (app.Environment.IsDevelopment())
 // Exibir informações da API no console
 Console.WriteLine("🚀 LETÍCIA CONDE NUTRIÇÃO API");
 Console.WriteLine($"🌐 Swagger UI:     \u001b[34mhttp://localhost:5014/swagger\u001b[0m");
-Console.WriteLine($"📊 API Base URL:   \u001b[34mhttp://localhost:5014/lcn\u001b[0m");
+Console.WriteLine($"📊 API Base URL:   \u001b[34mhttp://localhost:5014/lcn/v1\u001b[0m");
 Console.WriteLine($"🔧 Ambiente:       {app.Environment.EnvironmentName}");
 Console.WriteLine($"🗄️  Banco:          PostgreSQL (lcn-database)");
 Console.WriteLine($"🔗 Conexão:        {connectionString.Split(';')[0]}");

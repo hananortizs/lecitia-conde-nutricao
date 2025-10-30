@@ -124,13 +124,27 @@ public class LeadService : ILeadService
     /// Gets all leads
     /// </summary>
     /// <returns>List of leads</returns>
-    public async Task<IEnumerable<CapturedLeadDto>> GetAllLeadsAsync()
+    public async Task<PagedResult<CapturedLeadDto>> GetAllLeadsAsync(int page = 1, int pageSize = 10, bool? converted = null)
     {
-        var leads = await _context.Leads
+        if (page <= 0) page = 1;
+        if (pageSize <= 0 || pageSize > 100) pageSize = 10;
+
+        var leadsQuery = _context.Leads.AsQueryable();
+
+        if (converted.HasValue)
+        {
+            leadsQuery = leadsQuery.Where(l => l.Converted == converted.Value);
+        }
+
+        var totalItems = await leadsQuery.CountAsync();
+
+        var leads = await leadsQuery
             .OrderByDescending(l => l.CaptureDate)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
 
-        return leads.Select(lead => new CapturedLeadDto
+        var items = leads.Select(lead => new CapturedLeadDto
         {
             Id = lead.Id,
             Name = lead.Name,
@@ -140,6 +154,71 @@ public class LeadService : ILeadService
             BmiClassification = lead.BmiClassification,
             CaptureDate = lead.CaptureDate
         });
+
+        var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+        return new PagedResult<CapturedLeadDto>
+        {
+            Page = page,
+            PageSize = pageSize,
+            TotalItems = totalItems,
+            TotalPages = totalPages,
+            Items = items
+        };
+    }
+
+    /// <summary>
+    /// Searches leads by name, email or WhatsApp with pagination
+    /// </summary>
+    /// <param name="query">Search term (optional)</param>
+    /// <param name="page">Page number (1-based)</param>
+    /// <param name="pageSize">Items per page</param>
+    /// <returns>Paged list of leads</returns>
+    public async Task<PagedResult<CapturedLeadDto>> SearchLeadsAsync(string? query, int page = 1, int pageSize = 10)
+    {
+        if (page <= 0) page = 1;
+        if (pageSize <= 0 || pageSize > 100) pageSize = 10;
+
+        var leadsQuery = _context.Leads.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            var normalized = query.Trim().ToLower();
+            leadsQuery = leadsQuery.Where(l =>
+                EF.Functions.ILike(l.Name, $"%{normalized}%") ||
+                EF.Functions.ILike(l.Email, $"%{normalized}%") ||
+                EF.Functions.ILike(l.WhatsApp, $"%{normalized}%"));
+        }
+
+        var totalItems = await leadsQuery.CountAsync();
+
+        var leads = await leadsQuery
+            .OrderByDescending(l => l.CaptureDate)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        var items = leads.Select(lead => new CapturedLeadDto
+        {
+            Id = lead.Id,
+            Name = lead.Name,
+            Email = lead.Email,
+            WhatsApp = lead.WhatsApp,
+            Bmi = lead.Bmi,
+            BmiClassification = lead.BmiClassification,
+            CaptureDate = lead.CaptureDate
+        });
+
+        var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+        return new PagedResult<CapturedLeadDto>
+        {
+            Page = page,
+            PageSize = pageSize,
+            TotalItems = totalItems,
+            TotalPages = totalPages,
+            Items = items
+        };
     }
 
     /// <summary>

@@ -50,13 +50,35 @@ public class LeadsController : ControllerBase
     }
 
     /// <summary>
-    /// Gets all leads
+    /// Gets all leads (paginated) and allows filtering by converted status
     /// </summary>
+    /// <param name="page">Page number (1-based)</param>
+    /// <param name="pageSize">Items per page</param>
+    /// <param name="converted">Optional filter by converted status</param>
     [HttpGet]
-    public async Task<ActionResult<ApiResponse<IEnumerable<CapturedLeadDto>>>> GetAllLeads()
+    public async Task<ActionResult<ApiResponse<PagedResult<CapturedLeadDto>>>> GetAllLeads(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] bool? converted = null)
     {
-        var leads = await _leadService.GetAllLeadsAsync();
-        return Ok(new ApiResponse<IEnumerable<CapturedLeadDto>> { Data = leads });
+        var result = await _leadService.GetAllLeadsAsync(page, pageSize, converted);
+        return Ok(new ApiResponse<PagedResult<CapturedLeadDto>> { Data = result });
+    }
+
+    /// <summary>
+    /// Searches leads by name, email or WhatsApp with pagination
+    /// </summary>
+    /// <param name="query">Search term (optional)</param>
+    /// <param name="page">Page number (1-based)</param>
+    /// <param name="pageSize">Items per page</param>
+    [HttpGet("search")]
+    public async Task<ActionResult<ApiResponse<PagedResult<CapturedLeadDto>>>> Search(
+        [FromQuery] string? query,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10)
+    {
+        var result = await _leadService.SearchLeadsAsync(query, page, pageSize);
+        return Ok(new ApiResponse<PagedResult<CapturedLeadDto>> { Data = result });
     }
 
     /// <summary>

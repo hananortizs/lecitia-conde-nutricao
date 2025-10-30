@@ -289,7 +289,6 @@ O arquivo `frontend/src/services/api.ts` usa base path `/lcn/`:
 - Navegação consistente
 - Estados de carregamento visíveis
 - Mensagens de erro amigáveis
-(or) **Logging e Debug**
 
 ### **Componentes**
 

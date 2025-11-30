@@ -110,14 +110,16 @@ backend/
 O sistema utiliza convenções globais para configuração de rotas:
 
 1. **Prefixo Global**: Todas as rotas automaticamente recebem o prefixo `/lcn`
+
    - Configurado em `Program.cs` via `UseGeneralRoutePrefix("lcn")`
    - Não é necessário especificar o prefixo em cada controller
 
 2. **Kebab-Case Automático**: Todos os nomes de controllers são convertidos para kebab-case
+
    - Exemplo: `LeadsController` → `leads`, `AppointmentController` → `appointment`
    - Implementado via `KebabCaseControllerModelConvention`
 
-3. **Uso de [controller]**: Controllers devem usar `[Route("[controller]")]` 
+3. **Uso de [controller]**: Controllers devem usar `[Route("[controller]")]`
    - O ASP.NET Core substitui automaticamente por `[controller]` pelo nome do controller
    - A convenção de kebab-case transforma para kebab-case automaticamente
 
@@ -130,6 +132,7 @@ O sistema utiliza convenções globais para configuração de rotas:
 Todas as rotas seguem o padrão: `/lcn/{controller-kebab-case}/{action-kebab-case}`
 
 **Exemplo:**
+
 - `LeadsController` com `[Route("[controller]")]` → `/lcn/leads`
 - `AppointmentController` com `[Route("[controller]")]` → `/lcn/appointment`
 - `PaymentController` com `[Route("[controller]")]` → `/lcn/payment`
@@ -271,7 +274,7 @@ Todas as rotas seguem o padrão: `/lcn/{controller-kebab-case}/{action-kebab-cas
 - ✅ **Kebab-Case Automático**: Nomes de controllers convertidos automaticamente
 - ✅ **Use [controller]**: Sempre usar `[Route("[controller]")]` nos controllers
 - Formato final: `/lcn/{controller-kebab-case}/{action-kebab-case}`
-- Exemplos: 
+- Exemplos:
   - `LeadsController` com `[Route("[controller]")]` → `/lcn/leads`
   - Ação `[HttpPost("capture-lead")]` → `/lcn/leads/capture-lead`
   - `AppointmentController` com `[Route("[controller]")]` → `/lcn/appointment`
@@ -316,13 +319,14 @@ builder.Services.AddControllers(options =>
 {
     // Convenção para kebab-case automático
     options.Conventions.Add(new KebabCaseControllerModelConvention());
-    
+
     // Prefixo global "lcn" para todas as rotas
     options.UseGeneralRoutePrefix("lcn");
 });
 ```
 
 **Arquivos de Convenção:**
+
 - `Conventions/KebabCaseControllerModelConvention.cs` - Converte nomes de controllers para kebab-case
 - `Extensions/RoutePrefixConventionExtension.cs` - Aplica prefixo global às rotas
 
@@ -400,6 +404,6 @@ public class LeadsController : ControllerBase
 
 ## 📚 **Referências**
 
-- Regras de Negócio: `backend/REGRAS_NEGOCIO.md`
-- Arquitetura de Agendamento: `backend/AGENDAMENTO_UNIFICADO.md`
+- Regras de Negócio: `docs/03-business-rules/regras-negocio.md`
+- Arquitetura de Agendamento: `docs/02-architecture/agendamento-unificado.md`
 - Integração WhatsApp: `backend/WHATSAPP_INTEGRATION.md`

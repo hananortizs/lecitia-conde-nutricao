@@ -1,0 +1,128 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LeticiaConde.Api</name>
+    </assembly>
+    <members>
+        <member name="T:LeticiaConde.Api.Controllers.AppointmentController">
+            <summary>
+            Controller para gerenciamento de agendamentos
+            Responsabilidade: Apenas receber requisições HTTP e delegar para os services
+            </summary>
+        </member>
+        <member name="M:LeticiaConde.Api.Controllers.AppointmentController.GetAvailableSlots(System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Gets available time slots for appointment
+            </summary>
+        </member>
+        <member name="M:LeticiaConde.Api.Controllers.AppointmentController.ReserveTimeSlot(LeticiaConde.Application.DTOs.RequestAppointmentDto)">
+            <summary>
+            Reserves a time slot for appointment
+            </summary>
+        </member>
+        <member name="M:LeticiaConde.Api.Controllers.AppointmentController.GetAppointmentById(System.Int32)">
+            <summary>
+            Gets an appointment by ID
+            </summary>
+        </member>
+        <member name="M:LeticiaConde.Api.Controllers.AppointmentController.GetAllAppointments">
+            <summary>
+            Gets all appointments
+            </summary>
+        </member>
+        <member name="M:LeticiaConde.Api.Controllers.AppointmentController.CancelAppointment(System.Int32)">
+            <summary>
+            Cancels an appointment
+            </summary>
+        </member>
+        <member name="M:LeticiaConde.Api.Controllers.AppointmentController.CheckAvailability(System.DateTime)">
+            <summary>
+            Checks if a time slot is available
+            </summary>
+        </member>
+        <member name="T:LeticiaConde.Api.Controllers.LeadsController">
+            <summary>
+            Controller para gerenciamento de leads
+            Responsabilidade: Apenas receber requisições HTTP e delegar para os services
+            </summary>
+        </member>
+        <member name="M:LeticiaConde.Api.Controllers.LeadsController.ValidateBmi(LeticiaConde.Application.DTOs.CalculateBmiDto)">
+            <summary>
+            Validates BMI calculation (for consistency check)
+            </summary>
+        </member>
+        <member name="M:LeticiaConde.Api.Controllers.LeadsController.CaptureLead(LeticiaConde.Application.DTOs.CaptureLeadDto)">
+            <summary>
+            Captures a new lead after BMI calculation
+            </summary>
+        </member>
+        <member name="M:LeticiaConde.Api.Controllers.LeadsController.GetLeadById(System.Int32)">
+            <summary>
+            Gets a lead by ID
+            </summary>
+        </member>
+        <member name="M:LeticiaConde.Api.Controllers.LeadsController.GetAllLeads(System.Int32,System.Int32,System.Nullable{System.Boolean})">
+            <summary>
+            Gets all leads (paginated) and allows filtering by converted status
+            </summary>
+            <param name="page">Page number (1-based)</param>
+            <param name="pageSize">Items per page</param>
+            <param name="converted">Optional filter by converted status</param>
+        </member>
+        <member name="M:LeticiaConde.Api.Controllers.LeadsController.Search(System.String,System.Int32,System.Int32)">
+            <summary>
+            Searches leads by name, email or WhatsApp with pagination
+            </summary>
+            <param name="query">Search term (optional)</param>
+            <param name="page">Page number (1-based)</param>
+            <param name="pageSize">Items per page</param>
+        </member>
+        <member name="M:LeticiaConde.Api.Controllers.LeadsController.MarkAsConverted(System.Int32)">
+            <summary>
+            Marks a lead as converted
+            </summary>
+        </member>
+        <member name="T:LeticiaConde.Api.Controllers.ApiResponse`1">
+            <summary>
+            Standardized API response wrapper
+            </summary>
+        </member>
+        <member name="T:LeticiaConde.Api.Controllers.PaymentController">
+            <summary>
+            Controller para gerenciamento de pagamentos e webhooks
+            Responsabilidade: Apenas receber requisições HTTP e delegar para os services
+            </summary>
+        </member>
+        <member name="M:LeticiaConde.Api.Controllers.PaymentController.PaymentWebhook(LeticiaConde.Application.DTOs.ConfirmPaymentDto)">
+            <summary>
+            Webhook for payment confirmation
+            </summary>
+        </member>
+        <member name="M:LeticiaConde.Api.Controllers.PaymentController.ConfirmAppointment(System.Int32,System.String)">
+            <summary>
+            Confirms an appointment after payment (internal endpoint)
+            </summary>
+        </member>
+        <member name="T:LeticiaConde.Api.Conventions.KebabCaseControllerModelConvention">
+            <summary>
+            Convensão para converter nomes de controllers para kebab-case automaticamente
+            </summary>
+        </member>
+        <member name="T:LeticiaConde.Api.Extensions.RoutePrefixConventionExtension">
+            <summary>
+            Extensão para adicionar prefixo global às rotas
+            </summary>
+        </member>
+        <member name="T:LeticiaConde.Api.Extensions.RoutePrefixConvention">
+            <summary>
+            Convenção para aplicar prefixo global às rotas
+            </summary>
+        </member>
+        <member name="T:LeticiaConde.Api.Middleware.GlobalExceptionHandler">
+            <summary>
+            Middleware para tratamento global de exceções
+            Mapeia exceções de domínio para códigos HTTP apropriados
+            </summary>
+        </member>
+    </members>
+</doc>

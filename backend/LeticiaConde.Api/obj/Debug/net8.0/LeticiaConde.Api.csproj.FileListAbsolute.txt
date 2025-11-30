@@ -111,3 +111,8 @@ C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backe
 C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Api\bin\Debug\net8.0\LeticiaConde.Core.pdb
 C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Api\bin\Debug\net8.0\LeticiaConde.Application.pdb
 C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Api\bin\Debug\net8.0\LeticiaConde.Infrastructure.pdb
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Api\obj\Debug\net8.0\LeticiaConde.Api.sourcelink.json
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Api\bin\Debug\net8.0\LeticiaConde.Core.xml
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Api\bin\Debug\net8.0\LeticiaConde.Application.xml
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Api\obj\Debug\net8.0\LeticiaConde.Api.xml
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Api\bin\Debug\net8.0\LeticiaConde.Api.xml

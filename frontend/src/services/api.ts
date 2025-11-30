@@ -13,7 +13,7 @@ import type {
 } from "../types";
 
 // API Base Configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5014";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -39,6 +39,16 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
+    // Log error for debugging (only in development)
+    if (import.meta.env.DEV) {
+      console.error("API Error:", {
+        url: error.config?.url,
+        method: error.config?.method,
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message,
+      });
+    }
     return Promise.reject(error);
   }
 );
@@ -48,7 +58,7 @@ export const leadService = {
   // Validate BMI calculation
   async validateBmi(data: CalculateBmiDto): Promise<BmiResultDto> {
     const response: AxiosResponse<ApiResponse<BmiResultDto>> = await api.post(
-      "/lcn/leads/validate-bmi",
+      "/lcn/v1/leads/validate-bmi",
       data
     );
     return response.data.data!;
@@ -57,14 +67,14 @@ export const leadService = {
   // Capture a new lead
   async captureLead(data: CaptureLeadDto): Promise<CapturedLeadDto> {
     const response: AxiosResponse<ApiResponse<CapturedLeadDto>> =
-      await api.post("/lcn/leads/capture-lead", data);
+      await api.post("/lcn/v1/leads/capture-lead", data);
     return response.data.data!;
   },
 
   // Get lead by ID
   async getLeadById(id: number): Promise<CapturedLeadDto> {
     const response: AxiosResponse<ApiResponse<CapturedLeadDto>> = await api.get(
-      `/lcn/leads/${id}`
+      `/lcn/v1/leads/${id}`
     );
     return response.data.data!;
   },
@@ -72,14 +82,14 @@ export const leadService = {
   // Get all leads
   async getAllLeads(): Promise<CapturedLeadDto[]> {
     const response: AxiosResponse<ApiResponse<CapturedLeadDto[]>> =
-      await api.get("/lcn/leads");
+      await api.get("/lcn/v1/leads");
     return response.data.data!;
   },
 
   // Mark lead as converted
   async markAsConverted(id: number): Promise<boolean> {
     const response: AxiosResponse<ApiResponse<boolean>> = await api.put(
-      `/lcn/leads/${id}/mark-converted`
+      `/lcn/v1/leads/${id}/mark-converted`
     );
     return response.data.data!;
   },
@@ -97,14 +107,14 @@ export const appointmentService = {
     if (endDate) params.append("endDate", endDate);
 
     const response: AxiosResponse<ApiResponse<AvailableSlotDto[]>> =
-      await api.get(`/lcn/appointment/available-slots?${params.toString()}`);
+      await api.get(`/lcn/v1/appointment/available-slots?${params.toString()}`);
     return response.data.data!;
   },
 
   // Reserve a time slot
   async reserveTimeSlot(data: RequestAppointmentDto): Promise<AppointmentDto> {
     const response: AxiosResponse<ApiResponse<AppointmentDto>> = await api.post(
-      "/lcn/appointment/reserve",
+      "/lcn/v1/appointment/reserve",
       data
     );
     return response.data.data!;
@@ -113,7 +123,7 @@ export const appointmentService = {
   // Get appointment by ID
   async getAppointmentById(id: number): Promise<AppointmentDto> {
     const response: AxiosResponse<ApiResponse<AppointmentDto>> = await api.get(
-      `/lcn/appointment/${id}`
+      `/lcn/v1/appointment/${id}`
     );
     return response.data.data!;
   },
@@ -121,14 +131,14 @@ export const appointmentService = {
   // Get all appointments
   async getAllAppointments(): Promise<AppointmentDto[]> {
     const response: AxiosResponse<ApiResponse<AppointmentDto[]>> =
-      await api.get("/lcn/appointment");
+      await api.get("/lcn/v1/appointment");
     return response.data.data!;
   },
 
   // Cancel appointment
   async cancelAppointment(id: number): Promise<boolean> {
     const response: AxiosResponse<ApiResponse<boolean>> = await api.put(
-      `/lcn/appointment/${id}/cancel`
+      `/lcn/v1/appointment/${id}/cancel`
     );
     return response.data.data!;
   },
@@ -136,7 +146,7 @@ export const appointmentService = {
   // Check availability
   async checkAvailability(dateTime: string): Promise<boolean> {
     const response: AxiosResponse<ApiResponse<boolean>> = await api.get(
-      `/lcn/appointment/check-availability?dateTime=${dateTime}`
+      `/lcn/v1/appointment/check-availability?dateTime=${dateTime}`
     );
     return response.data.data!;
   },
@@ -147,7 +157,7 @@ export const paymentService = {
   // Confirm payment via webhook
   async confirmPayment(data: ConfirmPaymentDto): Promise<boolean> {
     const response: AxiosResponse<ApiResponse<boolean>> = await api.post(
-      "/lcn/payment/webhook",
+      "/lcn/v1/payment/webhook",
       data
     );
     return response.data.data!;

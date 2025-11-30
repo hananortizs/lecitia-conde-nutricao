@@ -1,0 +1,188 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LeticiaConde.Core</name>
+    </assembly>
+    <members>
+        <member name="T:LeticiaConde.Core.Entities.Appointment">
+            <summary>
+            Represents a nutritional consultation appointment
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.Appointment.Id">
+            <summary>
+            Unique appointment identifier
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.Appointment.LeadId">
+            <summary>
+            ID of the lead associated with the appointment
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.Appointment.Lead">
+            <summary>
+            Lead associated with the appointment
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.Appointment.DateTime">
+            <summary>
+            Appointment date and time
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.Appointment.Status">
+            <summary>
+            Appointment status
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.Appointment.ReservationDate">
+            <summary>
+            Reservation date and time (when it was created)
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.Appointment.ConfirmationDate">
+            <summary>
+            Confirmation date and time (when it was paid)
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.Appointment.VirtualRoomLink">
+            <summary>
+            Virtual room link (Google Meet/Zoom)
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.Appointment.Observations">
+            <summary>
+            Additional appointment observations
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.Appointment.TransactionId">
+            <summary>
+            Payment transaction ID
+            </summary>
+        </member>
+        <member name="T:LeticiaConde.Core.Entities.AppointmentStatus">
+            <summary>
+            Enum that represents the possible statuses of an appointment
+            </summary>
+        </member>
+        <member name="F:LeticiaConde.Core.Entities.AppointmentStatus.Reserved">
+            <summary>
+            Reserved appointment (awaiting payment)
+            </summary>
+        </member>
+        <member name="F:LeticiaConde.Core.Entities.AppointmentStatus.Confirmed">
+            <summary>
+            Confirmed appointment (payment approved)
+            </summary>
+        </member>
+        <member name="F:LeticiaConde.Core.Entities.AppointmentStatus.Cancelled">
+            <summary>
+            Cancelled appointment
+            </summary>
+        </member>
+        <member name="F:LeticiaConde.Core.Entities.AppointmentStatus.Completed">
+            <summary>
+            Completed appointment
+            </summary>
+        </member>
+        <member name="T:LeticiaConde.Core.Entities.Lead">
+            <summary>
+            Represents a lead captured through the BMI calculator
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.Lead.Id">
+            <summary>
+            Unique lead identifier
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.Lead.Name">
+            <summary>
+            Full name of the lead
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.Lead.Email">
+            <summary>
+            Lead email
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.Lead.WhatsApp">
+            <summary>
+            Lead WhatsApp number
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.Lead.Weight">
+            <summary>
+            Weight informed for BMI calculation
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.Lead.Height">
+            <summary>
+            Height informed for BMI calculation
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.Lead.Bmi">
+            <summary>
+            Calculated BMI
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.Lead.BmiClassification">
+            <summary>
+            BMI classification (Underweight, Normal, etc.)
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.Lead.CaptureDate">
+            <summary>
+            Lead capture date and time
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.Lead.Converted">
+            <summary>
+            Indicates if the lead was converted to an appointment
+            </summary>
+        </member>
+        <member name="T:LeticiaConde.Core.Entities.ScheduleConfiguration">
+            <summary>
+            Represents the nutritionist's working hours configuration
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.ScheduleConfiguration.Id">
+            <summary>
+            Unique configuration identifier
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.ScheduleConfiguration.DayOfWeek">
+            <summary>
+            Day of the week (0 = Sunday, 1 = Monday, etc.)
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.ScheduleConfiguration.DayName">
+            <summary>
+            Day of the week name
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.ScheduleConfiguration.Active">
+            <summary>
+            Indicates if the day is active for appointments
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.ScheduleConfiguration.StartTime">
+            <summary>
+            Service start time
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.ScheduleConfiguration.EndTime">
+            <summary>
+            Service end time
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.ScheduleConfiguration.Sabbath">
+            <summary>
+            Indicates if it's a Sabbath day (completely blocked)
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Core.Entities.ScheduleConfiguration.Observations">
+            <summary>
+            Observations about the schedule
+            </summary>
+        </member>
+    </members>
+</doc>

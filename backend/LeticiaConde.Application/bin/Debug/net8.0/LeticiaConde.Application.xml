@@ -1,0 +1,604 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LeticiaConde.Application</name>
+    </assembly>
+    <members>
+        <member name="T:LeticiaConde.Application.DTOs.RequestAppointmentDto">
+            <summary>
+            DTO for appointment request
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.RequestAppointmentDto.LeadId">
+            <summary>
+            ID of the lead requesting the appointment
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.RequestAppointmentDto.DateTime">
+            <summary>
+            Desired date and time for the appointment
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.RequestAppointmentDto.Observations">
+            <summary>
+            Additional observations
+            </summary>
+        </member>
+        <member name="T:LeticiaConde.Application.DTOs.AppointmentDto">
+            <summary>
+            DTO for appointment response
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.AppointmentDto.Id">
+            <summary>
+            Appointment ID
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.AppointmentDto.LeadId">
+            <summary>
+            Lead ID
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.AppointmentDto.LeadName">
+            <summary>
+            Lead name
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.AppointmentDto.LeadEmail">
+            <summary>
+            Lead email
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.AppointmentDto.LeadWhatsApp">
+            <summary>
+            Lead WhatsApp
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.AppointmentDto.DateTime">
+            <summary>
+            Appointment date and time
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.AppointmentDto.Status">
+            <summary>
+            Appointment status
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.AppointmentDto.ReservationDate">
+            <summary>
+            Reservation date
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.AppointmentDto.ConfirmationDate">
+            <summary>
+            Confirmation date
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.AppointmentDto.VirtualRoomLink">
+            <summary>
+            Virtual room link
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.AppointmentDto.Observations">
+            <summary>
+            Observations
+            </summary>
+        </member>
+        <member name="T:LeticiaConde.Application.DTOs.AvailableSlotDto">
+            <summary>
+            DTO for available time slot
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.AvailableSlotDto.DateTime">
+            <summary>
+            Slot date and time
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.AvailableSlotDto.Available">
+            <summary>
+            Indicates if the slot is available
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.AvailableSlotDto.UnavailabilityReason">
+            <summary>
+            Reason for unavailability (if applicable)
+            </summary>
+        </member>
+        <member name="T:LeticiaConde.Application.DTOs.ConfirmPaymentDto">
+            <summary>
+            DTO for payment confirmation via webhook
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.ConfirmPaymentDto.TransactionId">
+            <summary>
+            Transaction ID
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.ConfirmPaymentDto.Status">
+            <summary>
+            Payment status
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.ConfirmPaymentDto.Amount">
+            <summary>
+            Amount paid
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.ConfirmPaymentDto.AdditionalData">
+            <summary>
+            Additional webhook data
+            </summary>
+        </member>
+        <member name="T:LeticiaConde.Application.DTOs.CaptureLeadDto">
+            <summary>
+            DTO for lead capture through BMI calculator
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.CaptureLeadDto.Name">
+            <summary>
+            Full name of the lead
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.CaptureLeadDto.Email">
+            <summary>
+            Lead email
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.CaptureLeadDto.WhatsApp">
+            <summary>
+            Lead WhatsApp number
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.CaptureLeadDto.Weight">
+            <summary>
+            Weight in kg
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.CaptureLeadDto.Height">
+            <summary>
+            Height in meters
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.CaptureLeadDto.Bmi">
+            <summary>
+            BMI calculated by frontend (for validation)
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.CaptureLeadDto.BmiClassification">
+            <summary>
+            BMI classification calculated by frontend
+            </summary>
+        </member>
+        <member name="T:LeticiaConde.Application.DTOs.CapturedLeadDto">
+            <summary>
+            DTO for captured lead response
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.CapturedLeadDto.Id">
+            <summary>
+            Captured lead ID
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.CapturedLeadDto.Name">
+            <summary>
+            Lead name
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.CapturedLeadDto.Email">
+            <summary>
+            Lead email
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.CapturedLeadDto.WhatsApp">
+            <summary>
+            Lead WhatsApp
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.CapturedLeadDto.Bmi">
+            <summary>
+            Calculated BMI
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.CapturedLeadDto.BmiClassification">
+            <summary>
+            BMI classification
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.CapturedLeadDto.CaptureDate">
+            <summary>
+            Capture date
+            </summary>
+        </member>
+        <member name="T:LeticiaConde.Application.DTOs.CalculateBmiDto">
+            <summary>
+            DTO for BMI calculation
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.CalculateBmiDto.Weight">
+            <summary>
+            Weight in kg
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.CalculateBmiDto.Height">
+            <summary>
+            Height in meters
+            </summary>
+        </member>
+        <member name="T:LeticiaConde.Application.DTOs.BmiResultDto">
+            <summary>
+            DTO for BMI calculation response
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.BmiResultDto.Bmi">
+            <summary>
+            Calculated BMI
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.BmiResultDto.Classification">
+            <summary>
+            BMI classification
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.BmiResultDto.Description">
+            <summary>
+            Classification description
+            </summary>
+        </member>
+        <member name="T:LeticiaConde.Application.DTOs.PagedResult`1">
+            <summary>
+            Generic paged result wrapper
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.PagedResult`1.Page">
+            <summary>
+            Current page number (1-based)
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.PagedResult`1.PageSize">
+            <summary>
+            Items per page
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.PagedResult`1.TotalItems">
+            <summary>
+            Total items across all pages
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.PagedResult`1.TotalPages">
+            <summary>
+            Total pages
+            </summary>
+        </member>
+        <member name="P:LeticiaConde.Application.DTOs.PagedResult`1.Items">
+            <summary>
+            Items for the current page
+            </summary>
+        </member>
+        <member name="T:LeticiaConde.Application.Exceptions.ConflictException">
+            <summary>
+            Exception thrown when there's a conflict (e.g., duplicate, unavailable resource)
+            </summary>
+        </member>
+        <member name="T:LeticiaConde.Application.Exceptions.NotFoundException">
+            <summary>
+            Exception thrown when a resource is not found
+            </summary>
+        </member>
+        <member name="T:LeticiaConde.Application.Exceptions.ValidationException">
+            <summary>
+            Exception thrown when validation fails
+            </summary>
+        </member>
+        <member name="T:LeticiaConde.Application.Interfaces.IAppointmentService">
+            <summary>
+            Interface para o serviço de gerenciamento de agendamentos
+            </summary>
+        </member>
+        <member name="M:LeticiaConde.Application.Interfaces.IAppointmentService.GetAvailableSlotsAsync(System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Gets available time slots for appointment
+            </summary>
+            <param name="startDate">Start date for search (defaults to today if null)</param>
+            <param name="endDate">End date for search (defaults to 30 days from start if null)</param>
+            <returns>List of available slots</returns>
+        </member>
+        <member name="M:LeticiaConde.Application.Interfaces.IAppointmentService.ReserveTimeSlotAsync(LeticiaConde.Application.DTOs.RequestAppointmentDto)">
+            <summary>
+            Reserves a time slot for appointment
+            </summary>
+            <param name="dto">Appointment request data</param>
+            <returns>Created appointment</returns>
+        </member>
+        <member name="M:LeticiaConde.Application.Interfaces.IAppointmentService.ConfirmAppointmentAsync(System.Int32,System.String)">
+            <summary>
+            Confirms an appointment after payment
+            </summary>
+            <param name="appointmentId">Appointment ID</param>
+            <param name="transactionId">Payment transaction ID</param>
+            <returns>Confirmed appointment</returns>
+        </member>
+        <member name="M:LeticiaConde.Application.Interfaces.IAppointmentService.GetAppointmentByIdAsync(System.Int32)">
+            <summary>
+            Gets an appointment by ID
+            </summary>
+            <param name="id">Appointment ID</param>
+            <returns>Found appointment</returns>
+            <exception cref="T:LeticiaConde.Application.Exceptions.NotFoundException">Thrown when appointment is not found</exception>
+        </member>
+        <member name="M:LeticiaConde.Application.Interfaces.IAppointmentService.GetAllAppointmentsAsync">
+            <summary>
+            Gets all appointments
+            </summary>
+            <returns>List of appointments</returns>
+        </member>
+        <member name="M:LeticiaConde.Application.Interfaces.IAppointmentService.CancelAppointmentAsync(System.Int32)">
+            <summary>
+            Cancels an appointment
+            </summary>
+            <param name="id">Appointment ID</param>
+            <exception cref="T:LeticiaConde.Application.Exceptions.NotFoundException">Thrown when appointment is not found</exception>
+        </member>
+        <member name="M:LeticiaConde.Application.Interfaces.IAppointmentService.CheckAvailabilityAsync(System.DateTime)">
+            <summary>
+            Checks if a time slot is available
+            </summary>
+            <param name="dateTime">Date and time to check</param>
+            <returns>True if available</returns>
+        </member>
+        <member name="M:LeticiaConde.Application.Interfaces.IAppointmentService.GetSunsetTimeAsync(System.DateTime)">
+            <summary>
+            Gets sunset time for a specific date
+            </summary>
+            <param name="date">Date to query</param>
+            <returns>Sunset time</returns>
+        </member>
+        <member name="T:LeticiaConde.Application.Interfaces.ILeadService">
+            <summary>
+            Interface para o serviço de gerenciamento de leads
+            </summary>
+        </member>
+        <member name="M:LeticiaConde.Application.Interfaces.ILeadService.CalculateBmiAsync(LeticiaConde.Application.DTOs.CalculateBmiDto)">
+            <summary>
+            Calculates BMI based on weight and height
+            </summary>
+            <param name="dto">Data for BMI calculation</param>
+            <returns>BMI calculation result</returns>
+        </member>
+        <member name="M:LeticiaConde.Application.Interfaces.ILeadService.CaptureLeadAsync(LeticiaConde.Application.DTOs.CaptureLeadDto)">
+            <summary>
+            Captures a new lead after BMI calculation
+            </summary>
+            <param name="dto">Lead data for capture</param>
+            <returns>Captured lead</returns>
+        </member>
+        <member name="M:LeticiaConde.Application.Interfaces.ILeadService.GetLeadByIdAsync(System.Int32)">
+            <summary>
+            Gets a lead by ID
+            </summary>
+            <param name="id">Lead ID</param>
+            <returns>Found lead</returns>
+            <exception cref="T:LeticiaConde.Application.Exceptions.NotFoundException">Thrown when lead is not found</exception>
+        </member>
+        <member name="M:LeticiaConde.Application.Interfaces.ILeadService.GetAllLeadsAsync(System.Int32,System.Int32,System.Nullable{System.Boolean})">
+            <summary>
+            Gets all leads with pagination and optional conversion filter
+            </summary>
+            <param name="page">Page number (1-based)</param>
+            <param name="pageSize">Items per page</param>
+            <param name="converted">Optional filter by converted status</param>
+            <returns>Paged list of leads</returns>
+        </member>
+        <member name="M:LeticiaConde.Application.Interfaces.ILeadService.SearchLeadsAsync(System.String,System.Int32,System.Int32)">
+            <summary>
+            Searches leads by name, email or WhatsApp with pagination
+            </summary>
+            <param name="query">Search term (optional)</param>
+            <param name="page">Page number (1-based)</param>
+            <param name="pageSize">Items per page</param>
+            <returns>Paged list of leads</returns>
+        </member>
+        <member name="M:LeticiaConde.Application.Interfaces.ILeadService.MarkAsConvertedAsync(System.Int32)">
+            <summary>
+            Marks a lead as converted
+            </summary>
+            <param name="id">Lead ID</param>
+            <exception cref="T:LeticiaConde.Application.Exceptions.NotFoundException">Thrown when lead is not found</exception>
+        </member>
+        <member name="T:LeticiaConde.Application.Interfaces.IPaymentService">
+            <summary>
+            Interface para o serviço de gerenciamento de pagamentos
+            </summary>
+        </member>
+        <member name="M:LeticiaConde.Application.Interfaces.IPaymentService.ProcessPaymentWebhookAsync(LeticiaConde.Application.DTOs.ConfirmPaymentDto)">
+            <summary>
+            Processes a payment webhook
+            </summary>
+            <param name="dto">Payment confirmation data</param>
+            <returns>Processing result</returns>
+        </member>
+        <member name="T:LeticiaConde.Application.Services.AppointmentService">
+            <summary>
+            Serviço para gerenciamento de agendamentos com regras de horário e Sabbat
+            </summary>
+        </member>
+        <member name="M:LeticiaConde.Application.Services.AppointmentService.#ctor(LeticiaConde.Infrastructure.Data.ApplicationDbContext,System.Net.Http.IHttpClientFactory,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Construtor do serviço
+            </summary>
+            <param name="context">Contexto do banco de dados</param>
+            <param name="httpClientFactory">Factory para criação de clientes HTTP</param>
+            <param name="configuration">Configurações da aplicação</param>
+        </member>
+        <member name="M:LeticiaConde.Application.Services.AppointmentService.GetAvailableSlotsAsync(System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Gets available time slots for appointment
+            </summary>
+            <param name="startDate">Start date for search (defaults to today if null)</param>
+            <param name="endDate">End date for search (defaults to 30 days from start if null)</param>
+            <returns>List of available slots</returns>
+        </member>
+        <member name="M:LeticiaConde.Application.Services.AppointmentService.GetAvailableSlotsInternalAsync(System.DateTime,System.DateTime)">
+            <summary>
+            Internal method to get available slots with explicit dates
+            </summary>
+        </member>
+        <member name="M:LeticiaConde.Application.Services.AppointmentService.ReserveTimeSlotAsync(LeticiaConde.Application.DTOs.RequestAppointmentDto)">
+            <summary>
+            Reserves a time slot for appointment
+            </summary>
+            <param name="dto">Appointment request data</param>
+            <returns>Created appointment</returns>
+        </member>
+        <member name="M:LeticiaConde.Application.Services.AppointmentService.ConfirmAppointmentAsync(System.Int32,System.String)">
+            <summary>
+            Confirms an appointment after payment
+            </summary>
+            <param name="appointmentId">Appointment ID</param>
+            <param name="transactionId">Payment transaction ID</param>
+            <returns>Confirmed appointment</returns>
+        </member>
+        <member name="M:LeticiaConde.Application.Services.AppointmentService.GetAppointmentByIdAsync(System.Int32)">
+            <summary>
+            Gets an appointment by ID
+            </summary>
+            <param name="id">Appointment ID</param>
+            <returns>Found appointment</returns>
+            <exception cref="T:LeticiaConde.Application.Exceptions.NotFoundException">Thrown when appointment is not found</exception>
+        </member>
+        <member name="M:LeticiaConde.Application.Services.AppointmentService.GetAppointmentByIdInternalAsync(System.Int32)">
+            <summary>
+            Internal method to get appointment by ID
+            </summary>
+        </member>
+        <member name="M:LeticiaConde.Application.Services.AppointmentService.GetAllAppointmentsAsync">
+            <summary>
+            Gets all appointments
+            </summary>
+            <returns>List of appointments</returns>
+        </member>
+        <member name="M:LeticiaConde.Application.Services.AppointmentService.CancelAppointmentAsync(System.Int32)">
+            <summary>
+            Cancels an appointment
+            </summary>
+            <param name="id">Appointment ID</param>
+            <exception cref="T:LeticiaConde.Application.Exceptions.NotFoundException">Thrown when appointment is not found</exception>
+        </member>
+        <member name="M:LeticiaConde.Application.Services.AppointmentService.CheckAvailabilityAsync(System.DateTime)">
+            <summary>
+            Checks if a time slot is available
+            </summary>
+            <param name="dateTime">Date and time to check</param>
+            <returns>True if available</returns>
+        </member>
+        <member name="M:LeticiaConde.Application.Services.AppointmentService.GetSunsetTimeAsync(System.DateTime)">
+            <summary>
+            Gets sunset time for a specific date from an external API
+            </summary>
+            <param name="date">Date for query</param>
+            <returns>Sunset time</returns>
+        </member>
+        <member name="M:LeticiaConde.Application.Services.AppointmentService.GenerateDaySlotsAsync(System.DateTime,LeticiaConde.Core.Entities.ScheduleConfiguration,System.Collections.Generic.List{LeticiaConde.Core.Entities.Appointment})">
+            <summary>
+            Generates time slots for a specific day
+            </summary>
+            <param name="date">Date to generate slots</param>
+            <param name="configuration">Day's schedule configuration</param>
+            <param name="existingAppointments">Existing appointments</param>
+            <returns>List of day's slots</returns>
+        </member>
+        <member name="M:LeticiaConde.Application.Services.AppointmentService.GenerateVirtualRoomLinkAsync(System.DateTime)">
+            <summary>
+            Generates virtual room link (future integration with Google Calendar/Zoom)
+            </summary>
+            <param name="dateTime">Appointment date and time</param>
+            <returns>Virtual room link</returns>
+        </member>
+        <member name="T:LeticiaConde.Application.Services.SunsetApiResponse">
+            <summary>
+            Class for deserializing sunset API response
+            </summary>
+        </member>
+        <member name="T:LeticiaConde.Application.Services.LeadService">
+            <summary>
+            Serviço para gerenciamento de leads
+            </summary>
+        </member>
+        <member name="M:LeticiaConde.Application.Services.LeadService.#ctor(LeticiaConde.Infrastructure.Data.ApplicationDbContext)">
+            <summary>
+            Construtor do serviço
+            </summary>
+            <param name="context">Contexto do banco de dados</param>
+        </member>
+        <member name="M:LeticiaConde.Application.Services.LeadService.CalculateBmiAsync(LeticiaConde.Application.DTOs.CalculateBmiDto)">
+            <summary>
+            Validates BMI data and returns classification (for consistency)
+            Note: Actual BMI calculation should be done on frontend for better UX
+            </summary>
+            <param name="dto">Data for BMI validation</param>
+            <returns>BMI validation result</returns>
+        </member>
+        <member name="M:LeticiaConde.Application.Services.LeadService.CaptureLeadAsync(LeticiaConde.Application.DTOs.CaptureLeadDto)">
+            <summary>
+            Captures a new lead with BMI calculated by frontend
+            </summary>
+            <param name="dto">Lead data for capture</param>
+            <returns>Captured lead</returns>
+        </member>
+        <member name="M:LeticiaConde.Application.Services.LeadService.GetLeadByIdAsync(System.Int32)">
+            <summary>
+            Gets a lead by ID
+            </summary>
+            <param name="id">Lead ID</param>
+            <returns>Found lead</returns>
+            <exception cref="T:LeticiaConde.Application.Exceptions.NotFoundException">Thrown when lead is not found</exception>
+        </member>
+        <member name="M:LeticiaConde.Application.Services.LeadService.GetAllLeadsAsync(System.Int32,System.Int32,System.Nullable{System.Boolean})">
+            <summary>
+            Gets all leads
+            </summary>
+            <returns>List of leads</returns>
+        </member>
+        <member name="M:LeticiaConde.Application.Services.LeadService.SearchLeadsAsync(System.String,System.Int32,System.Int32)">
+            <summary>
+            Searches leads by name, email or WhatsApp with pagination
+            </summary>
+            <param name="query">Search term (optional)</param>
+            <param name="page">Page number (1-based)</param>
+            <param name="pageSize">Items per page</param>
+            <returns>Paged list of leads</returns>
+        </member>
+        <member name="M:LeticiaConde.Application.Services.LeadService.MarkAsConvertedAsync(System.Int32)">
+            <summary>
+            Marks a lead as converted
+            </summary>
+            <param name="id">Lead ID</param>
+            <exception cref="T:LeticiaConde.Application.Exceptions.NotFoundException">Thrown when lead is not found</exception>
+        </member>
+        <member name="M:LeticiaConde.Application.Services.LeadService.ClassifyBmi(System.Decimal)">
+            <summary>
+            Classifies BMI according to WHO standards
+            </summary>
+            <param name="bmi">BMI value</param>
+            <returns>BMI classification and description</returns>
+        </member>
+        <member name="T:LeticiaConde.Application.Services.PaymentService">
+            <summary>
+            Serviço para gerenciamento de pagamentos
+            </summary>
+        </member>
+        <member name="M:LeticiaConde.Application.Services.PaymentService.#ctor(LeticiaConde.Application.Interfaces.IAppointmentService,Microsoft.Extensions.Logging.ILogger{LeticiaConde.Application.Services.PaymentService})">
+            <summary>
+            Construtor do serviço
+            </summary>
+            <param name="appointmentService">Serviço de agendamentos</param>
+            <param name="logger">Logger para registro de eventos</param>
+        </member>
+        <member name="M:LeticiaConde.Application.Services.PaymentService.ProcessPaymentWebhookAsync(LeticiaConde.Application.DTOs.ConfirmPaymentDto)">
+            <summary>
+            Processes a payment webhook
+            </summary>
+            <param name="dto">Payment confirmation data</param>
+            <returns>True if payment was processed successfully</returns>
+        </member>
+    </members>
+</doc>

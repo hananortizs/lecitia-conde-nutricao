@@ -15,3 +15,5 @@ C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backe
 C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Infrastructure\obj\Debug\net8.0\LeticiaConde.Infrastructure.pdb
 C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Infrastructure\obj\Debug\net8.0\LeticiaConde.Infrastructure.genruntimeconfig.cache
 C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Infrastructure\obj\Debug\net8.0\ref\LeticiaConde.Infrastructure.dll
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Infrastructure\obj\Debug\net8.0\LeticiaConde.Infrastructure.sourcelink.json
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Infrastructure\bin\Debug\net8.0\LeticiaConde.Core.xml

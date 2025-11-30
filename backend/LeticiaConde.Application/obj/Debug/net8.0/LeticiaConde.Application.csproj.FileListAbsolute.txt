@@ -15,3 +15,7 @@ C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backe
 C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Application\obj\Debug\net8.0\refint\LeticiaConde.Application.dll
 C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Application\obj\Debug\net8.0\LeticiaConde.Application.pdb
 C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Application\obj\Debug\net8.0\ref\LeticiaConde.Application.dll
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Application\obj\Debug\net8.0\LeticiaConde.Application.sourcelink.json
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Application\bin\Debug\net8.0\LeticiaConde.Application.xml
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Application\bin\Debug\net8.0\LeticiaConde.Core.xml
+C:\Users\hanan\Desktop\HananOrtiz\Projects\CursorAI\leticia-conde-nutricao\backend\LeticiaConde.Application\obj\Debug\net8.0\LeticiaConde.Application.xml

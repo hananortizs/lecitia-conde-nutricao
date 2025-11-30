@@ -1,84 +1,97 @@
-# Letícia Conde Nutricionista - SPA
+# 🥗 Letícia Conde Nutrição - Sistema de Agendamento
 
-Sistema de captação de leads e agendamento para a nutricionista Letícia Conde.
+Sistema completo de captação de leads e agendamento de consultas nutricionais online.
 
-## Visão Geral
+## 🚀 Início Rápido
 
-Este projeto consiste em uma Single Page Application (SPA) que automatiza a qualificação de leads através de uma Calculadora de IMC e gerencia o agendamento de consultas online, respeitando regras de negócio complexas de horário (incluindo o Sabbat).
+### Pré-requisitos
 
-## Tecnologias
+- **.NET 8.0 SDK** - Para o backend
+- **Node.js 18+** - Para o frontend
+- **PostgreSQL 12+** - Banco de dados
 
-### Backend
-- **C# ASP.NET Core** - API robusta para lógica de agendamento
-- **PostgreSQL** - Banco de dados relacional
-- **Entity Framework Core** - ORM
+### Executar o Projeto
 
-### Frontend
-- **React** - Framework JavaScript
-- **Vite** - Build tool e dev server
-- **TypeScript** - Tipagem estática
+#### Backend
 
-## Estrutura do Projeto
-
-```
-root/
-├── backend/                  # Projeto C# ASP.NET Core
-├── frontend/                 # Projeto SPA (Vite/React)
-└── README.md                 # Este arquivo
-```
-
-## Configuração de Ambiente
-
-### Basepath da API
-A API utiliza basepath dinâmico baseado no ambiente:
-- **Desenvolvimento**: `lc-dev/`
-- **Homologação**: `lc-hml/`
-- **Produção**: `lc-prd/`
-
-### Padrão de Rotas
-Todas as rotas seguem o padrão kebab-case com `[controller]`:
-- `/api/agenda/slots-disponiveis`
-- `/api/agenda/reservar`
-- `/api/leads/capturar-imc`
-
-## Regras de Negócio
-
-### Horários de Funcionamento
-- **Segunda a Quinta-feira**: 17:00h às 22:00h
-- **Domingo**: Horário aberto
-- **Sexta-feira e Sábado**: Totalmente bloqueado (Sabbat)
-
-### Paleta de Cores
-
-#### Tema Claro
-- Fundo Principal: #FAFAFA
-- Texto Principal: #333333
-- Principal (Saúde): #4CAF50
-- Secundária (Confiança): #2196F3
-- Acento/CTA (Energia): #FF7043
-
-#### Tema Escuro
-- Fundo Principal: #121212
-- Texto Principal: #FAFAFA
-- Principal (Saúde): #66BB6A
-- Acento/CTA (Energia): #FF8A65
-
-## Como Executar
-
-### Backend
 ```bash
 cd backend/LeticiaConde.Api
+dotnet restore
+dotnet ef database update
 dotnet run
 ```
 
-### Frontend
+Acesse: `http://localhost:5014/swagger`
+
+#### Frontend
+
 ```bash
-cd frontend/nutri-frontend
+cd frontend
 npm install
 npm run dev
 ```
 
-## Documentação da API
+Acesse: `http://localhost:5173`
 
-A documentação completa da API está disponível através do Swagger quando o backend estiver em execução.
+## 📚 Documentação
+
+**Toda a documentação está organizada em [`/docs`](./docs/)**
+
+Consulte o [README da Documentação](./docs/README.md) para navegar por todas as seções.
+
+### Documentação Rápida
+
+- 📖 [Visão Geral do Projeto](./docs/01-project/README.md)
+- 🏗️ [Arquitetura Técnica](./docs/02-architecture/arquitetura-tecnica-backend.md)
+- 📋 [Regras de Negócio](./docs/03-business-rules/regras-negocio.md)
+- 🔧 [Backend](./docs/04-backend/README.md)
+- ⚛️ [Frontend](./docs/05-frontend/README.md)
+- 🔗 [Integração Frontend ↔ Backend](./docs/06-integration/integracao-frontend-backend.md)
+- 📊 [Análise e Próximos Passos](./docs/08-project-management/analise-proximos-passos.md)
+
+## 🛠️ Stack Tecnológico
+
+### Backend
+- ASP.NET Core 8.0
+- PostgreSQL
+- Entity Framework Core
+- Clean Architecture
+
+### Frontend
+- React 19
+- TypeScript
+- Vite
+- Styled Components
+
+## 📁 Estrutura do Projeto
+
+```
+leticia-conde-nutricao/
+├── backend/              # API ASP.NET Core
+├── frontend/             # SPA React
+├── docs/                 # 📚 Documentação completa
+└── README.md             # Este arquivo
+```
+
+## 🎯 Funcionalidades Principais
+
+- ✅ Calculadora de IMC com captação de leads
+- ✅ Sistema de agendamento online
+- ✅ Integração com Google Login
+- ✅ Anamnese multi-step
+- ✅ Respeito a horários e Sabbat
+- ✅ Sistema de reserva com timeout
+
+## 📝 Contribuindo
+
+Consulte o [Guia de Contribuição](./docs/07-development/guia-contribuicao.md) para mais informações.
+
+## 📄 Licença
+
+Este projeto é privado e proprietário.
+
+---
+
+**Desenvolvido para Letícia Conde - Nutricionista**  
+**Última Atualização**: Janeiro 2025
 

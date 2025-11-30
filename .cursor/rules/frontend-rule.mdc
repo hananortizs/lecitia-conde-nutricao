@@ -442,6 +442,6 @@ O arquivo `frontend/src/services/api.ts` usa base path `/lcn/`:
 
 ## 📚 **Referências**
 
-- Regras de Negócio: `backend/REGRAS_NEGOCIO.md`
-- Arquitetura de Agendamento: `backend/AGENDAMENTO_UNIFICADO.md`
-- Análise do Projeto: `ANALISE_PROJETO_PROXIMOS_PASSOS.md`
+- Regras de Negócio: `docs/03-business-rules/regras-negocio.md`
+- Arquitetura de Agendamento: `docs/02-architecture/agendamento-unificado.md`
+- Análise do Projeto: `docs/08-project-management/analise-proximos-passos.md`
